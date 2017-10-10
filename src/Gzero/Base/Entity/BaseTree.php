@@ -1,7 +1,7 @@
-<?php namespace Gzero\Entity;
+<?php namespace Gzero\Base\Entity;
 
 use Gzero\Traits\DatesFormatTrait;
-use Illuminate\Database\Eloquent\Model;
+use Gzero\EloquentTree\Model\Tree;
 
 /**
  * This file is part of the GZERO CMS package.
@@ -9,13 +9,13 @@ use Illuminate\Database\Eloquent\Model;
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Class Base
+ * Class BaseTree
  *
  * @package    Gzero\Entity
  * @author     Adrian Skierniewski <adrian.skierniewski@gmail.com>
  * @copyright  Copyright (c) 2014, Adrian Skierniewski
  */
-abstract class Base extends Model {
+abstract class BaseTree extends Tree {
 
     use DatesFormatTrait;
 

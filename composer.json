@@ -26,5 +26,12 @@
       "Gzero\\": "src/Gzero"
     }
   },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Gzero\\Base\\ServiceProvider"
+      ]
+    }
+  },
   "minimum-stability": "stable"
 }

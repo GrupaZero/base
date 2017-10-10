@@ -1,6 +1,6 @@
 <?php namespace Gzero\Repository;
 
-use Gzero\Entity\Lang;
+use Gzero\Base\Entity\Lang;
 use Illuminate\Cache\CacheManager;
 use Illuminate\Cache\Repository;
 use Illuminate\Database\Eloquent\Collection;

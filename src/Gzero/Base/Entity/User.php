@@ -1,9 +1,9 @@
-<?php namespace Gzero\Entity;
+<?php namespace Gzero\Base\Entity;
 
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
-use Gzero\Entity\Presenter\UserPresenter;
+use Gzero\Base\Entity\Presenter\UserPresenter;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;

@@ -1,4 +1,4 @@
-<?php namespace Gzero\Entity;
+<?php namespace Gzero\Base\Entity;
 
 /**
  * This file is part of the GZERO CMS package.
@@ -6,13 +6,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Class Lang
+ * Class OptionCategories
  *
  * @package    Gzero\Entity
  * @author     Adrian Skierniewski <adrian.skierniewski@gmail.com>
- * @copyright  Copyright (c) 2014, Adrian Skierniewski
+ * @copyright  Copyright (c) 2015, Adrian Skierniewski
  */
-class Lang extends Base {
+class OptionCategory extends Base {
 
     /**
      * @var bool
@@ -22,24 +22,23 @@ class Lang extends Base {
     /**
      * @var string
      */
-    protected $primaryKey = 'code';
+    protected $primaryKey = 'key';
 
     /**
      * @var array
      */
     protected $fillable = [
-        'code',
-        'i18n',
-        'is_enabled',
-        'is_default'
+        'key'
     ];
 
     /**
-     * @var array
+     * Options one to many relation
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    protected $attributes = [
-        'is_enabled' => false,
-        'is_default' => false
-    ];
+    public function options()
+    {
+        return $this->hasMany(Option::class, 'category_key');
+    }
 
 }

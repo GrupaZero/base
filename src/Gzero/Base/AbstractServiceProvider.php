@@ -1,4 +1,4 @@
-<?php namespace Gzero\Core;
+<?php namespace Gzero\Base;
 
 use Illuminate\Support\ServiceProvider as SP;
 use Illuminate\Foundation\AliasLoader;

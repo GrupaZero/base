@@ -1,4 +1,4 @@
-<?php namespace Gzero\Entity\Presenter;
+<?php namespace Gzero\Base\Entity\Presenter;
 
 /**
  * This file is part of the GZERO CMS package.

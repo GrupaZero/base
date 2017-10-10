@@ -1,4 +1,4 @@
-<?php namespace Gzero\Core;
+<?php namespace Gzero\Base;
 
 use Gzero\Repository\LangService;
 use Illuminate\Foundation\Application;

@@ -1,4 +1,4 @@
-<?php namespace Gzero\Entity;
+<?php namespace Gzero\Base\Entity;
 
 /**
  * This file is part of the GZERO CMS package.
