@@ -26,6 +26,5 @@
       "Gzero\\": "src/Gzero"
     }
   },
-  "target-dir": "Gzero/Core",
   "minimum-stability": "stable"
 }
