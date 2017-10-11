@@ -67,6 +67,7 @@ class ServiceProvider extends AbstractServiceProvider {
         $this->registerMigrations();
         $this->registerFactories();
         $this->registerMiddleware();
+        $this->registerViews();
         $this->registerPublishes();
     }
 
@@ -210,6 +211,16 @@ class ServiceProvider extends AbstractServiceProvider {
     }
 
     /**
+     * It register all views
+     *
+     * @return void
+     */
+    protected function registerViews()
+    {
+        $this->loadViewsFrom(__DIR__ . '/../../../resources/views', 'gzero-base');
+    }
+
+    /**
      * It registers all assets to publish
      *
      * @return void
@@ -227,6 +238,13 @@ class ServiceProvider extends AbstractServiceProvider {
         $this->publishes(
             [
                 __DIR__ . '/../../../database/factories/UserFactory.php' => database_path('factories/gzero.php'),
+            ]
+        );
+
+        // Views
+        $this->publishes(
+            [
+                __DIR__ . '/../../../resources/views' => resource_path('views/vendor/gzero-base'),
             ]
         );
     }
