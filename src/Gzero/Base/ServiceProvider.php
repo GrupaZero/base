@@ -1,21 +1,9 @@
 <?php namespace Gzero\Base;
 
-use Gzero\Repository\LangService;
+use Gzero\Base\Service\OptionService;
 use Illuminate\Foundation\Application;
 use Robbo\Presenter\PresenterServiceProvider;
 
-/**
- * This file is part of the GZERO CMS package.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- *
- * Class ServiceProvider
- *
- * @package    Gzero
- * @author     Adrian Skierniewski <adrian.skierniewski@gmail.com>
- * @copyright  Copyright (c) 2014, Adrian Skierniewski
- */
 class ServiceProvider extends AbstractServiceProvider {
 
     /**
@@ -33,21 +21,21 @@ class ServiceProvider extends AbstractServiceProvider {
      * @var array
      */
     protected $aliases = [
-        'options' => OptionsService::class
+        'options' => OptionService::class
     ];
 
-    /**
-     * The policy mappings for the application.
-     *
-     * @var array
-     */
-    protected $policies = [
-        Block::class   => BlockPolicy::class,
-        Content::class => ContentPolicy::class,
-        File::class    => FilePolicy::class,
-        User::class    => UserPolicy::class,
-        Option::class  => OptionPolicy::class
-    ];
+    ///**
+    // * The policy mappings for the application.
+    // *
+    // * @var array
+    // */
+    //protected $policies = [
+    //    Block::class   => BlockPolicy::class,
+    //    Content::class => ContentPolicy::class,
+    //    File::class    => FilePolicy::class,
+    //    User::class    => UserPolicy::class,
+    //    Option::class  => OptionPolicy::class
+    //];
 
     /**
      * Register the service provider.
@@ -106,27 +94,27 @@ class ServiceProvider extends AbstractServiceProvider {
      */
     protected function bindRepositories()
     {
-        $this->app->singleton(
-            'gzero.menu.account',
-            function () {
-                return new Register();
-            }
-        );
-
-        // We need only one LangRepository
-        $this->app->singleton(
-            'Gzero\Repository\LangService',
-            function (Application $app) {
-                return new LangService($app->make('cache'));
-            }
-        );
-
-        $this->app->singleton(
-            'croppa.src_dir',
-            function () {
-                return app('filesystem')->disk(config('gzero.upload.disk'))->getDriver();
-            }
-        );
+        //$this->app->singleton(
+        //    'gzero.menu.account',
+        //    function () {
+        //        return new Register();
+        //    }
+        //);
+        //
+        //// We need only one LangRepository
+        //$this->app->singleton(
+        //    'Gzero\Repository\LangService',
+        //    function (Application $app) {
+        //        return new LangService($app->make('cache'));
+        //    }
+        //);
+        //
+        //$this->app->singleton(
+        //    'croppa.src_dir',
+        //    function () {
+        //        return app('filesystem')->disk(config('gzero.upload.disk'))->getDriver();
+        //    }
+        //);
     }
 
     /**
@@ -169,21 +157,21 @@ class ServiceProvider extends AbstractServiceProvider {
      */
     protected function registerPolicies()
     {
-        $gate = app('Illuminate\Contracts\Auth\Access\Gate');
-        $gate->before(
-            function ($user) {
-                if ($user->isSuperAdmin()) {
-                    return true;
-                }
-
-                if ($user->isGuest()) {
-                    return false;
-                }
-            }
-        );
-        foreach ($this->policies as $key => $value) {
-            $gate->policy($key, $value);
-        }
+        //$gate = app('Illuminate\Contracts\Auth\Access\Gate');
+        //$gate->before(
+        //    function ($user) {
+        //        if ($user->isSuperAdmin()) {
+        //            return true;
+        //        }
+        //
+        //        if ($user->isGuest()) {
+        //            return false;
+        //        }
+        //    }
+        //);
+        //foreach ($this->policies as $key => $value) {
+        //    $gate->policy($key, $value);
+        //}
     }
 
     /**
@@ -218,8 +206,19 @@ class ServiceProvider extends AbstractServiceProvider {
      */
     protected function registerConfig()
     {
+
+        $this->publishes(
+            [
+                __DIR__ . '/../../../config/config.php' => config_path('gzero.php'),
+            ]
+        );
+        $this->publishes(
+            [
+                __DIR__ . '/../../../database/factories/UserFactory.php' => database_path('factories/gzero.php'),
+            ]
+        );
         $this->mergeConfigFrom(
-            __DIR__ . '/config/gzero.php',
+            __DIR__ . '/../../../config/config.php',
             'gzero'
         );
     }
@@ -231,7 +230,7 @@ class ServiceProvider extends AbstractServiceProvider {
      */
     protected function registerMigrations()
     {
-        $this->loadMigrationsFrom(__DIR__ . '/database/migrations');
+        $this->loadMigrationsFrom(__DIR__ . '/../../../database/migrations');
     }
 
 }

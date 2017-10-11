@@ -1,6 +1,6 @@
 <?php
 
-use Gzero\Entity\Lang;
+use Gzero\Base\Model\Lang;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 

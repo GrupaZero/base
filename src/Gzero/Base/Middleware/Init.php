@@ -1,20 +1,8 @@
-<?php namespace Gzero\Core\Middleware;
+<?php namespace Gzero\Base\Middleware;
 
 use Closure;
 use Illuminate\Http\RedirectResponse;
 
-/**
- * This file is part of the GZERO CMS package.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- *
- * Class Init
- *
- * @package    Gzero\Core
- * @author     Adrian Skierniewski <adrian.skierniewski@gmail.com>
- * @copyright  Copyright (c) 2015, Adrian Skierniewski
- */
 class Init {
 
     /**
@@ -27,8 +15,6 @@ class Init {
      */
     public function handle($request, Closure $next)
     {
-        // Handle nginx reverse proxy
-        $request->setTrustedProxies([$request->getClientIp()]);
         if (str_contains($request->getRequestUri(), 'index.php')) {
             return new RedirectResponse(url(preg_replace('#index.php(/)?#', '', $request->fullUrl())), 301);
         }

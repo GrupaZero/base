@@ -1,4 +1,4 @@
-<?php namespace Gzero\Traits;
+<?php namespace Gzero\Base\Traits;
 
 use Carbon\Carbon;
 

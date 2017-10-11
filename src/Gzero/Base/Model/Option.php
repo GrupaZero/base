@@ -1,17 +1,5 @@
-<?php namespace Gzero\Base\Entity;
+<?php namespace Gzero\Base\Model;
 
-/**
- * This file is part of the GZERO CMS package.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- *
- * Class Option
- *
- * @package    Gzero\Entity
- * @author     Adrian Skierniewski <adrian.skierniewski@gmail.com>
- * @copyright  Copyright (c) 2015, Adrian Skierniewski
- */
 class Option extends Base {
 
     /**
@@ -24,6 +12,16 @@ class Option extends Base {
     ];
 
     /**
+     * @param $key
+     *
+     * @return mixed
+     */
+    public static function getByKey($key)
+    {
+        return static::where('key', $key)->first();
+    }
+
+    /**
      * Option category relation
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -32,7 +30,6 @@ class Option extends Base {
     {
         return $this->belongsTo(OptionCategory::class, 'category_key', 'key');
     }
-
 
     /**
      * Set the option value

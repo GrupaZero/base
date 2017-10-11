@@ -1,27 +1,15 @@
-<?php namespace Gzero\Base\Entity;
+<?php namespace Gzero\Base\Model;
 
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
-use Gzero\Base\Entity\Presenter\UserPresenter;
+use Gzero\Base\Model\Presenter\UserPresenter;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Robbo\Presenter\PresentableInterface;
 
-/**
- * This file is part of the GZERO CMS package.
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- *
- * Class User
- *
- * @package    Gzero\Entity
- * @author     Adrian Skierniewski <adrian.skierniewski@gmail.com>
- * @copyright  Copyright (c) 2014, Adrian Skierniewski
- */
 class User extends Base implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract, PresentableInterface {
 
     use Authenticatable, Authorizable, CanResetPassword, HasApiTokens;
@@ -35,7 +23,7 @@ class User extends Base implements AuthenticatableContract, AuthorizableContract
         'first_name',
         'has_social_integrations',
         'last_name',
-        'nick',
+        'name',
         'password',
         'remember_token'
     ];
