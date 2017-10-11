@@ -20,7 +20,9 @@ class OptionCategory extends Base {
     ];
 
     /**
-     * @param $key
+     * Returns option category by key name
+     *
+     * @param string $key Option category key
      *
      * @return mixed
      */

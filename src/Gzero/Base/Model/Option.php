@@ -12,7 +12,9 @@ class Option extends Base {
     ];
 
     /**
-     * @param $key
+     * Returns option by key name
+     *
+     * @param string $key Option key
      *
      * @return mixed
      */
