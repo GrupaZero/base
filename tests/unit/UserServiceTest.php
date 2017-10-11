@@ -1,12 +1,13 @@
 <?php namespace unit;
 
+use Codeception\Test\Unit;
 use Gzero\Base\Model\User;
 use Gzero\Base\Service\UserService;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Support\Facades\Hash;
 
 
-class UserServiceTest extends \Codeception\Test\Unit {
+class UserServiceTest extends Unit {
 
     /**
      * @var \UnitTester
@@ -26,7 +27,7 @@ class UserServiceTest extends \Codeception\Test\Unit {
     /**
      * @test
      */
-    public function can_create_user_and_get_it_by_id()
+    public function canCreateUserAndGetItById()
     {
         $userData = [
             'email'      => 'john.doe@example.com',
@@ -60,7 +61,7 @@ class UserServiceTest extends \Codeception\Test\Unit {
     /**
      * @test
      */
-    public function can_create_user_with_empty_nickname_as_anonymous()
+    public function canCreateUserWithEmptyNameAsAnonymous()
     {
         $data1 = [
             'email'      => 'john.doe@example.com',
@@ -151,7 +152,7 @@ class UserServiceTest extends \Codeception\Test\Unit {
     /**
      * @test
      */
-    public function it_hashes_user_password_when_updating_user()
+    public function itHashesUserPasswordWhenUpdatingUser()
     {
         $user = $this->repository->create(
             [
@@ -170,7 +171,7 @@ class UserServiceTest extends \Codeception\Test\Unit {
     /**
      * @test
      */
-    public function can_delete_user()
+    public function canDeleteUser()
     {
         $userData = [
             'email'      => 'john.doe@example.com',
@@ -196,7 +197,7 @@ class UserServiceTest extends \Codeception\Test\Unit {
     /**
      * @test
      */
-    public function can_sort_users_list()
+    public function canSortUsersList()
     {
 
         $firstUser = $this->repository->create(

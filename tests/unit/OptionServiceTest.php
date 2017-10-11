@@ -31,7 +31,7 @@ class OptionServiceTest extends \Codeception\Test\Unit {
     /**
      * @test
      */
-    public function it_checks_existence_of_category_when_getting_an_option()
+    public function itChecksExistenceOfCategoryWhenGettingAnOption()
     {
         $categoryKey = 'nonexistent category';
 
@@ -51,7 +51,7 @@ class OptionServiceTest extends \Codeception\Test\Unit {
     /**
      * @test
      */
-    public function it_checks_existence_of_category_and_option_when_getting_an_non_existing_option()
+    public function ItChecksExistenceOfCategoryAndOptionWhenGettingAnNonExistingOption()
     {
         $optionKey   = 'nonexistent option';
         $categoryKey = 'nonexistent category';
@@ -73,7 +73,7 @@ class OptionServiceTest extends \Codeception\Test\Unit {
     /**
      * @test
      */
-    public function it_checks_existence_of_option_when_getting_an_option_from_existing_category()
+    public function ItChecksExistenceOfOptionWhenGettingAnOptionFromExistingCategory()
     {
         $optionKey   = 'nonexistent option';
         $categoryKey = 'general';
@@ -95,7 +95,7 @@ class OptionServiceTest extends \Codeception\Test\Unit {
     /**
      * @test
      */
-    public function it_checks_existence_of_category_when_deleting_an_option()
+    public function ItChecksExistenceOfCategoryWhenDeletingAnOption()
     {
         $categoryKey = 'nonexistent category';
 
@@ -115,7 +115,7 @@ class OptionServiceTest extends \Codeception\Test\Unit {
     /**
      * @test
      */
-    public function it_checks_existence_of_category_and_option_when_deleting_an_non_existing_option()
+    public function ItChecksExistenceOfCategoryAndOptionWhenDeletingAnNonExistingOption()
     {
         $optionKey   = 'nonexistent option';
         $categoryKey = 'nonexistent category';
@@ -137,7 +137,7 @@ class OptionServiceTest extends \Codeception\Test\Unit {
     /**
      * @test
      */
-    public function it_checks_existence_of_option_when_deleting_an_option()
+    public function ItChecksExistenceOfOptionWhenDeletingAnOption()
     {
         $optionKey   = 'nonexistent option';
         $categoryKey = 'general';
@@ -159,7 +159,7 @@ class OptionServiceTest extends \Codeception\Test\Unit {
     /**
      * @test
      */
-    public function it_gets_option_from_general_category()
+    public function ItGetsOptionFromGeneralCategory()
     {
         $optionKey   = 'site_name';
         $categoryKey = 'general';
@@ -176,7 +176,7 @@ class OptionServiceTest extends \Codeception\Test\Unit {
     /**
      * @test
      */
-    public function it_gets_all_options_from_general_category()
+    public function ItGetsAllOptionsFromGeneralCategory()
     {
         $categoryKey = 'general';
 
@@ -191,7 +191,7 @@ class OptionServiceTest extends \Codeception\Test\Unit {
     /**
      * @test
      */
-    public function can_create_category()
+    public function CanCreateCategory()
     {
         $categoryKey = 'New category';
 
@@ -203,7 +203,7 @@ class OptionServiceTest extends \Codeception\Test\Unit {
     /**
      * @test
      */
-    public function can_create_option()
+    public function CanCreateOption()
     {
         $categoryKey = 'general';
         $optionKey   = 'some option';
@@ -226,7 +226,7 @@ class OptionServiceTest extends \Codeception\Test\Unit {
     /**
      * @test
      */
-    public function can_delete_category()
+    public function CanDeleteCategory()
     {
         $categoryKey = 'general';
 
@@ -237,7 +237,7 @@ class OptionServiceTest extends \Codeception\Test\Unit {
     /**
      * @test
      */
-    public function can_delete_option()
+    public function canDeleteOption()
     {
         $categoryKey = 'general';
         $optionKey   = 'site_name';
