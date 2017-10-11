@@ -4,7 +4,8 @@ namespace Base;
 
 use Base\FunctionalTester;
 
-class ServiceProvioderCest {
+class AppCest {
+
     public function _before(FunctionalTester $I)
     {
     }
@@ -13,7 +14,6 @@ class ServiceProvioderCest {
     {
     }
 
-    // tests
     public function applicationWorks(FunctionalTester $I)
     {
         $I->getApplication()
@@ -28,5 +28,13 @@ class ServiceProvioderCest {
         $I->amOnPage('/');
 
         $I->see('Laravel');
+    }
+
+    public function itRedirectsRequestsWithIndexPHP(FunctionalTester $I)
+    {
+        $I->stopFollowingRedirects();
+        $I->amOnPage('/index.php/test-content');
+        $I->seeResponseCodeIs(301);
+        $I->seeResponseContains('Redirecting to http://localhost/test-content');
     }
 }
