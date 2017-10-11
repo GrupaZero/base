@@ -25,6 +25,6 @@ class RouteTranslation extends Base {
      */
     public function lang()
     {
-        return $this->belongsTo(Lang::class);
+        return $this->belongsTo(Language::class);
     }
 }

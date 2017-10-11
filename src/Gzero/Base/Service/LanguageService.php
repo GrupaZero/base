@@ -1,19 +1,18 @@
-<?php namespace Gzero\Repository;
+<?php namespace Gzero\Base\Service;
 
-use Gzero\Base\Model\Lang;
+use Gzero\Base\Model\Language;
 use Illuminate\Cache\CacheManager;
 use Illuminate\Cache\Repository;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\App;
 
-class LangService {
+class LanguageService {
 
     /**
      * All languages
      *
      * @var Collection
      */
-    private $langs;
+    private $languages;
 
     /**
      * @var Repository
@@ -32,17 +31,15 @@ class LangService {
     }
 
     /**
-     * Refresh langs cache
+     * Refresh $languages cache
      *
-     * @return boolean
+     * @return void
      */
     public function refresh()
     {
-        if ($this->cache->has('langs')) {
-            $this->cache->forget('langs');
-            return true;
-        } else {
-            return false;
+        if ($this->cache->has('$languages')) {
+            $this->cache->forget('$languages');
+            $this->init();
         }
     }
 
@@ -52,13 +49,13 @@ class LangService {
      * @param string $code Lang code eg. "en"
      *
      * @throws RepositoryException
-     * @return \Gzero\Base\Model\Lang
+     * @return \Gzero\Base\Model\Language
      */
     public function getByCode($code)
     {
-        return $this->langs->filter(
-            function ($lang) use ($code) {
-                return $lang->code == $code;
+        return $this->languages->filter(
+            function ($language) use ($code) {
+                return $language->code == $code;
             }
         )->first();
     }
@@ -66,11 +63,11 @@ class LangService {
     /**
      * Get current language
      *
-     * @return \Gzero\Entity\Lang
+     * @return \Gzero\Base\Model\Language
      */
     public function getCurrent()
     {
-        return $this->getByCode(App::getLocale());
+        return $this->getByCode(app()->getLocale());
     }
 
     /**
@@ -80,21 +77,29 @@ class LangService {
      */
     public function getAll()
     {
-        return $this->langs;
+        return $this->languages;
     }
 
     /**
-     * Get all enabled langs
+     * Get all enabled languages
      *
      * @return Collection
      */
     public function getAllEnabled()
     {
-        return $this->langs->filter(
+        return $this->languages->filter(
             function ($lang) {
                 return ($lang->is_enabled) ? $lang : false;
             }
         );
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Model|static
+     */
+    public function getDefault()
+    {
+        return $this->languages->find('is_default', true);
     }
 
     /**
@@ -104,12 +109,11 @@ class LangService {
      */
     protected function init()
     {
-        if ($this->cache->get('langs')) {
-            $this->langs = $this->cache->get('langs');
+        if ($this->cache->get('$languages')) {
+            $this->languages = $this->cache->get('$languages');
         } else {
-            /* @var QueryBuilder $qb */
-            $this->langs = Lang::all();
-            $this->cache->forever('langs', $this->langs);
+            $this->languages = Language::all();
+            $this->cache->forever('$languages', $this->languages);
         }
     }
 }

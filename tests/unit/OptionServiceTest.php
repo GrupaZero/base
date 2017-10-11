@@ -1,11 +1,10 @@
-<?php namespace unit;
+<?php namespace Base;
 
 use Gzero\Base\Exception;
-use Gzero\Base\Model\Lang;
+use Gzero\Base\Model\Language;
 use Gzero\Base\Model\Option;
 use Gzero\Base\Model\OptionCategory;
 use Gzero\Base\Service\OptionService;
-use Base\UnitTester;
 use Gzero\Base\Service\RepositoryValidationException;
 
 class OptionServiceTest extends \Codeception\Test\Unit {
@@ -278,7 +277,7 @@ class OptionServiceTest extends \Codeception\Test\Unit {
         // Propagate Lang options based on gzero config
         foreach ($this->expectedOptions as $categoryKey => $category) {
             foreach ($this->expectedOptions[$categoryKey] as $key => $option) {
-                foreach (Lang::all()->toArray() as $lang) {
+                foreach (Language::all()->toArray() as $lang) {
                     if ($categoryKey != 'general') {
                         $this->expectedOptions[$categoryKey][$key][$lang['code']] = config('gzero.' . $categoryKey . '.' . $key);
                     } else {

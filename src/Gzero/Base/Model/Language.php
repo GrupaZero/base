@@ -1,6 +1,6 @@
 <?php namespace Gzero\Base\Model;
 
-class Lang extends Base {
+class Language extends Base {
 
     /**
      * @var bool

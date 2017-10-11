@@ -1,10 +1,10 @@
 <?php
 
-use Gzero\Base\Model\Lang;
+use Gzero\Base\Model\Language;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateLang extends Migration {
+class CreateLanguage extends Migration {
 
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class CreateLang extends Migration {
     public function up()
     {
         Schema::create(
-            'langs',
+            'languages',
             function (Blueprint $table) {
                 $table->string('code', 2);
                 $table->string('i18n', 5);
@@ -25,7 +25,7 @@ class CreateLang extends Migration {
             }
         );
 
-        // Seed langs
+        // Seed languages
         $this->seedLangs();
     }
 
@@ -36,7 +36,7 @@ class CreateLang extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('langs');
+        Schema::dropIfExists('languages');
     }
 
     /**
@@ -46,7 +46,7 @@ class CreateLang extends Migration {
      */
     private function seedLangs()
     {
-        Lang::firstOrCreate(
+        Language::firstOrCreate(
             [
                 'code'       => 'en',
                 'i18n'       => 'en_US',
@@ -54,7 +54,7 @@ class CreateLang extends Migration {
             ]
         );
 
-        Lang::firstOrCreate(
+        Language::firstOrCreate(
             [
                 'code'       => 'pl',
                 'i18n'       => 'pl_PL',
@@ -62,7 +62,7 @@ class CreateLang extends Migration {
             ]
         );
 
-        Lang::firstOrCreate(
+        Language::firstOrCreate(
             [
                 'code'       => 'de',
                 'i18n'       => 'de_DE',
@@ -70,7 +70,7 @@ class CreateLang extends Migration {
             ]
         );
 
-        Lang::firstOrCreate(
+        Language::firstOrCreate(
             [
                 'code'       => 'fr',
                 'i18n'       => 'fr_FR',
@@ -78,6 +78,6 @@ class CreateLang extends Migration {
             ]
         );
 
-        Lang::where('code', config('app.locale'))->update(['is_default' => true]);
+        Language::where('code', config('app.locale'))->update(['is_default' => true]);
     }
 }

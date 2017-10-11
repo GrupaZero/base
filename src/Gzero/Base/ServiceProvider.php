@@ -1,6 +1,7 @@
 <?php namespace Gzero\Base;
 
 use Gzero\Base\Middleware\Init;
+use Gzero\Base\Middleware\MultiLang;
 use Gzero\Base\Service\OptionService;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Factory;
@@ -9,6 +10,7 @@ use Robbo\Presenter\PresenterServiceProvider;
 
 class ServiceProvider extends AbstractServiceProvider {
 
+    const IGNORE_ML_URL = ['admin'];
     /**
      * List of additional providers
      *
@@ -72,26 +74,43 @@ class ServiceProvider extends AbstractServiceProvider {
     }
 
     /**
-     * Try to detect language from uri
-     * We need to do that as soon as possible, because we need to know what language need to be set for ML routes
+     * It detects current language
      *
      * @return void
      */
     protected function detectLanguage()
     {
-        if (request()->segment(1) != 'admin' && $this->app['config']['gzero.multilang.enabled']) {
-            if ($this->app['config']['gzero.multilang.subdomain']) {
-                $locale = preg_replace('/\..+$/', '', request()->getHost());
-            } else {
-                $locale = request()->segment(1);
-            }
-            $languages = ['pl', 'en'];
-            if (in_array($locale, $languages, true)) {
-                app()->setLocale($locale);
-                $this->app['config']['gzero.multilang.detected'] = true;
+        $languages = ['pl', 'en'];
+
+        if (config('gzero.multilang.enabled')) {
+            $lang = request()->segment(1);
+            if (in_array($lang, $languages, true)) {
+                app()->setLocale($lang);
             }
         }
     }
+
+    ///**
+    // * Try to detect language from uri
+    // * We need to do that as soon as possible, because we need to know what language need to be set for ML routes
+    // *
+    // * @return void
+    // */
+    //protected function detectLanguage()
+    //{
+    //    if (request()->segment(1) != 'admin' && $this->app['config']['gzero.multilang.enabled']) {
+    //        if ($this->app['config']['gzero.multilang.subdomain']) {
+    //            $locale = preg_replace('/\..+$/', '', request()->getHost());
+    //        } else {
+    //            $locale = request()->segment(1);
+    //        }
+    //        $languages = ['pl', 'en'];
+    //        if (in_array($locale, $languages, true)) {
+    //            app()->setLocale($locale);
+    //            $this->app['config']['gzero.multilang.detected'] = true;
+    //        }
+    //    }
+    //}
 
     /**
      * Bind services
@@ -208,6 +227,9 @@ class ServiceProvider extends AbstractServiceProvider {
     protected function registerMiddleware()
     {
         app(Kernel::class)->prependMiddleware(Init::class);
+        if (config('gzero.multilang.enabled')) {
+            app(Kernel::class)->prependMiddleware(MultiLang::class);
+        }
     }
 
     /**

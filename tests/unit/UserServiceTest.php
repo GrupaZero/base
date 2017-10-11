@@ -1,4 +1,4 @@
-<?php namespace unit;
+<?php namespace Base;
 
 use Codeception\Test\Unit;
 use Gzero\Base\Model\User;
@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 class UserServiceTest extends Unit {
 
     /**
-     * @var \UnitTester
+     * @var UnitTester
      */
     protected $tester;
 

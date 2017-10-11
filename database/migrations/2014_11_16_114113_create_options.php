@@ -1,6 +1,6 @@
 <?php
 
-use Gzero\Base\Model\Lang;
+use Gzero\Base\Model\Language;
 use Gzero\Base\Model\OptionCategory;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -75,7 +75,7 @@ class CreateOptions extends Migration {
         // Propagate Lang options based on gzero config
         foreach ($options as $categoryKey => $category) {
             foreach ($options[$categoryKey] as $key => $option) {
-                foreach (Lang::all()->toArray() as $lang) {
+                foreach (Language::all()->toArray() as $lang) {
                     if ($categoryKey != 'general') {
                         $options[$categoryKey][$key][$lang['code']] = config('gzero.' . $categoryKey . '.' . $key);
                     } else {

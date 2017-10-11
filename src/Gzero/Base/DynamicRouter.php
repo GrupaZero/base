@@ -4,7 +4,7 @@ use Gzero\Core\Events\ContentRouteMatched;
 use Gzero\Repository\ContentRepository;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Events\Dispatcher;
-use Gzero\Base\Model\Lang;
+use Gzero\Base\Model\Language;
 use Gzero\Core\Handler\Content\ContentTypeHandler;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
@@ -41,14 +41,14 @@ class DynamicRouter {
     /**
      * Handles dynamic content rendering
      *
-     * @param String  $url     Url address
-     * @param Lang    $lang    Lang entity
-     * @param Request $request Request
+     * @param String   $url     Url address
+     * @param Language $lang    Lang entity
+     * @param Request  $request Request
      *
      * @throws NotFoundHttpException
      * @return View
      */
-    public function handleRequest($url, Lang $lang, Request $request)
+    public function handleRequest($url, Language $lang, Request $request)
     {
         //Get url without query string, so that pagination can work
         $url     = preg_replace('/\?.*/', '', $url);
