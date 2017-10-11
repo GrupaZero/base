@@ -3,16 +3,10 @@
 namespace App;
 
 use Dotenv\Dotenv;
-use Gzero\Base\Middleware\Init;
 use Gzero\Base\ServiceProvider as ServiceProvider;
-use Illuminate\Database\Eloquent\Factory;
 use Laravel\Passport\Passport;
-use Laravel\Passport\PassportServiceProvider;
-use League\Flysystem\Adapter\NullAdapter;
-use League\Flysystem\Filesystem;
 use Orchestra\Testbench\Traits\CreatesApplication;
 
-//require_once __DIR__ . '/tests/fixture/User.php';
 require __DIR__ . '/vendor/autoload.php';
 
 if (file_exists(__DIR__ . '/.env.testing')) {
@@ -38,8 +32,7 @@ $Laravel = new class {
         //);
 
         // We need to tell Laravel Passport where to find oauth keys
-        //Passport::loadKeysFrom(__DIR__ . '/vendor/gzero/testing/oauth/');
-
+        Passport::loadKeysFrom(__DIR__ . '/vendor/gzero/testing/oauth/');
 
         return [
             ServiceProvider::class
@@ -55,38 +48,11 @@ $Laravel = new class {
      */
     protected function getEnvironmentSetUp($app)
     {
-        // Use null adapter for tests
-        $app['filesystem']->extend(
-            'nullAdapter',
-            function ($app, $config) {
-                return new Filesystem(new NullAdapter());
-            }
-        );
-
+        /** @TODO Why I need to do this here? Are we fine with overriding config options in service providers? */
         // Use passport as guard for api
         $app['config']->set('auth.guards.api.driver', 'passport');
-
-        // Set upload disk to local and change it's adapter to NullAdapter
-        $app['config']->set('gzero.upload.disk', 'local');
-        $app['config']->set('filesystems.disks.local.driver', 'nullAdapter');
-
-        app('Illuminate\Contracts\Http\Kernel')->prependMiddleware(Init::class);
         // We want to return Access-Control-Allow-Credentials header as well
         $app['config']->set('cors.supportsCredentials', true);
-
-        $app->make(Factory::class)->load(__DIR__ . '/database/factories');
-        //$app['config']->set(
-        //    'database.connections.mysql.modes',
-        //    [
-        //        'ONLY_FULL_GROUP_BY',
-        //        'STRICT_TRANS_TABLES',
-        //        'NO_ZERO_IN_DATE',
-        //        'NO_ZERO_DATE',
-        //        'ERROR_FOR_DIVISION_BY_ZERO',
-        //        'NO_AUTO_CREATE_USER',
-        //        'NO_ENGINE_SUBSTITUTION'
-        //    ]
-        //);
     }
 };
 

@@ -1,7 +1,10 @@
 <?php namespace Gzero\Base;
 
+use Gzero\Base\Middleware\Init;
 use Gzero\Base\Service\OptionService;
-use Illuminate\Foundation\Application;
+use Illuminate\Contracts\Http\Kernel;
+use Illuminate\Database\Eloquent\Factory;
+use Laravel\Passport\PassportServiceProvider;
 use Robbo\Presenter\PresenterServiceProvider;
 
 class ServiceProvider extends AbstractServiceProvider {
@@ -13,6 +16,7 @@ class ServiceProvider extends AbstractServiceProvider {
      */
     protected $providers = [
         PresenterServiceProvider::class,
+        PassportServiceProvider::class
     ];
 
     /**
@@ -26,7 +30,7 @@ class ServiceProvider extends AbstractServiceProvider {
 
     ///**
     // * The policy mappings for the application.
-    // *
+    // * @TODO What with policies?
     // * @var array
     // */
     //protected $policies = [
@@ -45,10 +49,9 @@ class ServiceProvider extends AbstractServiceProvider {
     public function register()
     {
         parent::register();
-        $this->registerConfig();
+        $this->mergeConfig();
         $this->registerHelpers();
         $this->bindRepositories();
-        $this->bindTypes();
         $this->bindOtherStuff();
     }
 
@@ -60,9 +63,10 @@ class ServiceProvider extends AbstractServiceProvider {
     public function boot()
     {
         $this->detectLanguage();
-        $this->registerCommands();
         $this->registerPolicies();
         $this->registerMigrations();
+        $this->registerFactories();
+        $this->registerMiddleware();
     }
 
     /**
@@ -88,7 +92,7 @@ class ServiceProvider extends AbstractServiceProvider {
     }
 
     /**
-     * Bind Doctrine 2 repositories
+     * Bind services
      *
      * @return void
      */
@@ -115,39 +119,6 @@ class ServiceProvider extends AbstractServiceProvider {
         //        return app('filesystem')->disk(config('gzero.upload.disk'))->getDriver();
         //    }
         //);
-    }
-
-    /**
-     * Bind entities types classes
-     *
-     * @return void
-     */
-    protected function bindTypes()
-    {
-        $entities = [
-            'block',
-            'content',
-            'file'
-        ];
-
-        foreach ($entities as $entity) {
-            $key = "gzero.$entity" . '_type';
-            if (isset($this->app['config'][$key])) {
-                foreach ($this->app['config'][$key] as $type => $class) {
-                    $this->app->bind("$entity:type:$type", $class);
-                }
-            }
-        }
-    }
-
-    /**
-     * Register additional commands
-     *
-     * @return void
-     */
-    public function registerCommands()
-    {
-        //
     }
 
     /**
@@ -181,12 +152,7 @@ class ServiceProvider extends AbstractServiceProvider {
      */
     protected function bindOtherStuff()
     {
-        app()->singleton(
-            'Gzero\Core\OptionsService',
-            function (Application $app) {
-                return new OptionsService($app->make('Gzero\Repository\OptionService'));
-            }
-        );
+        //
     }
 
     /**
@@ -204,19 +170,8 @@ class ServiceProvider extends AbstractServiceProvider {
      *
      * @return void
      */
-    protected function registerConfig()
+    protected function mergeConfig()
     {
-
-        $this->publishes(
-            [
-                __DIR__ . '/../../../config/config.php' => config_path('gzero.php'),
-            ]
-        );
-        $this->publishes(
-            [
-                __DIR__ . '/../../../database/factories/UserFactory.php' => database_path('factories/gzero.php'),
-            ]
-        );
         $this->mergeConfigFrom(
             __DIR__ . '/../../../config/config.php',
             'gzero'
@@ -232,5 +187,48 @@ class ServiceProvider extends AbstractServiceProvider {
     {
         $this->loadMigrationsFrom(__DIR__ . '/../../../database/migrations');
     }
+
+    /**
+     * It registers factories
+     *
+     * @return void
+     */
+    protected function registerFactories()
+    {
+        app(Factory::class)->load(__DIR__ . '/../../../database/factories');
+    }
+
+    /**
+     * It register all middleware
+     *
+     * @return void
+     */
+    protected function registerMiddleware()
+    {
+        app(Kernel::class)->prependMiddleware(Init::class);
+    }
+
+    /**
+     * It registers all assets to publish
+     *
+     * @return void
+     */
+    protected function registerPublishes()
+    {
+        // Config
+        $this->publishes(
+            [
+                __DIR__ . '/../../../config/config.php' => config_path('gzero.php'),
+            ]
+        );
+
+        // Factories
+        $this->publishes(
+            [
+                __DIR__ . '/../../../database/factories/UserFactory.php' => database_path('factories/gzero.php'),
+            ]
+        );
+    }
+
 
 }

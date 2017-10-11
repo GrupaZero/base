@@ -40,21 +40,6 @@ if (!function_exists('setMultilangRouting')) {
     }
 }
 
-if (!function_exists('group')) {
-    /**
-     * Create a route group with shared attributes.
-     *
-     * @param array    $attributes Attributes
-     * @param \Closure $callback   Callback function
-     *
-     * @return void
-     */
-    function group($attributes, $callback)
-    {
-        app('router')->group($attributes, $callback);
-    }
-}
-
 if (!function_exists('isProviderLoaded')) {
     /**
      * Check if specified provider is loaded
