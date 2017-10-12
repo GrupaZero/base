@@ -41,7 +41,7 @@ Route::group(
     [
         'domain'    => 'api.' . config('gzero.domain'),
         'prefix'    => 'v1/user',
-        'namespace' => 'Gzero\Base\Controllers\User',
+        'namespace' => 'Gzero\Base\Http\Controller\Api'
         //'middleware' => [HandleCors::class, 'auth:api']
     ],
     function ($router) {
@@ -50,7 +50,7 @@ Route::group(
         // ======== Account ========
         $router->put(
             'account',
-            'AccountController@update'
+            'PublicAccountController@update'
         );
 
     }

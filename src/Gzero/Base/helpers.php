@@ -50,8 +50,8 @@ if (!function_exists('addMultiLanguageRoutes')) {
             }
             Route::prefix($prefix)
                 ->middleware('web')
-                ->group(function () use ($closure) {
-                    $closure(resolve('router'));
+                ->group(function () use ($closure, $language) {
+                    $closure(resolve('router'), $language->code);
                 });
         }
     }

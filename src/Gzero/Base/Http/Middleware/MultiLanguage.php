@@ -3,6 +3,7 @@
 use Closure;
 use Gzero\Base\Exception;
 use Gzero\Base\Service\LanguageService;
+use Gzero\Base\ServiceProvider;
 
 class MultiLanguage {
 
@@ -27,11 +28,7 @@ class MultiLanguage {
         if (!empty($language)) {
             app()->setLocale($language);
         } else {
-            $defaultLanguage = $languageService->getDefault();
-            if (empty($defaultLanguage)) {
-                throw new Exception('No default language found');
-            }
-            app()->setLocale($defaultLanguage->code);
+            ServiceProvider::setDefaultLocale();
         }
 
         return $next($request);

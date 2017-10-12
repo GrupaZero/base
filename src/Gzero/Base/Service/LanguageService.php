@@ -37,8 +37,8 @@ class LanguageService {
      */
     public function refresh()
     {
-        if ($this->cache->has('$languages')) {
-            $this->cache->forget('$languages');
+        if ($this->cache->has('languages')) {
+            $this->cache->forget('languages');
             $this->init();
         }
     }
@@ -111,11 +111,11 @@ class LanguageService {
      */
     protected function init()
     {
-        if ($this->cache->get('$languages')) {
-            $this->languages = $this->cache->get('$languages');
+        if ($this->cache->get('languages')) {
+            $this->languages = $this->cache->get('languages');
         } else {
             $this->languages = Language::all();
-            $this->cache->forever('$languages', $this->languages);
+            $this->cache->forever('languages', $this->languages);
         }
     }
 }

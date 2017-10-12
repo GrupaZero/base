@@ -115,7 +115,7 @@ class ServiceProvider extends AbstractServiceProvider {
      *
      * @return void
      */
-    protected function setDefaultLocale()
+    public static function setDefaultLocale()
     {
         $defaultLanguage = resolve(LanguageService::class)->getDefault();
         if (empty($defaultLanguage)) {
