@@ -1,13 +1,15 @@
 <?php namespace Gzero\Base;
 
-use Gzero\Base\Middleware\Init;
-use Gzero\Base\Middleware\MultiLanguage;
+use Carbon\Carbon;
+use Gzero\Base\Http\Middleware\Init;
+use Gzero\Base\Http\Middleware\MultiLanguage;
 use Gzero\Base\Service\LanguageService;
 use Gzero\Base\Service\OptionService;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Foundation\Application;
 use Illuminate\Routing\Router;
+use Laravel\Passport\Passport;
 use Laravel\Passport\PassportServiceProvider;
 use Robbo\Presenter\PresenterServiceProvider;
 
@@ -67,6 +69,16 @@ class ServiceProvider extends AbstractServiceProvider {
     public function boot()
     {
         $this->setDefaultLocale();
+
+        $this->registerRoutes();
+
+        /** @TODO Probably we can move this to routes file */
+        Passport::routes();
+
+        Passport::tokensExpireIn(Carbon::now()->addDays(15));
+
+        Passport::refreshTokensExpireIn(Carbon::now()->addDays(30));
+
         $this->registerPolicies();
         $this->registerMigrations();
         $this->registerFactories();
@@ -182,7 +194,7 @@ class ServiceProvider extends AbstractServiceProvider {
      */
     protected function registerHelpers()
     {
-        require_once __DIR__ . '/helpers.php';
+        require __DIR__ . '/helpers.php';
     }
 
     /**
@@ -237,6 +249,16 @@ class ServiceProvider extends AbstractServiceProvider {
     protected function registerViews()
     {
         $this->loadViewsFrom(__DIR__ . '/../../../resources/views', 'gzero-base');
+    }
+
+    /**
+     * Add additional file to store routes
+     *
+     * @return void
+     */
+    protected function registerRoutes()
+    {
+        $this->loadRoutesFrom(__DIR__ . '/../../../routes/api.php');
     }
 
     /**

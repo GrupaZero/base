@@ -1,19 +1,9 @@
-<?php
-
-namespace Base;
+<?php namespace Base;
 
 use Gzero\Base\Service\LanguageService;
 use Illuminate\Foundation\Application;
 
 class AppCest {
-
-    public function _before(FunctionalTester $I)
-    {
-    }
-
-    public function _after(FunctionalTester $I)
-    {
-    }
 
     public function applicationWorks(FunctionalTester $I)
     {
@@ -128,5 +118,51 @@ class AppCest {
         $I->amOnPage('/pl/test');
         $I->seeResponseCodeIs(200);
         $I->see('Dynamic Router: pl');
+    }
+
+    public function itWontSetLocaleWithoutMiddlewareGroup(FunctionalTester $I)
+    {
+        $I->haveInstance(LanguageService::class, new class {
+            function getAllEnabled()
+            {
+                return collect([
+                    (object) ['code' => 'en', 'is_default' => false],
+                    (object) ['code' => 'pl', 'is_default' => true]
+                ]);
+            }
+
+            function getDefault()
+            {
+                return (object) ['code' => 'pl', 'is_default' => true];
+            }
+        });
+
+        $I->haveApplicationHandler(function ($app) {
+            /** @var Application $app */
+            addMultiLanguageRoutes(function ($router) {
+                $router->get('ml_route', function () {
+                    return 'Laravel Multi Language Content: ' . app()->getLocale();
+                });
+            });
+            $app->make('router')
+                ->get('{path?}', function () {
+                    return 'Dynamic Router: ' . app()->getLocale();
+                })
+                ->where('path', '.*');
+        });
+
+
+        $I->amOnPage('/ml_route');
+        $I->seeResponseCodeIs(200);
+        $I->see('Laravel Multi Language Content: pl');
+
+        $I->amOnPage('/en/ml_route');
+        $I->seeResponseCodeIs(200);
+        $I->see('Laravel Multi Language Content: en');
+
+        $I->amOnPage('/pl/test');
+        $I->seeResponseCodeIs(200);
+        // Should use en because our ServiceProvider set it once and we don't use middleware to override it
+        $I->see('Dynamic Router: en');
     }
 }

@@ -1,4 +1,4 @@
-<?php namespace Gzero\Core\Controllers;
+<?php namespace Gzero\Base\Http\Controller;
 
 use Illuminate\Routing\Controller as LaravelController;
 use Illuminate\Foundation\Bus\DispatchesJobs;
