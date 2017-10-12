@@ -1,5 +1,8 @@
 <?php
 
+use Gzero\Base\Service\LanguageService;
+use Illuminate\Support\Facades\Route;
+
 if (!function_exists('setMultiLanguageRouting')) {
 
     /**
@@ -22,6 +25,34 @@ if (!function_exists('setMultiLanguageRouting')) {
                 $routingOptions,
                 ['domain' => config('gzero.domain')]
             );
+        }
+    }
+}
+
+if (!function_exists('addMultiLanguageRoutes')) {
+
+    /**
+     * It registers new multi language routes
+     *
+     * @param Closure $closure Closure with route definitions
+     *
+     * @return void
+     */
+    function addMultiLanguageRoutes(Closure $closure)
+    {
+        /** @var LanguageService $service */
+        $service   = resolve(LanguageService::class);
+        $languages = $service->getAllEnabled();
+        foreach ($languages as $language) {
+            $prefix = '';
+            if (!$language->is_default) {
+                $prefix = $language->code;
+            }
+            Route::prefix($prefix)
+                ->middleware('web')
+                ->group(function () use ($closure) {
+                    $closure(resolve('router'));
+                });
         }
     }
 }

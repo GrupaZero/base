@@ -1,18 +1,18 @@
 <?php namespace Gzero\Base;
 
 use Gzero\Base\Middleware\Init;
-use Gzero\Base\Middleware\MultiLang;
+use Gzero\Base\Middleware\MultiLanguage;
 use Gzero\Base\Service\LanguageService;
 use Gzero\Base\Service\OptionService;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Foundation\Application;
+use Illuminate\Routing\Router;
 use Laravel\Passport\PassportServiceProvider;
 use Robbo\Presenter\PresenterServiceProvider;
 
 class ServiceProvider extends AbstractServiceProvider {
 
-    const IGNORE_ML_URL = ['admin'];
     /**
      * List of additional providers
      *
@@ -66,29 +66,12 @@ class ServiceProvider extends AbstractServiceProvider {
      */
     public function boot()
     {
-        $this->detectLanguage();
+        $this->setDefaultLocale();
         $this->registerPolicies();
         $this->registerMigrations();
         $this->registerFactories();
         $this->registerMiddleware();
         $this->registerPublishes();
-    }
-
-    /**
-     * It detects current language
-     *
-     * @return void
-     */
-    protected function detectLanguage()
-    {
-        $languages = ['pl', 'en'];
-
-        if (config('gzero.ml')) {
-            $lang = request()->segment(1);
-            if (in_array($lang, $languages, true)) {
-                app()->setLocale($lang);
-            }
-        }
     }
 
     ///**
@@ -112,6 +95,22 @@ class ServiceProvider extends AbstractServiceProvider {
     //        }
     //    }
     //}
+
+    /**
+     * It registers default locale
+     *
+     * @throws Exception
+     *
+     * @return void
+     */
+    protected function setDefaultLocale()
+    {
+        $defaultLanguage = resolve(LanguageService::class)->getDefault();
+        if (empty($defaultLanguage)) {
+            throw new Exception('No default language found');
+        }
+        app()->setLocale($defaultLanguage->code);
+    }
 
     /**
      * Bind services
@@ -226,10 +225,8 @@ class ServiceProvider extends AbstractServiceProvider {
      */
     protected function registerMiddleware()
     {
-        app(Kernel::class)->prependMiddleware(Init::class);
-        if (config('gzero.ml')) {
-            app(Kernel::class)->prependMiddleware(MultiLang::class);
-        }
+        resolve(Kernel::class)->prependMiddleware(Init::class);
+        resolve(Router::class)->prependMiddlewareToGroup('web', MultiLanguage::class);
     }
 
     /**
@@ -270,6 +267,5 @@ class ServiceProvider extends AbstractServiceProvider {
             ]
         );
     }
-
 
 }

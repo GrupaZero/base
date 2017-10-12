@@ -4,7 +4,7 @@ use Closure;
 use Gzero\Base\Exception;
 use Gzero\Base\Service\LanguageService;
 
-class MultiLang {
+class MultiLanguage {
 
     /**
      * Handle an incoming request.
@@ -20,13 +20,18 @@ class MultiLang {
         /** @var LanguageService $languageService */
         $languageService = resolve(LanguageService::class);
         $languages       = $languageService->getAllEnabled()->pluck('code');
+        $language        = $languages->first(function ($code) use ($request) {
+            return $code === $request->segment(1);
+        });
 
-        if (!$languages->contains($request->segment(1))) {
+        if (!empty($language)) {
+            app()->setLocale($language);
+        } else {
             $defaultLanguage = $languageService->getDefault();
             if (empty($defaultLanguage)) {
                 throw new Exception('No default language found');
             }
-            return redirect()->to(implode('/', array_prepend($request->segments(), $defaultLanguage->code)), 301);
+            app()->setLocale($defaultLanguage->code);
         }
 
         return $next($request);
