@@ -146,8 +146,7 @@ class ApiController extends Controller {
         $message = 'Bad Request',
         $code = SymfonyResponse::HTTP_BAD_REQUEST,
         array $headers = []
-    )
-    {
+    ) {
         return abort($code, $message, $headers);
     }
 

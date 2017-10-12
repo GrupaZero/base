@@ -4,7 +4,7 @@ use Gzero\Base\Http\Controller\ApiController;
 use Gzero\Base\Transformer\LangTransformer;
 use Gzero\Base\Service\LanguageService;
 
-class AdminLanguageController extends ApiController {
+class AdminLangController extends ApiController {
 
     /**
      * @var LanguageService

@@ -27,8 +27,7 @@ class PublicAccountController extends ApiController {
         UserService $userService,
         AccountValidator $validator,
         Request $request
-    )
-    {
+    ) {
         parent::__construct($processor);
         $this->validator   = $validator->setData($request->all());
         $this->userService = $userService;

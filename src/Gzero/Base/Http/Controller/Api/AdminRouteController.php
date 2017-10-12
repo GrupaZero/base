@@ -44,8 +44,7 @@ class AdminRouteController extends ApiController {
         ContentRepository $content,
         RouteTranslationValidator $validator,
         Request $request
-    )
-    {
+    ) {
         parent::__construct($processor);
         $this->validator  = $validator->setData($request->all());
         $this->repository = $content;

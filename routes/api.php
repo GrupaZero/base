@@ -6,9 +6,9 @@ use Gzero\Base\Http\Middleware\AdminApiAccess;
 
 Route::group(
     [
-        'domain'     => 'api.' . config('gzero.domain'),
-        'prefix'     => 'v1/admin',
-        'namespace'  => 'Gzero\Base\Http\Controller\Api',
+        'domain'    => 'api.' . config('gzero.domain'),
+        'prefix'    => 'v1/admin',
+        'namespace' => 'Gzero\Base\Http\Controller\Api',
         //'middleware' => [HandleCors::class, 'auth:api', AdminApiAccess::class]
     ],
     function ($router) {

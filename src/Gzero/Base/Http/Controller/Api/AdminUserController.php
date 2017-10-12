@@ -28,8 +28,7 @@ class AdminUserController extends ApiController {
         UserService $userService,
         UserValidator $validator,
         Request $request
-    )
-    {
+    ) {
         parent::__construct($processor);
         $this->validator   = $validator->setData($request->all());
         $this->userService = $userService;

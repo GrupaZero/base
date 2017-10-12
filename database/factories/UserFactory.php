@@ -14,7 +14,7 @@ use Gzero\Base\Model\User;
 |
 */
 
-$factory->define(User::class, function(Faker $faker) {
+$factory->define(User::class, function (Faker $faker) {
     static $password;
 
     return [
