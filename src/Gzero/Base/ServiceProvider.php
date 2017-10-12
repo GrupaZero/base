@@ -69,7 +69,6 @@ class ServiceProvider extends AbstractServiceProvider {
         $this->registerMigrations();
         $this->registerFactories();
         $this->registerMiddleware();
-        $this->registerViews();
         $this->registerPublishes();
     }
 
