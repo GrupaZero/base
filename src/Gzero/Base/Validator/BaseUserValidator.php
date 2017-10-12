@@ -12,7 +12,7 @@ class BaseUserValidator extends AbstractValidator {
         ],
         'register' => [
             'email'      => 'required|email|unique:users',
-            'nick'       => 'required|min:3|unique:users',
+            'name'       => 'required|min:3|unique:users',
             'password'   => 'required|min:6',
             'first_name' => 'nullable|min:2|regex:/^([^0-9]*)$/', // without numbers
             'last_name'  => 'nullable|min:2|regex:/^([^0-9]*)$/' // without numbers

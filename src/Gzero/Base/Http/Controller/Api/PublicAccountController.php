@@ -48,7 +48,7 @@ class PublicAccountController extends ApiController {
 
         $user = $this->userService->getById($request->user()->id);
         $this->authorize('update', $user);
-        $input = $this->validator->bind('nick', ['user_id' => $user->id])->bind('email', ['user_id' => $user->id])
+        $input = $this->validator->bind('name', ['user_id' => $user->id])->bind('email', ['user_id' => $user->id])
             ->validate('update');
         $user  = $this->userService->update($user, $input);
         return $this->respondWithSuccess($user, new UserTransformer());

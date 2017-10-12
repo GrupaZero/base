@@ -13,7 +13,7 @@ class UserValidator extends AbstractValidator {
         ],
         'update' => [
             'email'      => 'required|email|unique:users,email,@user_id',
-            'nick'       => 'required|min:3|unique:users,nick,@user_id',
+            'name'       => 'required|min:3|unique:users,nick,@user_id',
             'first_name' => '',
             'last_name'  => ''
         ]
