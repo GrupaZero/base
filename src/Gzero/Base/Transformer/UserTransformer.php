@@ -38,7 +38,7 @@ class UserTransformer extends AbstractTransformer {
      *
      * @param User $user Translation
      *
-     * @return \League\Fractal\ItemResource
+     * @return \League\Fractal\Resource\Collection
      */
     public function includeRoles(User $user)
     {

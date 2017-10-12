@@ -2,7 +2,7 @@
 
 use Gzero\Base\Model\Language;
 
-class LangTransformer extends AbstractTransformer {
+class LanguageTransformer extends AbstractTransformer {
 
     /**
      * Transforms lang entity

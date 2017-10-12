@@ -1,5 +1,6 @@
 <?php namespace Gzero\Base\Http\Controller;
 
+use Illuminate\Routing\Controller;
 use Gzero\Base\UrlParamsProcessor;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection as LaravelCollection;

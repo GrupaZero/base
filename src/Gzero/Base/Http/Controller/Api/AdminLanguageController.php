@@ -1,7 +1,7 @@
 <?php namespace Gzero\Base\Http\Controller\Api;
 
 use Gzero\Base\Http\Controller\ApiController;
-use Gzero\Base\Transformer\LangTransformer;
+use Gzero\Base\Transformer\LanguageTransformer;
 use Gzero\Base\Service\LanguageService;
 
 class AdminLanguageController extends ApiController {
@@ -28,7 +28,7 @@ class AdminLanguageController extends ApiController {
      */
     public function index()
     {
-        return $this->respondWithSuccess($this->langService->getAll(), new LangTransformer);
+        return $this->respondWithSuccess($this->langService->getAll(), new LanguageTransformer);
     }
 
     /**
@@ -44,7 +44,7 @@ class AdminLanguageController extends ApiController {
         if (empty($lang)) {
             return $this->respondNotFound();
         }
-        return $this->respondWithSuccess($lang, new LangTransformer);
+        return $this->respondWithSuccess($lang, new LanguageTransformer);
     }
 
 }
