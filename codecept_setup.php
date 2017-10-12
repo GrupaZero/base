@@ -3,7 +3,7 @@
 namespace App;
 
 use Dotenv\Dotenv;
-use Gzero\Base\ServiceProvider as ServiceProvider;
+use Gzero\Base\ServiceProvider;
 use Laravel\Passport\Passport;
 use Orchestra\Testbench\Traits\CreatesApplication;
 

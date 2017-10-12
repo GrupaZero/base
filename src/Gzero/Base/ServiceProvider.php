@@ -2,9 +2,11 @@
 
 use Gzero\Base\Middleware\Init;
 use Gzero\Base\Middleware\MultiLang;
+use Gzero\Base\Service\LanguageService;
 use Gzero\Base\Service\OptionService;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Factory;
+use Illuminate\Foundation\Application;
 use Laravel\Passport\PassportServiceProvider;
 use Robbo\Presenter\PresenterServiceProvider;
 
@@ -81,7 +83,7 @@ class ServiceProvider extends AbstractServiceProvider {
     {
         $languages = ['pl', 'en'];
 
-        if (config('gzero.multilang.enabled')) {
+        if (config('gzero.ml')) {
             $lang = request()->segment(1);
             if (in_array($lang, $languages, true)) {
                 app()->setLocale($lang);
@@ -97,8 +99,8 @@ class ServiceProvider extends AbstractServiceProvider {
     // */
     //protected function detectLanguage()
     //{
-    //    if (request()->segment(1) != 'admin' && $this->app['config']['gzero.multilang.enabled']) {
-    //        if ($this->app['config']['gzero.multilang.subdomain']) {
+    //    if (request()->segment(1) != 'admin' && $this->app['config']['gzero.ml']) {
+    //        if ($this->app['config']['gzero.ml.subdomain']) {
     //            $locale = preg_replace('/\..+$/', '', request()->getHost());
     //        } else {
     //            $locale = request()->segment(1);
@@ -106,7 +108,7 @@ class ServiceProvider extends AbstractServiceProvider {
     //        $languages = ['pl', 'en'];
     //        if (in_array($locale, $languages, true)) {
     //            app()->setLocale($locale);
-    //            $this->app['config']['gzero.multilang.detected'] = true;
+    //            $this->app['config']['gzero.ml.detected'] = true;
     //        }
     //    }
     //}
@@ -118,18 +120,17 @@ class ServiceProvider extends AbstractServiceProvider {
      */
     protected function bindRepositories()
     {
+        $this->app->singleton(
+            LanguageService::class,
+            function (Application $app) {
+                return new LanguageService($app->make('cache'));
+            }
+        );
+
         //$this->app->singleton(
         //    'gzero.menu.account',
         //    function () {
         //        return new Register();
-        //    }
-        //);
-        //
-        //// We need only one LangRepository
-        //$this->app->singleton(
-        //    'Gzero\Repository\LangService',
-        //    function (Application $app) {
-        //        return new LangService($app->make('cache'));
         //    }
         //);
         //
@@ -226,7 +227,7 @@ class ServiceProvider extends AbstractServiceProvider {
     protected function registerMiddleware()
     {
         app(Kernel::class)->prependMiddleware(Init::class);
-        if (config('gzero.multilang.enabled')) {
+        if (config('gzero.ml')) {
             app(Kernel::class)->prependMiddleware(MultiLang::class);
         }
     }

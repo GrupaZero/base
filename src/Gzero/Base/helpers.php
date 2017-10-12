@@ -1,6 +1,6 @@
 <?php
 
-if (!function_exists('setMultilangRouting')) {
+if (!function_exists('setMultiLanguageRouting')) {
 
     /**
      * Returns routing array with lang prefix
@@ -9,27 +9,13 @@ if (!function_exists('setMultilangRouting')) {
      *
      * @return array
      */
-    function setMultilangRouting(array $routingOptions = [])
+    function setMultiLanguageRouting(array $routingOptions = [])
     {
-        if (config('gzero.multilang.enabled')) {
-            if (config('gzero.multilang.subdomain')) {
-                if (config('gzero.multilang.detected')) {
-                    return array_merge(
-                        $routingOptions,
-                        ['domain' => request()->getHost()]
-                    );
-                } else {
-                    return array_merge(
-                        $routingOptions,
-                        ['domain' => app()->getLocale() . '.' . config('gzero.domain')]
-                    );
-                }
-            } else {
-                return array_merge(
-                    $routingOptions,
-                    ['domain' => config('gzero.domain'), 'prefix' => app()->getLocale()]
-                );
-            }
+        if (config('gzero.ml')) {
+            return array_merge(
+                $routingOptions,
+                ['domain' => config('gzero.domain'), 'prefix' => app()->getLocale()]
+            );
         } else {
             // Set domain for static pages block finder
             return array_merge(
@@ -70,7 +56,7 @@ if (!function_exists('croppaUrl')) {
     function croppaUrl($url, $width = null, $height = null, $options = null)
     {
         if ($width === null && $height === null) {
-            $width = config('gzero.image.max_width');
+            $width  = config('gzero.image.max_width');
             $height = config('gzero.image.max_height');
         }
         return app('Bkwld\Croppa\Helpers')->url($url, $width, $height, $options);

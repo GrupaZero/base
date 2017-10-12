@@ -99,7 +99,9 @@ class LanguageService {
      */
     public function getDefault()
     {
-        return $this->languages->find('is_default', true);
+        return $this->languages->first(function ($value) {
+            return $value->is_default;
+        });
     }
 
     /**
