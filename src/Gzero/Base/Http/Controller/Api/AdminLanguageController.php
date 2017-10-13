@@ -24,6 +24,24 @@ class AdminLanguageController extends ApiController {
     /**
      * Display a listing of the resource.
      *
+     * @SWG\Get(
+     *   path="/admin/languages",
+     *   summary="List languagesX",
+     *   operationId="getLanguages",
+     *   security={{"Bearer": {}}},
+     *   @SWG\Parameter(
+     *     name="filter",
+     *     in="query",
+     *     description="Filter results based on query string value.",
+     *     required=false,
+     *     enum={"active", "expired", "scheduled"},
+     *     type="string"
+     *   ),
+     *   @SWG\Response(response=200, description="successful operation"),
+     *   @SWG\Response(response=406, description="not acceptable"),
+     *   @SWG\Response(response=500, description="internal server error")
+     * )
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function index()

@@ -11,7 +11,6 @@ class HelpersCest {
         $I->assertEquals('test-en', mlSuffix('test', 'en'));
     }
 
-
     public function itGeneratesUrlToMlRoute(FunctionalTester $I)
     {
         $I->haveInstance(LanguageService::class, new class {

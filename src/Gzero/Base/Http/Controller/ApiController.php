@@ -10,6 +10,17 @@ use League\Fractal\Resource\Item;
 use League\Fractal\TransformerAbstract;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
+/**
+ * @SWG\Swagger(
+ *   schemes={"https"},
+ *   basePath="/v1",
+ *   host="api.dev.gzero.pl",
+ *   @SWG\Info(
+ *     title="GZERO API",
+ *     version="1.0.0"
+ *   )
+ * )
+ */
 class ApiController extends Controller {
 
     /**
