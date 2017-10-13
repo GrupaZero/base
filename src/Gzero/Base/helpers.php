@@ -67,8 +67,9 @@ if (!function_exists('mlSuffix')) {
      *
      * @return string
      */
-    function mlSuffix($name, $language)
+    function mlSuffix($name, $language = null)
     {
+        $language = $language ?: app()->getLocale();
         return $name . '-' . $language;
     }
 }
@@ -85,7 +86,7 @@ if (!function_exists('routeMl')) {
      *
      * @return string
      */
-    function routeMl($name, $language, $parameters = [], $absolute = true)
+    function routeMl($name, $language = null, $parameters = [], $absolute = true)
     {
         return \route(mlSuffix($name, $language), $parameters, $absolute);
     }

@@ -49,9 +49,14 @@ class HelpersCest {
         // We need to visit it by url first to apply application handlers
         $I->amOnPage('/test-url');
 
+        $I->assertEquals('home-en', mlSuffix('home'));
         $I->assertEquals('home-en', mlSuffix('home', 'en'));
+        $I->assertEquals('home-it', mlSuffix('home', 'it'));
 
         $I->amOnPage(routeMl('test', 'en'));
+        $I->seeResponseCodeIs(200);
+        $I->see('Laravel: en');
+        $I->amOnPage(routeMl('test'));
         $I->seeResponseCodeIs(200);
         $I->see('Laravel: en');
         $I->amOnPage(routeMl('test', 'pl'));
@@ -71,6 +76,11 @@ class HelpersCest {
         $I->seeResponseCodeIs(200);
         $I->see('Home: de');
 
+        $I->getApplication()->setLocale('en'); // reset default lang after last call
+
+        $I->amOnRoute(mlSuffix('home'));
+        $I->seeResponseCodeIs(200);
+        $I->see('Home: en');
         $I->amOnRoute(mlSuffix('home', 'pl'));
         $I->seeResponseCodeIs(200);
         $I->see('Home: pl');
