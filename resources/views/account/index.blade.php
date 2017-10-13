@@ -4,11 +4,9 @@
     @lang('common.account')
 @stop
 
-@section('sidebarLeft')
-    @include('account.menu')
-@stop
+@component('gzero-base::account.menu')@endcomponent
 
-@section('content')
+@component('sections.content', ['class' => 'col-sm-8'])
     <h1 class="page-header">@lang('user.my_account')</h1>
 
     <h3>{{ $user->firstName }} {{ $user->lastName }}</h3>
@@ -30,5 +28,4 @@
     <a href="{{ route('logout') }}" title="@lang('common.logout')" class="btn btn-danger">
         @lang('common.logout')
     </a>
-
-@stop
+@endcomponent

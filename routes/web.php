@@ -3,7 +3,7 @@
 Route::group(
     [
         'namespace'  => 'Gzero\Base\Http\Controller',
-        'middleware' => ['auth']
+        'middleware' => ['web', 'auth']
     ],
     function ($router) {
         /** @var \Illuminate\Routing\Router $router */

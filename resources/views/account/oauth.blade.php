@@ -4,14 +4,12 @@
     @lang('common.account')
 @stop
 
-@section('sidebarLeft')
-    @include('account.menu')
-@stop
+@component('gzero-base::account.menu')@endcomponent
 
-@section('content')
+@component('sections.content', ['class' => 'col-sm-8'])
     <h1 class="page-header">@lang('user.oauth')</h1>
 
     <passport-clients></passport-clients>
     <passport-authorized-clients></passport-authorized-clients>
     <passport-personal-access-tokens></passport-personal-access-tokens>
-@stop
+@endcomponent

@@ -240,8 +240,8 @@ class ServiceProvider extends AbstractServiceProvider {
     protected function registerMiddleware()
     {
         resolve(Kernel::class)->prependMiddleware(Init::class);
-        resolve(Router::class)->prependMiddlewareToGroup('web', ViewShareUser::class);
         resolve(Router::class)->prependMiddlewareToGroup('web', MultiLanguage::class);
+        resolve(Router::class)->pushMiddlewareToGroup('web', ViewShareUser::class);
     }
 
     /**
