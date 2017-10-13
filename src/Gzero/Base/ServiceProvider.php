@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Foundation\Application;
 use Illuminate\Routing\Router;
 use Laravel\Passport\Passport;
-use Laravel\Passport\PassportServiceProvider;
 use Robbo\Presenter\PresenterServiceProvider;
 
 class ServiceProvider extends AbstractServiceProvider {
@@ -22,8 +21,7 @@ class ServiceProvider extends AbstractServiceProvider {
      * @var array
      */
     protected $providers = [
-        PresenterServiceProvider::class,
-        PassportServiceProvider::class
+        PresenterServiceProvider::class
     ];
 
     /**
