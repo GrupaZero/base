@@ -3,6 +3,7 @@
 use Carbon\Carbon;
 use Gzero\Base\Http\Middleware\Init;
 use Gzero\Base\Http\Middleware\MultiLanguage;
+use Gzero\Base\Http\Middleware\ViewShareUser;
 use Gzero\Base\Service\LanguageService;
 use Gzero\Base\Service\OptionService;
 use Illuminate\Contracts\Http\Kernel;
@@ -83,6 +84,7 @@ class ServiceProvider extends AbstractServiceProvider {
         $this->registerMigrations();
         $this->registerFactories();
         $this->registerMiddleware();
+        $this->registerViews();
         $this->registerPublishes();
     }
 
@@ -238,6 +240,7 @@ class ServiceProvider extends AbstractServiceProvider {
     protected function registerMiddleware()
     {
         resolve(Kernel::class)->prependMiddleware(Init::class);
+        resolve(Router::class)->prependMiddlewareToGroup('web', ViewShareUser::class);
         resolve(Router::class)->prependMiddlewareToGroup('web', MultiLanguage::class);
     }
 
@@ -258,6 +261,7 @@ class ServiceProvider extends AbstractServiceProvider {
      */
     protected function registerRoutes()
     {
+        $this->loadRoutesFrom(__DIR__ . '/../../../routes/web.php');
         $this->loadRoutesFrom(__DIR__ . '/../../../routes/api.php');
     }
 
