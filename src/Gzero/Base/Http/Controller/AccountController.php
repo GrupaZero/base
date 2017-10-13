@@ -5,16 +5,33 @@ use Illuminate\Routing\Controller;
 
 class AccountController extends Controller {
 
+    /**
+     * Show account main page
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index()
     {
         return view('gzero-base::account.index');
     }
 
+    /**
+     * Edit account settings
+     *
+     * @param Request $request Request object
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function edit(Request $request)
     {
         return view('gzero-base::account.edit', ['isUserEmailSet' => strpos($request->user()->email, '@')]);
     }
 
+    /**
+     * Show OAuth section
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function oauth()
     {
         return view('gzero-base::account.oauth');
@@ -23,7 +40,7 @@ class AccountController extends Controller {
     /**
      * Show welcome page for registered user.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request $request Request object
      *
      * @return mixed
      */

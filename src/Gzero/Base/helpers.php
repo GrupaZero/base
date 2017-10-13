@@ -57,6 +57,40 @@ if (!function_exists('addMultiLanguageRoutes')) {
     }
 }
 
+if (!function_exists('mlSuffix')) {
+
+    /**
+     * It adds language suffix
+     *
+     * @param string $name     Route name
+     * @param string $language Language code
+     *
+     * @return string
+     */
+    function mlSuffix($name, $language)
+    {
+        return $name . '-' . $language;
+    }
+}
+
+if (!function_exists('routeMl')) {
+
+    /**
+     * Generate the URL to a named multi language route.
+     *
+     * @param string $name       Route name
+     * @param string $language   Language code
+     * @param array  $parameters parameters
+     * @param bool   $absolute   Absolute trigger
+     *
+     * @return string
+     */
+    function routeMl($name, $language, $parameters = [], $absolute = true)
+    {
+        return \route(mlSuffix($name, $language), $parameters, $absolute);
+    }
+}
+
 if (!function_exists('isProviderLoaded')) {
     /**
      * Check if specified provider is loaded

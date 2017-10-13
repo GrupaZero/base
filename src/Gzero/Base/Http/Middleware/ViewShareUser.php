@@ -8,8 +8,8 @@ class ViewShareUser {
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \Closure                 $next
+     * @param  \Illuminate\Http\Request $request Request
+     * @param  \Closure                 $next    Next closure
      *
      * @return mixed
      */
