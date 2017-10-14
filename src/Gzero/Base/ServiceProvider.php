@@ -255,7 +255,7 @@ class ServiceProvider extends AbstractServiceProvider {
             [
                 __DIR__ . '/../../../config/config.php' => config_path('gzero.php'),
             ],
-            'config'
+            'gzero-base config'
         );
 
         // Factories
@@ -263,7 +263,7 @@ class ServiceProvider extends AbstractServiceProvider {
             [
                 __DIR__ . '/../../../database/factories/UserFactory.php' => database_path('factories/gzero.php'),
             ],
-            'factories'
+            'gzero-base factories'
         );
 
         // Views
@@ -271,7 +271,7 @@ class ServiceProvider extends AbstractServiceProvider {
             [
                 __DIR__ . '/../../../resources/views' => resource_path('views/vendor/gzero-base'),
             ],
-            'views'
+            'gzero-base views'
         );
     }
 

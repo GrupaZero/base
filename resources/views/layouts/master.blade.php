@@ -19,10 +19,11 @@
                 @yield('asideRight')
             </div>
         </div>
-        @yield('footer')
     </div>
+    <footer id="footer" class="clearfix">
+        @include('gzero-base::includes.footer')
+    </footer>
 </div>
-<!-- end #root -->
-@include('gzero-base::includes.footer')
+@stack('footer')
 </body>
 </html>
