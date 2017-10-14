@@ -4,8 +4,7 @@ use Gzero\Base\Http\Controller\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Support\Facades\Request;
 
-class ResetPasswordController extends Controller
-{
+class ResetPasswordController extends Controller {
     /*
     |--------------------------------------------------------------------------
     | Password Reset Controller
@@ -41,8 +40,8 @@ class ResetPasswordController extends Controller
      *
      * If no token is present, display the link request form.
      *
-     * @param \Illuminate\Http\Request|Request $request
-     * @param  string|null                     $token
+     * @param \Illuminate\Http\Request|Request $request Request
+     * @param string|null                      $token   Token
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */

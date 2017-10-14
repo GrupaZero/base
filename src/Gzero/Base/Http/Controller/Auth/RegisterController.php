@@ -1,6 +1,5 @@
 <?php namespace Gzero\Base\Http\Controller\Auth;
 
-
 use Gzero\Base\Jobs\SendWelcomeEmail;
 use Gzero\Base\Service\UserService;
 use Gzero\Base\Validator\BaseUserValidator;
@@ -10,8 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Events\Registered;
 use Gzero\Base\Http\Controller\Controller;
 
-class RegisterController extends Controller
-{
+class RegisterController extends Controller {
     /*
     |--------------------------------------------------------------------------
     | Register Controller
@@ -37,13 +35,13 @@ class RegisterController extends Controller
     /**
      * Create a new controller instance.
      *
-     * @param UserService       $userService
-     * @param BaseUserValidator $validator
+     * @param UserService       $userService User service
+     * @param BaseUserValidator $validator   Validator
      */
     public function __construct(UserService $userService, BaseUserValidator $validator)
     {
-        $this->userService  = $userService;
-        $this->validator = $validator;
+        $this->userService = $userService;
+        $this->validator   = $validator;
         $this->middleware('guest');
     }
 
@@ -60,7 +58,7 @@ class RegisterController extends Controller
     /**
      * Handle a registration request for the application.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request $request Request
      *
      * @return \Illuminate\Http\Response
      */
@@ -95,8 +93,10 @@ class RegisterController extends Controller
     /**
      * The user has been registered.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  mixed                    $user
+     * @param  \Illuminate\Http\Request $request Request
+     * @param  mixed                    $user    User
+     *
+     * @SuppressWarnings(PHPMD)
      *
      * @return mixed
      */

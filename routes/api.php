@@ -24,7 +24,8 @@ Route::group(
         // ======== Users ========
         $router->resource(
             'users',
-            'AdminUserController'
+            'AdminUserController',
+            ['only' => ['index', 'show', 'destroy', 'update']]
         );
 
         // ======== Options ========
@@ -39,10 +40,10 @@ Route::group(
 // Public API
 Route::group(
     [
-        'domain'    => 'api.' . config('gzero.domain'),
-        'prefix'    => 'v1/user',
-        'namespace' => 'Gzero\Base\Http\Controller\Api'
-        //'middleware' => [HandleCors::class, 'auth:api']
+        'domain'     => 'api.' . config('gzero.domain'),
+        'prefix'     => 'v1/user',
+        'namespace'  => 'Gzero\Base\Http\Controller\Api',
+        'middleware' => [HandleCors::class, 'auth:api']
     ],
     function ($router) {
         /** @var \Illuminate\Routing\Router $router */

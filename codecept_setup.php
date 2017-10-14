@@ -2,11 +2,16 @@
 
 namespace App;
 
+use Barryvdh\Cors\ServiceProvider as CORSServiceProvider;
 use Dotenv\Dotenv;
+use Gzero\Base\Exceptions\Handler;
 use Gzero\Base\ServiceProvider;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use Laravel\Passport\Passport;
+use Laravel\Passport\PassportServiceProvider;
 use Orchestra\Testbench\Traits\CreatesApplication;
 
+require_once __DIR__ . '/tests/fixture/User.php';
 require __DIR__ . '/vendor/autoload.php';
 
 if (file_exists(__DIR__ . '/.env.testing')) {
@@ -25,16 +30,18 @@ $Laravel = new class {
         // and all the registered routes will be available to the generator.
         $app->instance('routes', $routes);
 
-        //// Register Exception handler
-        //$app->singleton(
-        //    \Illuminate\Contracts\Debug\ExceptionHandler::class,
-        //    \Gzero\Core\Exceptions\Handler::class
-        //);
+        // Register Exception handler
+        $app->singleton(
+            ExceptionHandler::class,
+            Handler::class
+        );
 
         // We need to tell Laravel Passport where to find oauth keys
         Passport::loadKeysFrom(__DIR__ . '/vendor/gzero/testing/oauth/');
 
         return [
+            PassportServiceProvider::class,
+            CORSServiceProvider::class,
             ServiceProvider::class
         ];
     }

@@ -4,8 +4,13 @@ use Carbon\Carbon;
 use Gzero\Base\Http\Middleware\Init;
 use Gzero\Base\Http\Middleware\MultiLanguage;
 use Gzero\Base\Http\Middleware\ViewShareUser;
+use Gzero\Base\Model\Option;
+use Gzero\Base\Model\User;
 use Gzero\Base\Service\LanguageService;
 use Gzero\Base\Service\OptionService;
+use Gzero\Base\Policies\OptionPolicy;
+use Gzero\Base\Policies\UserPolicy;
+use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Foundation\Application;
@@ -33,18 +38,15 @@ class ServiceProvider extends AbstractServiceProvider {
         'options' => OptionService::class
     ];
 
-    ///**
-    // * The policy mappings for the application.
-    // * @TODO What with policies?
-    // * @var array
-    // */
-    //protected $policies = [
-    //    Block::class   => BlockPolicy::class,
-    //    Content::class => ContentPolicy::class,
-    //    File::class    => FilePolicy::class,
-    //    User::class    => UserPolicy::class,
-    //    Option::class  => OptionPolicy::class
-    //];
+    /**
+     * The policy mappings for the application.
+     *
+     * @var array
+     */
+    protected $policies = [
+        User::class   => UserPolicy::class,
+        Option::class => OptionPolicy::class
+    ];
 
     /**
      * Register the service provider.
@@ -86,28 +88,6 @@ class ServiceProvider extends AbstractServiceProvider {
         $this->registerPublishes();
     }
 
-    ///**
-    // * Try to detect language from uri
-    // * We need to do that as soon as possible, because we need to know what language need to be set for ML routes
-    // *
-    // * @return void
-    // */
-    //protected function detectLanguage()
-    //{
-    //    if (request()->segment(1) != 'admin' && $this->app['config']['gzero.ml']) {
-    //        if ($this->app['config']['gzero.ml.subdomain']) {
-    //            $locale = preg_replace('/\..+$/', '', request()->getHost());
-    //        } else {
-    //            $locale = request()->segment(1);
-    //        }
-    //        $languages = ['pl', 'en'];
-    //        if (in_array($locale, $languages, true)) {
-    //            app()->setLocale($locale);
-    //            $this->app['config']['gzero.ml.detected'] = true;
-    //        }
-    //    }
-    //}
-
     /**
      * It registers default locale
      *
@@ -148,7 +128,7 @@ class ServiceProvider extends AbstractServiceProvider {
         //$this->app->singleton(
         //    'croppa.src_dir',
         //    function () {
-        //        return app('filesystem')->disk(config('gzero.upload.disk'))->getDriver();
+        //        return resolve('filesystem')->disk(config('gzero.upload.disk'))->getDriver();
         //    }
         //);
     }
@@ -160,21 +140,21 @@ class ServiceProvider extends AbstractServiceProvider {
      */
     protected function registerPolicies()
     {
-        //$gate = app('Illuminate\Contracts\Auth\Access\Gate');
-        //$gate->before(
-        //    function ($user) {
-        //        if ($user->isSuperAdmin()) {
-        //            return true;
-        //        }
-        //
-        //        if ($user->isGuest()) {
-        //            return false;
-        //        }
-        //    }
-        //);
-        //foreach ($this->policies as $key => $value) {
-        //    $gate->policy($key, $value);
-        //}
+        $gate = resolve(Gate::class);
+        $gate->before(
+            function ($user) {
+                if ($user->isSuperAdmin()) {
+                    return true;
+                }
+
+                if ($user->isGuest()) {
+                    return false;
+                }
+            }
+        );
+        foreach ($this->policies as $key => $value) {
+            $gate->policy($key, $value);
+        }
     }
 
     /**
@@ -227,7 +207,7 @@ class ServiceProvider extends AbstractServiceProvider {
      */
     protected function registerFactories()
     {
-        app(Factory::class)->load(__DIR__ . '/../../../database/factories');
+        resolve(Factory::class)->load(__DIR__ . '/../../../database/factories');
     }
 
     /**

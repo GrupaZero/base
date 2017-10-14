@@ -1,5 +1,6 @@
 <?php namespace Gzero\Base\Http\Controller;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controller;
 use Gzero\Base\UrlParamsProcessor;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -22,6 +23,8 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
  * )
  */
 class ApiController extends Controller {
+
+    use AuthorizesRequests;
 
     /**
      * @var UrlParamsProcessor

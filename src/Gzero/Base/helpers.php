@@ -92,6 +92,23 @@ if (!function_exists('routeMl')) {
     }
 }
 
+if (!function_exists('apiUrl')) {
+    /**
+     * Generate a url for the api
+     *
+     * @param  string $path       Url path
+     * @param  mixed  $parameters Additional parameters
+     * @param  bool   $secure     Secure trigger
+     *
+     * @return \Illuminate\Contracts\Routing\UrlGenerator|string
+     */
+    function apiUrl($path = null, $parameters = [], $secure = null)
+    {
+        $url = url("/v1" . str_start($path, '/'), $parameters, $secure);
+        return preg_match('|^http.?://api\.|', $url) ? $url : str_replace('://', '://api.', $url);
+    }
+}
+
 if (!function_exists('isProviderLoaded')) {
     /**
      * Check if specified provider is loaded

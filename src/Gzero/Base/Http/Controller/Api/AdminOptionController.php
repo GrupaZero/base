@@ -8,6 +8,7 @@ use Gzero\Base\Transformer\OptionCategoryTransformer;
 use Gzero\Base\Transformer\OptionTransformer;
 use Gzero\Base\Validator\OptionValidator;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class AdminOptionController extends ApiController {
 
@@ -69,7 +70,7 @@ class AdminOptionController extends ApiController {
      * @param string $categoryKey option category key
      *
      * @return \Illuminate\Http\JsonResponse
-     * @throws \Gzero\Validator\ValidationException
+     * @throws ValidationException
      *
      */
     public function update($categoryKey)

@@ -15,7 +15,7 @@ class SendWelcomeEmail implements ShouldQueue {
     /**
      * Create a new job instance.
      *
-     * @param User $user
+     * @param User $user User
      */
     public function __construct(User $user)
     {
@@ -25,7 +25,7 @@ class SendWelcomeEmail implements ShouldQueue {
     /**
      * Execute the job.
      *
-     * @param  Mailer $mailer
+     * @param  Mailer $mailer Mailer instance
      *
      * @return void
      */
