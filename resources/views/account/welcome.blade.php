@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('gzero-base::layouts.master')
 
 @section('title')
     @lang('common.welcome')

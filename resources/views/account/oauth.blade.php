@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('gzero-base::layouts.master')
 
 @section('title')
     @lang('common.account')
@@ -6,7 +6,7 @@
 
 @component('gzero-base::account.menu')@endcomponent
 
-@component('sections.content', ['class' => 'col-sm-8'])
+@component('gzero-base::sections.content', ['class' => 'col-sm-8'])
     <h1 class="page-header">@lang('user.oauth')</h1>
 
     <passport-clients></passport-clients>

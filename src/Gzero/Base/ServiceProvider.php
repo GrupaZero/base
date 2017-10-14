@@ -274,21 +274,24 @@ class ServiceProvider extends AbstractServiceProvider {
         $this->publishes(
             [
                 __DIR__ . '/../../../config/config.php' => config_path('gzero.php'),
-            ]
+            ],
+            'config'
         );
 
         // Factories
         $this->publishes(
             [
                 __DIR__ . '/../../../database/factories/UserFactory.php' => database_path('factories/gzero.php'),
-            ]
+            ],
+            'factories'
         );
 
         // Views
         $this->publishes(
             [
                 __DIR__ . '/../../../resources/views' => resource_path('views/vendor/gzero-base'),
-            ]
+            ],
+            'views'
         );
     }
 
