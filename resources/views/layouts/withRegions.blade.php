@@ -1,17 +1,22 @@
 @extends('gzero-base::layouts.master')
 
-@isset($blocks)
-    @component('gzero-base::sections.sidebarLeft', ['blocks' => $blocks])
-        @yield('sidebarLeft')
-    @endcomponent
-@endisset
+@php($hasLeftSidebar = View::hasSection('sidebarLeft') || isset($blocks['sidebarLeft']))
+@php($hasRightSidebar = View::hasSection('sidebarRight') || isset($blocks['sidebarRight']))
 
-@component('gzero-base::sections.content', ['class'=> isset($blocks) ? 'col-sm-4' : 'col-sm-12'])
+@if ($hasLeftSidebar && $hasRightSidebar)
+    @php($contentClass = 'col-sm-4')
+@elseif ($hasLeftSidebar || $hasRightSidebar)
+    @php($contentClass = 'col-sm-8')
+@endif
+
+@component('gzero-base::sections.sidebarLeft', ['blocks' => $blocks ?? []])
+    @yield('sidebarLeft')
+@endcomponent
+
+@component('gzero-base::sections.content', ['class' => $contentClass ?? null])
     @yield('content')
 @endcomponent
 
-@isset($blocks)
-    @component('gzero-base::sections.sidebarRight')
-        @yield('sidebarRight')
-    @endcomponent
-@endisset
+@component('gzero-base::sections.sidebarRight', ['blocks' => $blocks ?? []])
+    @yield('sidebarRight')
+@endcomponent
