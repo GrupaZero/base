@@ -87,6 +87,7 @@ class ServiceProvider extends AbstractServiceProvider {
         $this->registerMiddleware();
         $this->registerViews();
         $this->registerPublishes();
+        $this->registerTranslations();
     }
 
     /**
@@ -234,6 +235,16 @@ class ServiceProvider extends AbstractServiceProvider {
     protected function registerViews()
     {
         $this->loadViewsFrom(__DIR__ . '/../../../resources/views', 'gzero-base');
+    }
+
+    /**
+     * It register all translations files
+     *
+     * @return void
+     */
+    protected function registerTranslations()
+    {
+        $this->loadTranslationsFrom(__DIR__ . '/../../../resources/lang', 'gzero-base');
     }
 
     /**

@@ -2,10 +2,10 @@
     <h3>{{ $user->displayName() }}</h3>
     <ul class="nav flex-column" role="navigation">
         <li class="nav-item">
-            <a href="{{route('account')}}" class="nav-link">@lang('user.my_account')</a>
+            <a href="{{route('account')}}" class="nav-link">@lang('gzero-base::user.my_account')</a>
         </li>
         <li class="nav-item">
-            <a href="{{route('account.oauth')}}" class="nav-link">@lang('user.oauth')</a>
+            <a href="{{route('account.oauth')}}" class="nav-link">@lang('gzero-base::user.oauth')</a>
         </li>
     </ul>
 @endcomponent

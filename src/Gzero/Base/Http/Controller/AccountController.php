@@ -52,6 +52,6 @@ class AccountController extends Controller {
             return view('gzero-base::account.welcome', ['method' => $request->get('method')]);
         }
 
-        return redirect()->route('home');
+        return redirect()->to(routeMl('home'));
     }
 }

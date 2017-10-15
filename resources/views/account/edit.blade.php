@@ -1,16 +1,16 @@
 @extends('gzero-base::layouts.master')
 
 @section('title')
-    @lang('common.edit')
+    @lang('gzero-base::user.edit_account')
 @stop
 
 @component('gzero-base::account.menu')@endcomponent
 
 @component('gzero-base::sections.content', ['class' => 'col-sm-8'])
-    <h1 class="page-header">@lang('common.edit')</h1>
+    <h1 class="page-header">@lang('gzero-base::user.edit_account')</h1>
     @if(!$isUserEmailSet)
         <div class="alert alert-info">
-            <i class="fa fa-info-circle"><!-- icon --></i> @lang('common.set_email_to_edit_account')
+            <i class="fa fa-info-circle"><!-- icon --></i> @lang('gzero-base::common.set_email_to_edit_account')
         </div>
     @endif
     <div class="row">
@@ -18,95 +18,95 @@
             <form id="edit-account-form" action="#" method="POST" role="form">
                 @if($isUserEmailSet)
                     <div class="form-group">
-                        <label class="control-label" for="name">@lang('common.nick')</label>
+                        <label class="control-label" for="name">@lang('gzero-base::common.nick_name')</label>
                         <input type="text" id="name" name="name" value="{{ $user->name }}"
                                class="form-control{{ $errors->first('name') ? ' is-invalid' : '' }}"
-                               placeholder="@lang('common.name')">
+                               placeholder="@lang('gzero-base::common.nick_name')">
                         @if($errors->first('name'))
                             <div class="invalid-feedback">{{ $errors->first('name') }}</div>
                         @endif
                     </div>
                 @else
                     <div class="form-group">
-                        <label class="control-label">@lang('common.name')</label>
+                        <label class="control-label">@lang('gzero-base::common.nick_name')</label>
                         <p class="form-control-static">{{ $user->name }}</p>
                         <input type="hidden" name="name" value="{{ $user->name }}">
                     </div>
                 @endif
                 <div class="form-group">
-                    <label class="control-label" for="email">@choice('common.email', 1)</label>
+                    <label class="control-label" for="email">@choice('gzero-base::common.email', 1)</label>
                     <input type="email" id="email" name="email" value="{{ $user->email }}"
                            class="form-control{{ $errors->first('email') ? ' is-invalid' : '' }}"
-                           placeholder="@choice('common.email', 1)">
+                           placeholder="@choice('gzero-base::common.email', 1)">
                     @if($errors->first('email'))
                         <div class="invalid-feedback">{{ $errors->first('email') }}</div>
                     @endif
                 </div>
                 @if($isUserEmailSet)
                     <div class="form-group">
-                        <label class="control-label" for="firstName">@lang('common.first_name')</label>
+                        <label class="control-label" for="firstName">@lang('gzero-base::common.first_name')</label>
                         <input type="text" id="firstName" name="firstName" value="{{ $user->firstName }}"
                                class="form-control{{ $errors->first('firstName') ? ' is-invalid' : '' }}"
-                               placeholder="@lang('common.first_name')">
+                               placeholder="@lang('gzero-base::common.first_name')">
                         @if($errors->first('firstName'))
                             <div class="invalid-feedback">{{ $errors->first('firstName') }}</div>
                         @endif
                     </div>
                     <div class="form-group">
-                        <label class="control-label" for="lastName">@lang('common.last_name')</label>
+                        <label class="control-label" for="lastName">@lang('gzero-base::common.last_name')</label>
                         <input type="text" id="lastName" name="lastName" value="{{ $user->lastName }}"
                                class="form-control{{ $errors->first('lastName') ? ' is-invalid' : '' }}"
-                               placeholder="@lang('common.last_name')">
+                               placeholder="@lang('gzero-base::common.last_name')">
                         @if($errors->first('lastName'))
                             <div class="invalid-feedback">{{ $errors->first('lastName') }}</div>
                         @endif
                     </div>
                 @else
                     <div class="form-group">
-                        <label class="control-label">@lang('common.first_name')</label>
+                        <label class="control-label">@lang('gzero-base::common.first_name')</label>
                         <p class="form-control-static">{{ $user->firstName }}</p>
                     </div>
                     <div class="form-group">
-                        <label class="control-label">@lang('common.last_name')</label>
+                        <label class="control-label">@lang('gzero-base::common.last_name')</label>
                         <p class="form-control-static">{{ $user->lastName }}</p>
                     </div>
                 @endif
                 @if($isUserEmailSet)
                     @if($user->password)
                         <div class="separator">
-                            <span>@lang('common.password_change')</span>
+                            <span>@lang('gzero-base::common.password_change')</span>
                         </div>
                         <p class="text-muted">
-                            <i class="fa fa-info-circle"><!-- icon --></i> @lang('common.leave_blank')
+                            <i class="fa fa-info-circle"><!-- icon --></i> @lang('gzero-base::common.leave_blank')
                         </p>
                     @else
                         <div class="separator">
-                            <span>@lang('common.password_set')</span>
+                            <span>@lang('gzero-base::common.password_set')</span>
                         </div>
                         <p class="text-success">
-                            <i class="fa fa-info-circle"><!-- icon --></i> @lang('common.set_password_to_login')
+                            <i class="fa fa-info-circle"><!-- icon --></i> @lang('gzero-base::common.set_password_to_login')
                         </p>
                     @endif
                     <div class="form-group">
-                        <label class="control-label" for="password">@lang('common.new_password')</label>
+                        <label class="control-label" for="password">@lang('gzero-base::common.new_password')</label>
                         <input type="password" id="password" name="password"
                                class="form-control{{ $errors->first('password') ? ' is-invalid' : '' }}"
-                               placeholder="@lang('common.new_password')">
+                               placeholder="@lang('gzero-base::common.new_password')">
                         @if($errors->first('password'))
                             <p class="invalid-feedback">{{ $errors->first('password') }}</p>
                         @endif
                     </div>
                     <div class="form-group">
-                        <label class="control-label" for="passwordConfirmation">@lang('common.password_repeat')</label>
+                        <label class="control-label" for="passwordConfirmation">@lang('gzero-base::common.password_repeat')</label>
                         <input type="password" id="passwordConfirmation" name="password_confirmation"
                                class="form-control{{ $errors->first('password_confirmation') ? ' is-invalid' : '' }}"
-                               placeholder="@lang('common.password_repeat')">
+                               placeholder="@lang('gzero-base::common.password_repeat')">
                         @if($errors->first('password_confirmation'))
                             <div class="invalid-feedback">{{ $errors->first('password_confirmation') }}</div>
                         @endif
                     </div>
                 @endif
-                <button id="edit-account" type="submit" class="btn btn-primary">@lang('common.save')</button>
+                <button id="edit-account" type="submit" class="btn btn-primary">@lang('gzero-base::common.save')</button>
             </form>
         </div>
     </div>
@@ -129,7 +129,7 @@
                         @if($isUserEmailSet)
                              Loading.stop();
                         // set success message
-                        setGlobalMessage('success', "@lang('common.changes_saved_message')");
+                        setGlobalMessage('success', "@lang('gzero-base::common.changes_saved_message')");
                         hideMessages();
                         clearFormValidationErrors();
                         @else
