@@ -1,6 +1,5 @@
 <?php namespace Base;
 
-use Gzero\Base\Model\User;
 use Illuminate\Routing\Router;
 
 class AccountCest {
