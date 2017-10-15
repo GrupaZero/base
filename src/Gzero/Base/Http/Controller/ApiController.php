@@ -16,9 +16,24 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
  *   schemes={"https"},
  *   basePath="/v1",
  *   host="api.dev.gzero.pl",
+ *   consumes={"application/json"},
+ *   produces={"application/json"},
  *   @SWG\Info(
  *     title="GZERO API",
  *     version="1.0.0"
+ *   )
+ * )
+ */
+
+/**
+ * @SWG\Tag(
+ *   name="language",
+ *   description="Everything about app languages"
+ *   )
+ * ),
+ * @SWG\Tag(
+ *   name="user",
+ *   description="Everything about app users"
  *   )
  * )
  */

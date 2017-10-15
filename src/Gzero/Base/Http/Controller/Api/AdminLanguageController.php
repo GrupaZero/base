@@ -26,20 +26,12 @@ class AdminLanguageController extends ApiController {
      *
      * @SWG\Get(
      *   path="/admin/languages",
+     *   tags={"language"},
      *   summary="List languages",
      *   operationId="getLanguages",
+     *   produces={"application/json"},
      *   security={{"Bearer": {}}},
-     *   @SWG\Parameter(
-     *     name="filter",
-     *     in="query",
-     *     description="Filter results based on query string value.",
-     *     required=false,
-     *     enum={"active", "expired", "scheduled"},
-     *     type="string"
-     *   ),
-     *   @SWG\Response(response=200, description="successful operation"),
-     *   @SWG\Response(response=406, description="not acceptable"),
-     *   @SWG\Response(response=500, description="internal server error")
+     *   @SWG\Response(response="200", description="successful operation")
      * )
      *
      * @return \Illuminate\Http\JsonResponse
@@ -52,9 +44,26 @@ class AdminLanguageController extends ApiController {
     /**
      * Display the specified resource.
      *
+     * @SWG\Get(
+     *   path="/admin/languages/{code}",
+     *   tags={"language"},
+     *   summary="Info for a specific language",
+     *   operationId="getLanguageByCode",
+     *   produces={"application/json"},
+     *   security={{"Bearer": {}}},
+     *   @SWG\Parameter(
+     *     name="code",
+     *     in="path",
+     *     description="language code that need to be returned",
+     *     required=true,
+     *     type="string"
+     *   ),
+     *   @SWG\Response(response="200", description="successful operation")
+     * )
+     *
      * @param int $code Lang code
      *
-     * @return Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show($code)
     {
@@ -66,85 +75,3 @@ class AdminLanguageController extends ApiController {
     }
 
 }
-
-/*
-|--------------------------------------------------------------------------
-| START API DOCS
-|--------------------------------------------------------------------------
-*/
-
-/**
- * @api                 {get} /langs 1. GET collection of entities
- * @apiVersion          0.1.0
- * @apiName             GetLangList
- * @apiGroup            Language
- * @apiPermission       admin
- * @apiDescription      Get all languages
- * @apiUse              LangCollection
- *
- * @apiExample          Example usage:
- * curl -i http://api.example.com/v1/langs
- * @apiSuccessExample   Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *       "data": [
- *            {
- *              "code": "en",
- *              "i18n": "en_US",
- *              "isEnabled": false,
- *              "isDefault": true
- *            },
- *            {
- *              "code": "pl",
- *              "i18n": "pl_PL",
- *              "isEnabled": false,
- *              "isDefault": false
- *            }
- *       ]
- *     }
- */
-
-/**
- * @api                 {get} /langs/:code 2. GET single entity
- * @apiVersion          0.1.0
- * @apiName             GetLang
- * @apiGroup            Language
- * @apiPermission       admin
- * @apiDescription      Get a single language by passing lang code
- * @apiParam {String}   code Lang unique code
- * @apiUse              Lang
- *
- * @apiExample          Example usage:
- * curl -i http://api.example.com/v1/langs/en
- * @apiSuccessExample   Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *       "code": "en",
- *       "i18n": "en_US",
- *       "isEnabled": false,
- *       "isDefault": true
- *     }
- */
-
-/**
- * @apiDefine Lang
- * @apiSuccess {String} code Lang code
- * @apiSuccess {String} i18n Lang i18n code
- * @apiSuccess {Boolean} is_enabled Flag if language is enabled
- * @apiSuccess {Boolean} is_default Flag if language is default
- */
-
-/**
- * @apiDefine LangCollection
- * @apiSuccess {Array[]} data Array of Languages
- * @apiSuccess {String} data.code Lang code
- * @apiSuccess {String} data.i18n Lang i18n code
- * @apiSuccess {Boolean} data.is_enabled Flag if language is enabled
- * @apiSuccess {Boolean} data.is_default Flag if language is default
- */
-
-/*
-|--------------------------------------------------------------------------
-| END API DOCS
-|--------------------------------------------------------------------------
-*/

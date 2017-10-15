@@ -2,12 +2,35 @@
 
 use Gzero\Base\Model\Language;
 
+/**
+ * @SWG\Definition(
+ *   definition="Language",
+ *   type="object",
+ *   required={"code", "i18n"},
+ *   @SWG\Property(
+ *     property="code",
+ *     type="string"
+ *   ),
+ *   @SWG\Property(
+ *     property="i18n",
+ *     type="string"
+ *   ),
+ *   @SWG\Property(
+ *     property="is_enabled",
+ *     type="boolean"
+ *   ),
+ *   @SWG\Property(
+ *     property="is_default",
+ *     type="boolean"
+ *   )
+ * )
+ */
 class LanguageTransformer extends AbstractTransformer {
 
     /**
      * Transforms lang entity
      *
-     * @param Lang|array $lang Lang entity
+     * @param Language|array $lang Lang entity
      *
      * @return array
      */

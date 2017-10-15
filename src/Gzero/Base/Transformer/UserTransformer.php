@@ -2,6 +2,33 @@
 
 use Gzero\Base\Model\User;
 
+/**
+ * @SWG\Definition(
+ *   definition="User",
+ *   type="object",
+ *   required={"email", "name"},
+ *   @SWG\Property(
+ *     property="email",
+ *     type="string"
+ *   ),
+ *   @SWG\Property(
+ *     property="name",
+ *     type="string"
+ *   ),
+ *   @SWG\Property(
+ *     property="firstName",
+ *     type="string"
+ *   ),
+ *   @SWG\Property(
+ *     property="lastName",
+ *     type="string"
+ *   ),
+ *   @SWG\Property(
+ *     property="roles",
+ *     type="array"
+ *   )
+ * )
+ */
 class UserTransformer extends AbstractTransformer {
 
     /**
