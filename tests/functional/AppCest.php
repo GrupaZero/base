@@ -1,21 +1,20 @@
 <?php namespace Base;
 
 use Gzero\Base\Service\LanguageService;
-use Illuminate\Foundation\Application;
+use Illuminate\Routing\Router;
 
 class AppCest {
 
     public function applicationWorks(FunctionalTester $I)
     {
-        $I->haveApplicationHandler(function ($app) {
-            /** @var Application $app */
-            $app->make('router')
-                ->get(
-                    '/',
-                    function () {
-                        return 'Laravel';
-                    }
-                );
+        $I->haveRoutes(function ($router) {
+            /** @var Router $router */
+            $router->get(
+                '/',
+                function () {
+                    return 'Laravel';
+                }
+            );
         });
 
         $I->amOnPage('/');
@@ -52,15 +51,12 @@ class AppCest {
             }
         });
 
-        $I->haveApplicationHandler(function ($app) {
-            /** @var Application $app */
-            addMultiLanguageRoutes(function ($router) {
-                $router->get('multi-language-content', function () {
-                    return 'Laravel Multi Language Content: ' . app()->getLocale();
-                });
+        $I->haveMlRoutes(function ($router, $languages) {
+            /** @var Router $router */
+            $router->get('multi-language-content', function () {
+                return 'Laravel Multi Language Content: ' . app()->getLocale();
             });
         });
-
 
         $I->amOnPage('/multi-language-content');
         $I->seeResponseCodeIs(200);
@@ -91,19 +87,17 @@ class AppCest {
             }
         });
 
-        $I->haveApplicationHandler(function ($app) {
-            /** @var Application $app */
-            addMultiLanguageRoutes(function ($router) {
+        $I->haveRoutes(function ($router) {
+            /** @var Router $router */
+            addMultiLanguageRoutes(function ($router, $languages) {
                 $router->get('test', function () {
                     return 'Laravel Multi Language Content: ' . app()->getLocale();
                 });
             });
-            $app->make('router')
-                ->middleware('web')
+            $router->middleware('web')
                 ->get('{path?}', function () {
                     return 'Dynamic Router: ' . app()->getLocale();
-                })
-                ->where('path', '.*');
+                })->where('path', '.*');
         });
 
 
@@ -137,18 +131,18 @@ class AppCest {
             }
         });
 
-        $I->haveApplicationHandler(function ($app) {
-            /** @var Application $app */
-            addMultiLanguageRoutes(function ($router) {
-                $router->get('ml_route', function () {
-                    return 'Laravel Multi Language Content: ' . app()->getLocale();
-                });
+        $I->haveMlRoutes(function ($router, $langauge) {
+            /** @var Router $router */
+            $router->get('ml_route', function () {
+                return 'Laravel Multi Language Content: ' . app()->getLocale();
             });
-            $app->make('router')
-                ->get('{path?}', function () {
-                    return 'Dynamic Router: ' . app()->getLocale();
-                })
-                ->where('path', '.*');
+        });
+
+        $I->haveRoutes(function ($router) {
+            /** @var Router $router */
+            $router->get('{path?}', function () {
+                return 'Dynamic Router: ' . app()->getLocale();
+            })->where('path', '.*');
         });
 
 
@@ -164,5 +158,59 @@ class AppCest {
         $I->seeResponseCodeIs(200);
         // Should use en because our ServiceProvider set it once and we don't use middleware to override it
         $I->see('Dynamic Router: en');
+    }
+
+    public function canUseMultipleApplicationHandlersInSingleTest(FunctionalTester $I)
+    {
+        $I->haveInstance(LanguageService::class, new class {
+            function getAllEnabled()
+            {
+                return collect([
+                    (object) ['code' => 'en', 'is_default' => false],
+                    (object) ['code' => 'pl', 'is_default' => true]
+                ]);
+            }
+
+            function getDefault()
+            {
+                return (object) ['code' => 'pl', 'is_default' => true];
+            }
+        });
+
+        $I->haveMlRoutes(function ($router, $language) {
+            /** @var Router $router */
+            $router->get('/', function () {
+                return 'Home: ' . app()->getLocale();
+            })->name(mlSuffix('home', $language));
+        });
+
+        $I->haveMlRoutes(function ($router, $language) {
+            /** @var Router $router */
+            $router->get('/test', function () {
+                return 'Laravel: ' . app()->getLocale();
+            })->name(mlSuffix('test', $language));
+        });
+
+        $I->haveRoutes(function ($router) {
+            /** @var Router $router */
+            $router->get('/contact', function () {
+                return 'Contact';
+            })->name('contact');
+        });
+
+        $I->amOnPage('/');
+
+        $I->seeResponseCodeIs(200);
+        $I->see('Home: pl');
+
+        $I->amOnPage('/en/test');
+
+        $I->seeResponseCodeIs(200);
+        $I->see('Laravel: en');
+
+        $I->amOnRoute('contact');
+
+        $I->seeResponseCodeIs(200);
+        $I->see('Contact');
     }
 }

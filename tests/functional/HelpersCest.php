@@ -29,20 +29,15 @@ class HelpersCest {
             }
         });
 
-        $I->haveApplicationHandler(function ($app) {
-            addMultiLanguageRoutes(function ($router, $language) {
-                /** @var Router $router */
-                $router->get('/', function () {
-                    return 'Home: ' . app()->getLocale();
-                })->name(mlSuffix('home', $language));
+        $I->haveMlRoutes(function ($router, $language) {
+            /** @var Router $router */
+            $router->get('/', function () {
+                return 'Home: ' . app()->getLocale();
+            })->name(mlSuffix('home', $language));
 
-                $router->get('/test', function () {
-                    return 'Laravel: ' . app()->getLocale();
-                })->name(mlSuffix('test', $language));
-
-                $router->getRoutes()->refreshActionLookups();
-                $router->getRoutes()->refreshNameLookups();
-            });
+            $router->get('/test', function () {
+                return 'Laravel: ' . app()->getLocale();
+            })->name(mlSuffix('test', $language));
         });
 
         // We need to visit it by url first to apply application handlers
