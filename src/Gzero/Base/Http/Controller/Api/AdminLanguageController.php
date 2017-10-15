@@ -26,7 +26,7 @@ class AdminLanguageController extends ApiController {
      *
      * @SWG\Get(
      *   path="/admin/languages",
-     *   summary="List languagesX",
+     *   summary="List languages",
      *   operationId="getLanguages",
      *   security={{"Bearer": {}}},
      *   @SWG\Parameter(

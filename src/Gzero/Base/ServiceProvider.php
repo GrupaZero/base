@@ -15,6 +15,7 @@ use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Foundation\Application;
 use Illuminate\Routing\Router;
+use Laravel\Passport\Http\Middleware\CreateFreshApiToken;
 use Laravel\Passport\Passport;
 use Robbo\Presenter\PresenterServiceProvider;
 
@@ -218,8 +219,11 @@ class ServiceProvider extends AbstractServiceProvider {
     protected function registerMiddleware()
     {
         resolve(Kernel::class)->prependMiddleware(Init::class);
-        resolve(Router::class)->prependMiddlewareToGroup('web', MultiLanguage::class);
-        resolve(Router::class)->pushMiddlewareToGroup('web', ViewShareUser::class);
+        /** @var Router $router */
+        $router = resolve(Router::class);
+        $router->prependMiddlewareToGroup('web', MultiLanguage::class);
+        $router->pushMiddlewareToGroup('web', CreateFreshApiToken::class);
+        $router->pushMiddlewareToGroup('web', ViewShareUser::class);
     }
 
     /**
