@@ -66,5 +66,33 @@ class AuthCest {
         $I->seeInField('email', null);
         $I->see('Send password reset link', 'button[type=submit]');
     }
+
+    public function canAccessPasswordResetPage(FunctionalTester $I)
+    {
+        $I->amOnPage(route('password.reset', ['token' => 'reset-token']));
+        $I->seeResponseCodeIs(200);
+
+        $I->see('Reset Password', 'h1');
+        $I->seeInTitle('Reset Password');
+        $I->see('E-mail', 'label');
+        $I->see('Password', 'label');
+        $I->see('Confirm Password', 'label');
+
+        $I->seeInField('email', null);
+        $I->seeInField('password', null);
+        $I->seeInField('password_confirmation', null);
+        $I->see('Reset Password', 'button[type=submit]');
+    }
+
+    public function canAccessLogoutPage(FunctionalTester $I)
+    {
+        $user = $I->haveUser();
+
+        $I->login($user->email, 'secret');
+        $I->amOnPage(route('logout'));
+        $I->seeResponseCodeIs(200);
+
+        $I->dontSeeAuthentication();
+    }
 }
 

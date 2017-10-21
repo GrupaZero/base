@@ -2,7 +2,7 @@
 
 use Gzero\Base\Http\Controller\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
 
 class ResetPasswordController extends Controller {
     /*

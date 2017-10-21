@@ -11,6 +11,16 @@ class HelpersCest {
         $I->assertEquals('test-en', mlSuffix('test', 'en'));
     }
 
+    public function itGeneratesApiUrl(FunctionalTester $I)
+    {
+        $I->assertEquals('http://api.dev.gzero.pl/v1/admin/users/1', apiUrl('admin/users', [1]));
+    }
+
+    public function itGeneratesSecureApiUrl(FunctionalTester $I)
+    {
+        $I->assertEquals('https://api.dev.gzero.pl/v1/admin/users/1', apiUrl('admin/users', [1], true));
+    }
+
     public function itGeneratesUrlToMlRoute(FunctionalTester $I)
     {
         $I->haveInstance(LanguageService::class, new class {
