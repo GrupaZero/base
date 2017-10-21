@@ -7,9 +7,9 @@ class RouteTranslationValidator extends AbstractValidator {
      */
     protected $rules = [
         'create' => [
-            'lang_code' => 'required|in:pl,en,de,fr',
-            'is_active' => '',
-            'url'       => 'required'
+            'language_code' => 'required|in:pl,en,de,fr',
+            'is_active'     => '',
+            'url'           => 'required'
         ]
     ];
 

@@ -279,7 +279,7 @@ abstract class BaseService {
             $foreignKey = $relation->getForeignKeyName();
             return $relation->getModel()
                 ->where($foreignKey, $id)
-                ->where('lang_code', $langCode)
+                ->where('language_code', $langCode)
                 ->update(['is_active' => false]);
         }
         throw new RepositoryException("Entity '" . get_class($this->model) . "' doesn't have translations relation");
@@ -299,7 +299,7 @@ abstract class BaseService {
         // search for duplicated url
         $count = $this->newQuery()
             ->table('route_translations')
-            ->where('lang_code', $langCode)
+            ->where('language_code', $langCode)
             ->whereRaw("url ~ '^$url($|-[0-9]+$)'")
             ->count();
         return ($count) ? $url . '-' . $count : $url;

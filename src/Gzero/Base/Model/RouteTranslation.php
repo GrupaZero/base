@@ -6,7 +6,7 @@ class RouteTranslation extends Base {
      * @var array
      */
     protected $fillable = [
-        'lang_code',
+        'language_code',
         'url',
         'is_active'
     ];

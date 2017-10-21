@@ -39,7 +39,7 @@ class UrlParamsProcessorTest extends Unit {
             [
                 ['lang', '=', 'en'],
                 ['test2', '=', 'test2'],
-                ['translation.lang_code', '=', 'en']
+                ['translation.language_code', '=', 'en']
             ]
         );
     }
@@ -92,7 +92,7 @@ class UrlParamsProcessorTest extends Unit {
                 'filter'  => [
                     ['lang', '=', 'en'],
                     ['test2', '=', 'test2'],
-                    ['translation.lang_code', '=', 'en']
+                    ['translation.language_code', '=', 'en']
                 ],
                 'orderBy' => [
                     ['test1', 'DESC'],
@@ -111,13 +111,13 @@ class UrlParamsProcessorTest extends Unit {
     {
         return (new UrlParamsProcessor())->process(
             [
-                'sort'                  => '-test1,test2,author.createdAt',
-                'page'                  => 3,
-                'per_page'              => 21,
-                'lang'                  => 'en',
-                'test2'                 => 'test2',
-                'translation.lang_code' => 'en',
-                'q'                     => 'Lore Ipsum'
+                'sort'                      => '-test1,test2,author.createdAt',
+                'page'                      => 3,
+                'per_page'                  => 21,
+                'lang'                      => 'en',
+                'test2'                     => 'test2',
+                'translation.language_code' => 'en',
+                'q'                         => 'Lore Ipsum'
             ]
         );
     }
