@@ -34,6 +34,10 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
  * @SWG\Tag(
  *   name="user",
  *   description="Everything about app users"
+ *   ),
+ * @SWG\Tag(
+ *   name="options",
+ *   description="Everything about app options"
  *   )
  * )
  */
