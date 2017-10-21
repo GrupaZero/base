@@ -2,6 +2,17 @@
 
 use Gzero\Base\Model\OptionCategory;
 
+/**
+ * @SWG\Definition(
+ *   definition="OptionCategory",
+ *   type="object",
+ *   required={"key"},
+ *   @SWG\Property(
+ *     property="key",
+ *     type="string"
+ *   )
+ * )
+ */
 class OptionCategoryTransformer extends AbstractTransformer {
 
     /**

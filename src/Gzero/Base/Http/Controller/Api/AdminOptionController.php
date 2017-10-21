@@ -38,6 +38,16 @@ class AdminOptionController extends ApiController {
     /**
      * Display a listing of the resource.
      *
+     * @SWG\Get(
+     *   path="/admin/options",
+     *   tags={"options"},
+     *   summary="Get all option categories",
+     *   operationId="getOptions",
+     *   produces={"application/json"},
+     *   security={{"Bearer": {}}},
+     *   @SWG\Response(response="200", description="successful operation")
+     * )
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function index()
@@ -48,6 +58,23 @@ class AdminOptionController extends ApiController {
 
     /**
      * Display all options from selected category.
+     *
+     * @SWG\Get(
+     *   path="/admin/options/{category}",
+     *   tags={"options"},
+     *   summary="Get all options from selected category",
+     *   operationId="getOptionsByCategory",
+     *   produces={"application/json"},
+     *   security={{"Bearer": {}}},
+     *   @SWG\Parameter(
+     *     name="category",
+     *     in="path",
+     *     description="category key that need to be returned",
+     *     required=true,
+     *     type="string"
+     *   ),
+     *   @SWG\Response(response="200", description="successful operation")
+     * )
      *
      * @param string $key option category key
      *
@@ -67,6 +94,30 @@ class AdminOptionController extends ApiController {
     /**
      * Updates the specified resource in the database.
      *
+     * @SWG\Put(
+     *   path="/admin/options/{category}",
+     *   tags={"options"},
+     *   summary="Updates selected option within the given category",
+     *   operationId="putOptionsByCategory",
+     *   produces={"application/json"},
+     *   security={{"Bearer": {}}},
+     *   @SWG\Parameter(
+     *     name="category",
+     *     in="path",
+     *     description="category key that the updated option belongs to",
+     *     required=true,
+     *     type="string"
+     *   ),
+     *   @SWG\Parameter(
+     *     name="option",
+     *     in="body",
+     *     description="option that we want to update",
+     *     required=true,
+     *     @SWG\Schema(ref="#/definitions/Option"),
+     *   ),
+     *   @SWG\Response(response="200", description="successful operation")
+     * )
+     *
      * @param string $categoryKey option category key
      *
      * @return \Illuminate\Http\JsonResponse
@@ -84,116 +135,4 @@ class AdminOptionController extends ApiController {
             return $this->respondWithError($e->getMessage());
         }
     }
-
 }
-
-/*
-|--------------------------------------------------------------------------
-| START API DOCS
-|--------------------------------------------------------------------------
-*/
-
-/**
- * @api                 {get} /options 1. GET collection of categories
- * @apiVersion          0.1.0
- * @apiName             GetOptionCategories
- * @apiGroup            Options
- * @apiPermission       admin
- * @apiDescription      Get all option categories
- * @apiUse              OptionCollection
- *
- * @apiExample          Example usage:
- * curl -i http://api.example.com/v1/options
- * @apiSuccessExample   Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *       "data": [
- *            {
- *              "key": "general"
- *            },
- *            {
- *              "key": "seo"
- *            }
- *       ]
- *     }
- */
-
-/**
- * @api                 {get} /options/:category 2. GET category options
- * @apiVersion          0.1.0
- * @apiName             GetOptions
- * @apiGroup            Options
- * @apiPermission       admin
- * @apiDescription      Get all options within the given category
- * @apiParam {String}   key category unique key
- * @apiUse              Option
- *
- * @apiExample          Example usage:
- * curl -i http://api.example.com/v1/options/general
- * @apiSuccessExample   Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *       "defaultPageSize": {
- *         "en": 5,
- *         "pl": 5
- *       },
- *       "siteDesc": {
- *         "en": "Content management system.",
- *         "pl": "Content management system."
- *       }
- *       "siteName": {
- *         "en": "G-ZERO CMS",
- *         "pl": "G-ZERO CMS"
- *       },
- *     }
- *
- */
-
-/**
- * @api                 {put} /options/:category 3. PUT category options
- * @apiVersion          0.1.0
- * @apiName             UpdateOptions
- * @apiGroup            Options
- * @apiPermission       admin
- * @apiDescription      Update selected option within the given category
- * @apiParam {String}   key option unique key
- * @apiParam {String}   value option value
- * @apiUse              Option
- *
- * @apiExample          Example usage:
- * curl -i http://api.example.com/v1/options/general
- * @apiSuccessExample   Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *       "defaultPageSize": {
- *         "en": 5,
- *         "pl": 5
- *       },
- *       "siteDesc": {
- *         "en": "Content management system.",
- *         "pl": "Content management system."
- *       }
- *       "siteName": {
- *         "en": "G-ZERO CMS",
- *         "pl": "G-ZERO CMS"
- *       },
- *     }
- *
- */
-
-/**
- * @apiDefine Option
- * @apiSuccess {obj} data obj of all options in category
- */
-
-/**
- * @apiDefine OptionCollection
- * @apiSuccess {Array[]} data Array of all options categories
- * @apiSuccess {String} data.key option key
- */
-
-/*
-|--------------------------------------------------------------------------
-| END API DOCS
-|--------------------------------------------------------------------------
-*/
