@@ -36,18 +36,18 @@ class DynamicRouter {
     /**
      * Handles dynamic content rendering
      *
-     * @param Request  $request Request
-     * @param Language $lang    Lang entity
+     * @param Request  $request  Request
+     * @param Language $language Lang entity
      *
      * @throws NotFoundHttpException
      * @return Response
      */
-    public function handleRequest(Request $request, Language $lang)
+    public function handleRequest(Request $request, Language $language)
     {
-        $uri   = $this->getRequestedUri($request, $lang);
-        $route = $this->readRepository->getByUrl($uri, $lang->code);
+        $uri   = $this->getRequestedPath($request, $language);
+        $route = $this->readRepository->getByPath($uri, $language->code);
 
-        if ($this->routeCannotBeShown($route, $lang)) {
+        if ($this->routeCannotBeShown($route, $language)) {
             throw new NotFoundHttpException();
         }
         if ($route->getRoutable() === null) {
@@ -57,33 +57,33 @@ class DynamicRouter {
 
         event(new RouteMatched($route, $request));
 
-        return $route->getRoutable()->handle($route, $lang);
+        return $route->getRoutable()->handle($route, $language);
     }
 
     /**
-     * @param Request  $request Request object
-     * @param Language $lang    Language object
+     * @param Request  $request  Request object
+     * @param Language $language Language object
      *
      * @return string
      */
-    protected function getRequestedUri(Request $request, Language $lang)
+    protected function getRequestedPath(Request $request, Language $language)
     {
         $segments = $request->segments();
-        if (!$lang->isDefault()) {
+        if (!$language->isDefault()) {
             array_shift($segments);
         }
         return implode('/', $segments);
     }
 
     /**
-     * @param Route|null $route Route Object
-     * @param Language   $lang  Language object
+     * @param Route|null $route    Route Object
+     * @param Language   $language Language object
      *
      * @return bool
      */
-    protected function routeCannotBeShown($route, Language $lang): bool
+    protected function routeCannotBeShown($route, Language $language): bool
     {
-        return empty($route) || (!$route->hasActiveTranslation($lang->code) && $this->gate->denies('viewInactive'));
+        return empty($route) || (!$route->hasActiveTranslation($language->code) && $this->gate->denies('viewInactive'));
     }
 
 }

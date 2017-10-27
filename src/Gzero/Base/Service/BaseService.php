@@ -300,7 +300,7 @@ abstract class BaseService {
         $count = $this->newQuery()
             ->table('route_translations')
             ->where('language_code', $langCode)
-            ->whereRaw("url ~ '^$url($|-[0-9]+$)'")
+            ->whereRaw("path ~ '^$url($|-[0-9]+$)'")
             ->count();
         return ($count) ? $url . '-' . $count : $url;
     }

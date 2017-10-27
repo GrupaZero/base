@@ -1,5 +1,7 @@
 <?php namespace Gzero\Base\Model;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 class RouteTranslation extends Base {
 
     /**
@@ -7,7 +9,7 @@ class RouteTranslation extends Base {
      */
     protected $fillable = [
         'language_code',
-        'url',
+        'path',
         'is_active'
     ];
 
@@ -21,9 +23,9 @@ class RouteTranslation extends Base {
     /**
      * Lang reverse relation
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function lang()
+    public function language()
     {
         return $this->belongsTo(Language::class);
     }

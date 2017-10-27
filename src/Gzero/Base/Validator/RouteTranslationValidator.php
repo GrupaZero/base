@@ -9,7 +9,7 @@ class RouteTranslationValidator extends AbstractValidator {
         'create' => [
             'language_code' => 'required|in:pl,en,de,fr',
             'is_active'     => '',
-            'url'           => 'required'
+            'path'          => 'required'
         ]
     ];
 
@@ -17,6 +17,6 @@ class RouteTranslationValidator extends AbstractValidator {
      * @var array
      */
     protected $filters = [
-        'url' => 'trim'
+        'path' => 'trim'
     ];
 }

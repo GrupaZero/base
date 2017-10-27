@@ -235,7 +235,7 @@ class AppCest {
         });
 
         $I->haveInstance(RouteQuery::class, Mockery::mock(RouteQuery::class, [
-            'getByUrl' => $route,
+            'getByPath' => $route,
         ]));
 
         $I->haveInstance(LanguageService::class, new LanguageService(

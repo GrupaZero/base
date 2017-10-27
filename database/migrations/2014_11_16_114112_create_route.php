@@ -28,7 +28,7 @@ class CreateRoute extends Migration {
                 $table->increments('id');
                 $table->string('language_code', 2);
                 $table->integer('route_id')->unsigned();
-                $table->string('url')->index();
+                $table->string('path')->index();
                 $table->boolean('is_active')->default(false);
                 $table->timestamps();
                 $table->foreign('route_id')->references('id')->on('routes')->onDelete('CASCADE');
