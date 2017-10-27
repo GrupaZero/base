@@ -21,9 +21,4 @@ class UserPresenter extends Presenter {
         return trans('common.anonymous');
     }
 
-    public function getFirstName()
-    {
-        return $this->first_name;
-    }
-
 }
