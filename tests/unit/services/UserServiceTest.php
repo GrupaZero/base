@@ -1,7 +1,7 @@
 <?php namespace Base;
 
 use Codeception\Test\Unit;
-use Gzero\Base\Model\User;
+use Gzero\Base\Models\User;
 use Gzero\Base\Service\UserService;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Support\Facades\Hash;

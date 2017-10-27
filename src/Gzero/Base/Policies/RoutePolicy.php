@@ -2,7 +2,7 @@
 
 namespace Gzero\Core\Policies;
 
-use Gzero\Base\Model\User;
+use Gzero\Base\Models\User;
 
 class RoutePolicy {
 

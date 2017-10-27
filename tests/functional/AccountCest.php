@@ -54,8 +54,8 @@ class AccountCest {
 
         $I->seeInField('name', $user->name);
         $I->seeInField('email', $user->email);
-        $I->seeInField('firstName', $user->first_name);
-        $I->seeInField('lastName', $user->last_name);
+        $I->seeInField('first_name', $user->first_name);
+        $I->seeInField('last_name', $user->last_name);
         $I->seeInField('password', null);
         $I->seeInField('password_confirmation', null);
     }

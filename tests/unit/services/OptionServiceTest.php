@@ -1,9 +1,9 @@
 <?php namespace Base;
 
 use Gzero\Base\Exception;
-use Gzero\Base\Model\Language;
-use Gzero\Base\Model\Option;
-use Gzero\Base\Model\OptionCategory;
+use Gzero\Base\Models\Language;
+use Gzero\Base\Models\Option;
+use Gzero\Base\Models\OptionCategory;
 use Gzero\Base\Service\OptionService;
 use Gzero\Base\Service\RepositoryValidationException;
 

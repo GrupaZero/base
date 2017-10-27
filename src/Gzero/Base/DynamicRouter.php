@@ -1,8 +1,8 @@
 <?php namespace Gzero\Base;
 
 use Gzero\Base\Events\RouteMatched;
-use Gzero\Base\Model\Language;
-use Gzero\Base\Model\Route;
+use Gzero\Base\Models\Language;
+use Gzero\Base\Models\Route;
 use Gzero\Base\Queries\RouteQuery;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Http\Request;

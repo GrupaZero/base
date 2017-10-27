@@ -1,7 +1,7 @@
 <?php namespace Gzero\Base\Service;
 
-use Gzero\Base\Model\Option;
-use Gzero\Base\Model\OptionCategory;
+use Gzero\Base\Models\Option;
+use Gzero\Base\Models\OptionCategory;
 use Illuminate\Cache\CacheManager;
 use Illuminate\Cache\Repository;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;

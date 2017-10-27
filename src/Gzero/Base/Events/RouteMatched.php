@@ -1,6 +1,6 @@
 <?php namespace Gzero\Base\Events;
 
-use Gzero\Base\Model\Route;
+use Gzero\Base\Models\Route;
 use Illuminate\Http\Request;
 
 class RouteMatched {

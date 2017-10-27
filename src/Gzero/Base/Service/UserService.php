@@ -1,6 +1,6 @@
 <?php namespace Gzero\Base\Service;
 
-use Gzero\Base\Model\User;
+use Gzero\Base\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Support\Facades\Hash;

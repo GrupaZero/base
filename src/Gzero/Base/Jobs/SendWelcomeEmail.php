@@ -1,6 +1,6 @@
 <?php namespace Gzero\Base\Jobs;
 
-use Gzero\Base\Model\User;
+use Gzero\Base\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Queue\SerializesModels;

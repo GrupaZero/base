@@ -1,8 +1,8 @@
 <?php
 
-use Gzero\Base\Model\Permission;
-use Gzero\Base\Model\Role;
-use Gzero\Base\Model\User;
+use Gzero\Base\Models\Permission;
+use Gzero\Base\Models\Role;
+use Gzero\Base\Models\User;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 

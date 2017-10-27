@@ -1,10 +1,10 @@
 <?php namespace Base;
 
 use Gzero\Base\Events\RouteMatched;
-use Gzero\Base\Model\Language;
-use Gzero\Base\Model\Routable;
-use Gzero\Base\Model\Route;
-use Gzero\Base\Model\RouteTranslation;
+use Gzero\Base\Models\Language;
+use Gzero\Base\Models\Routable;
+use Gzero\Base\Models\Route;
+use Gzero\Base\Models\RouteTranslation;
 use Gzero\Base\Queries\RouteQuery;
 use Gzero\Base\Service\LanguageService;
 use Illuminate\Http\Response;
@@ -247,7 +247,7 @@ class AppCest {
 
         $I->haveMlRoutes(function ($router, $languages) {
             /** @var Router $router */
-            $router->get('{path?}', 'Gzero\Base\Http\Controller\RouteController@dynamicRouter')->where('path', '.*');
+            $router->get('{path?}', 'Gzero\Base\Http\Controllers\RouteController@dynamicRouter')->where('path', '.*');
         });
 
 

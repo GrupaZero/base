@@ -1,7 +1,7 @@
 <?php
 
-use Gzero\Base\Model\Language;
-use Gzero\Base\Model\OptionCategory;
+use Gzero\Base\Models\Language;
+use Gzero\Base\Models\OptionCategory;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 

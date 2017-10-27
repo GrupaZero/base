@@ -2,7 +2,7 @@
 
 Route::group(
     [
-        'namespace'  => 'Gzero\Base\Http\Controller',
+        'namespace'  => 'Gzero\Base\Http\Controllers',
         'middleware' => ['web', 'auth']
     ],
     function ($router) {
@@ -21,7 +21,7 @@ Route::group(
 
 Route::group(
     [
-        'namespace'  => 'Gzero\Base\Http\Controller',
+        'namespace'  => 'Gzero\Base\Http\Controllers',
         'middleware' => ['web']
     ],
     function ($router) {

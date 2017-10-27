@@ -1,7 +1,7 @@
 <?php namespace Base;
 
 use Codeception\Test\Unit;
-use Gzero\Base\Model\Language;
+use Gzero\Base\Models\Language;
 use Gzero\Base\Service\LanguageService;
 
 class LanguageServiceTest extends Unit {

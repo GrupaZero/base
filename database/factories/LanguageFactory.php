@@ -1,7 +1,7 @@
 <?php
 
 use Faker\Generator as Faker;
-use Gzero\Base\Model\Language;
+use Gzero\Base\Models\Language;
 
 $factory->define(Language::class, function (Faker $faker) {
     do {

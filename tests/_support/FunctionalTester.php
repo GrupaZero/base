@@ -1,7 +1,7 @@
 <?php namespace Base;
 
 use Base\_generated\FunctionalTesterActions;
-use Gzero\Base\Model\User;
+use Gzero\Base\Models\User;
 
 /**
  * Inherited Methods

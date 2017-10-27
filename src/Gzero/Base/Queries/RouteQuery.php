@@ -1,6 +1,6 @@
 <?php namespace Gzero\Base\Queries;
 
-use Gzero\Base\Model\Route;
+use Gzero\Base\Models\Route;
 
 class RouteQuery {
 

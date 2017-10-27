@@ -1,6 +1,6 @@
 <?php namespace Gzero\Base\Policies;
 
-use Gzero\Base\Model\User;
+use Gzero\Base\Models\User;
 
 class UserPolicy {
 

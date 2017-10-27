@@ -1,8 +1,8 @@
 <?php namespace Gzero\Base\Service;
 
 use BadMethodCallException;
-use Gzero\Base\Model\Base;
-use Gzero\Base\Model\File;
+use Gzero\Base\Models\Base;
+use Gzero\Base\Models\File;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Builder;

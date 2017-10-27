@@ -3,7 +3,7 @@
 // here you can define custom actions
 // all public methods declared in helper class will be available in $I
 
-use Gzero\Base\Model\User;
+use Gzero\Base\Models\User;
 use Illuminate\Routing\Router;
 
 class Functional extends \Codeception\Module {
