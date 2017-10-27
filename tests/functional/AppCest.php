@@ -1,7 +1,15 @@
 <?php namespace Base;
 
+use Gzero\Base\Events\RouteMatched;
+use Gzero\Base\Model\Language;
+use Gzero\Base\Model\Routable;
+use Gzero\Base\Model\Route;
+use Gzero\Base\Model\RouteTranslation;
+use Gzero\Base\Queries\RouteQuery;
 use Gzero\Base\Service\LanguageService;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Router;
+use Mockery;
 
 class AppCest {
 
@@ -213,4 +221,41 @@ class AppCest {
         $I->seeResponseCodeIs(200);
         $I->see('Contact');
     }
+
+    public function dynamicRouterWorks(FunctionalTester $I)
+    {
+        // @TODO Try to move this to factories
+        $route = new Route();
+        $route->setRelation('translations', collect([new RouteTranslation(['language_code' => 'en', 'is_active' => true])]));
+        $route->setRelation('routable', new class implements Routable {
+            public function handle(Route $route, Language $lang): Response
+            {
+                return response('Hello World');
+            }
+        });
+
+        $I->haveInstance(RouteQuery::class, Mockery::mock(RouteQuery::class, [
+            'getByUrl' => $route,
+        ]));
+
+        $I->haveInstance(LanguageService::class, new LanguageService(
+            collect([
+                new Language(['code' => 'en', 'is_enabled' => true, 'is_default' => true]),
+                new Language(['code' => 'pl', 'is_enabled' => true, 'is_default' => false]),
+            ])
+        ));
+
+        $I->haveMlRoutes(function ($router, $languages) {
+            /** @var Router $router */
+            $router->get('{path?}', 'Gzero\Base\Http\Controller\RouteController@dynamicRouter')->where('path', '.*');
+        });
+
+
+        $I->amOnPage('multi-language-content');
+        $I->seeResponseCodeIs(200);
+        $I->see('Hello World');
+        $I->canSeeEventTriggered(RouteMatched::class);
+
+    }
+
 }

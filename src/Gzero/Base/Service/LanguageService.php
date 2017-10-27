@@ -1,9 +1,7 @@
 <?php namespace Gzero\Base\Service;
 
 use Gzero\Base\Model\Language;
-use Illuminate\Cache\CacheManager;
-use Illuminate\Cache\Repository;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 
 class LanguageService {
 
@@ -12,22 +10,16 @@ class LanguageService {
      *
      * @var Collection
      */
-    private $languages;
-
-    /**
-     * @var Repository
-     */
-    private $cache;
+    protected $languages;
 
     /**
      * LangRepository constructor
      *
-     * @param CacheManager $cache Cache
+     * @param Collection $languages Collection of languages
      */
-    public function __construct(CacheManager $cache)
+    public function __construct(Collection $languages)
     {
-        $this->cache = $cache;
-        $this->init();
+        $this->languages = $languages;
     }
 
     /**
@@ -37,10 +29,8 @@ class LanguageService {
      */
     public function refresh()
     {
-        if ($this->cache->has('languages')) {
-            $this->cache->forget('languages');
-            $this->init();
-        }
+        $this->languages = Language::all();
+        cache()->forever('languages', $this->languages);
     }
 
     /**
@@ -102,20 +92,5 @@ class LanguageService {
         return $this->languages->first(function ($value) {
             return $value->is_default;
         });
-    }
-
-    /**
-     * Init languages from database or cache
-     *
-     * @return void
-     */
-    protected function init()
-    {
-        if ($this->cache->get('languages')) {
-            $this->languages = $this->cache->get('languages');
-        } else {
-            $this->languages = Language::all();
-            $this->cache->forever('languages', $this->languages);
-        }
     }
 }

@@ -18,7 +18,6 @@ class CreateRoute extends Migration {
                 $table->increments('id');
                 $table->integer('routable_id')->unsigned()->nullable();
                 $table->string('routable_type')->nullable();
-                $table->boolean('is_active')->default(false);
                 $table->timestamps();
             }
         );

@@ -1,81 +1,89 @@
-<?php namespace Gzero\Core;
+<?php namespace Gzero\Base;
 
-use Gzero\Core\Events\ContentRouteMatched;
-use Gzero\Repository\ContentRepository;
-use Illuminate\Contracts\Auth\Access\Gate;
-use Illuminate\Events\Dispatcher;
+use Gzero\Base\Events\RouteMatched;
 use Gzero\Base\Model\Language;
-use Gzero\Core\Handler\Content\ContentTypeHandler;
+use Gzero\Base\Model\Route;
+use Gzero\Base\Queries\RouteQuery;
+use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\View;
+use Illuminate\Http\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DynamicRouter {
 
     /**
-     * @var ContentRepository
+     * @var RouteQuery
      */
-    private $repository;
+    protected $readRepository;
 
     /**
-     * The events dispatcher
-     *
-     * @var Dispatcher
+     * @var Gate
      */
-    protected $events;
+    protected $gate;
 
     /**
      * DynamicRouter constructor
      *
-     * @param ContentRepository $repository Content repository
-     * @param Dispatcher        $events     Events dispatcher
-     * @param Gate              $gate       Gate
+     * @param RouteQuery $query RouteQuery service
+     * @param Gate       $gate  Gate
      */
-    public function __construct(ContentRepository $repository, Dispatcher $events, Gate $gate)
+    public function __construct(RouteQuery $query, Gate $gate)
     {
-        $this->repository = $repository;
-        $this->events     = $events;
-        $this->gate       = $gate;
+        $this->readRepository = $query;
+        $this->gate           = $gate;
     }
 
     /**
      * Handles dynamic content rendering
      *
-     * @param String   $url     Url address
-     * @param Language $lang    Lang entity
      * @param Request  $request Request
+     * @param Language $lang    Lang entity
      *
      * @throws NotFoundHttpException
-     * @return View
+     * @return Response
      */
-    public function handleRequest($url, Language $lang, Request $request)
+    public function handleRequest(Request $request, Language $lang)
     {
-        //Get url without query string, so that pagination can work
-        $url     = preg_replace('/\?.*/', '', $url);
-        $content = $this->repository->getByUrl($url, $lang->code);
-        // Only if page is visible on public
-        if (empty($content) || (!$content->canBeShown() && $this->gate->denies('viewOnFrontend', $content))) {
+        $uri   = $this->getRequestedUri($request, $lang);
+        $route = $this->readRepository->getByUrl($uri, $lang->code);
+
+        if ($this->routeCannotBeShown($route, $lang)) {
             throw new NotFoundHttpException();
         }
-        $this->events->fire(new ContentRouteMatched($content, $request));
-        $type = $this->resolveType($content->type);
-        return $type->load($content, $lang)->render();
+        if ($route->getRoutable() === null) {
+
+            throw new NotFoundHttpException();
+        }
+
+        event(new RouteMatched($route, $request));
+
+        return $route->getRoutable()->handle($route, $lang);
     }
 
     /**
-     * Dynamically resolve type of content
+     * @param Request  $request Request object
+     * @param Language $lang    Language object
      *
-     * @param String $typeName Type name
-     *
-     * @return ContentTypeHandler
-     * @throws \ReflectionException
+     * @return string
      */
-    protected function resolveType($typeName)
+    protected function getRequestedUri(Request $request, Language $lang)
     {
-        $type = app()->make('content:type:' . $typeName);
-        if (!$type instanceof ContentTypeHandler) {
-            throw new \ReflectionException("Type: $typeName must implement ContentTypeInterface");
+        $segments = $request->segments();
+        if (!$lang->isDefault()) {
+            array_shift($segments);
         }
-        return $type;
+        return implode('/', $segments);
     }
+
+    /**
+     * @param Route|null $route Route Object
+     * @param Language   $lang  Language object
+     *
+     * @return bool
+     */
+    protected function routeCannotBeShown($route, Language $lang): bool
+    {
+        return empty($route) || (!$route->hasActiveTranslation($lang->code) && $this->gate->denies('viewInactive'));
+    }
+
 }

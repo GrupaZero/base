@@ -18,9 +18,7 @@ class LanguageServiceTest extends Unit {
 
     protected function _before()
     {
-        $this->service = new LanguageService(
-            new \Illuminate\Cache\CacheManager($this->tester->getApplication())
-        );
+        $this->service = resolve(LanguageService::class);
     }
 
     /**

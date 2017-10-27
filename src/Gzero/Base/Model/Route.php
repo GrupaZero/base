@@ -1,25 +1,16 @@
 <?php namespace Gzero\Base\Model;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+
 class Route extends Base {
 
-    /**
-     * @var array
-     */
-    protected $fillable = [
-        'is_active'
-    ];
-
-    /**
-     * @var array
-     */
-    protected $attributes = [
-        'is_active' => false
-    ];
+    protected $with = ['translations'];
 
     /**
      * Polymorphic relation to entities that could have route
      *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
+     * @return MorphTo
      */
     public function routable()
     {
@@ -27,12 +18,39 @@ class Route extends Base {
     }
 
     /**
+     * @return Routable|null
+     */
+    public function getRoutable():?Routable
+    {
+        return $this->routable;
+    }
+
+    /**
      * Translation one to many relation
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @param bool $onlyActive Only active translations
+     *
+     * @return HasMany
      */
-    public function translations()
+    public function translations($onlyActive = true)
     {
+        if ($onlyActive) {
+            return $this->hasMany(RouteTranslation::class)->where('is_active', true);
+        }
         return $this->hasMany(RouteTranslation::class);
+    }
+
+    /**
+     * Check if route have active translation in specific language
+     *
+     * @param string $languageCode Language code
+     *
+     * @return mixed
+     */
+    public function hasActiveTranslation($languageCode)
+    {
+        return $this->translations->first(function ($translation) use ($languageCode) {
+            return $translation->is_active === true && $translation->language_code === $languageCode;
+        });
     }
 }

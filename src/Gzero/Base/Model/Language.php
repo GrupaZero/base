@@ -30,4 +30,14 @@ class Language extends Base {
         'is_default' => false
     ];
 
+    /**
+     * Checks if language is default language
+     *
+     * @return bool
+     */
+    public function isDefault(): bool
+    {
+        return $this->is_default;
+    }
+
 }

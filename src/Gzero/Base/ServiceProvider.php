@@ -4,12 +4,15 @@ use Carbon\Carbon;
 use Gzero\Base\Http\Middleware\Init;
 use Gzero\Base\Http\Middleware\MultiLanguage;
 use Gzero\Base\Http\Middleware\ViewShareUser;
+use Gzero\Base\Model\Language;
 use Gzero\Base\Model\Option;
+use Gzero\Base\Model\Route;
 use Gzero\Base\Model\User;
 use Gzero\Base\Service\LanguageService;
 use Gzero\Base\Service\OptionService;
 use Gzero\Base\Policies\OptionPolicy;
 use Gzero\Base\Policies\UserPolicy;
+use Gzero\Core\Policies\RoutePolicy;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Factory;
@@ -45,6 +48,7 @@ class ServiceProvider extends AbstractServiceProvider {
      * @var array
      */
     protected $policies = [
+        Route::class  => RoutePolicy::class,
         User::class   => UserPolicy::class,
         Option::class => OptionPolicy::class
     ];
@@ -61,6 +65,13 @@ class ServiceProvider extends AbstractServiceProvider {
         $this->registerHelpers();
         $this->bindRepositories();
         $this->bindOtherStuff();
+        if ($this->app->environment() !== 'testing') { // We're manually registering it for test cases
+            $this->app->booted(function () {
+                addMultiLanguageRoutes(function ($router) {
+                    $router->get('{path?}', 'Gzero\Base\Http\Controller\RouteController@dynamicRouter')->where('path', '.*');
+                });
+            });
+        }
     }
 
     /**
@@ -115,8 +126,12 @@ class ServiceProvider extends AbstractServiceProvider {
     {
         $this->app->singleton(
             LanguageService::class,
-            function (Application $app) {
-                return new LanguageService($app->make('cache'));
+            function () {
+                return new LanguageService(
+                    cache()->rememberForever('languages', function () {
+                        return Language::all();
+                    })
+                );
             }
         );
 
