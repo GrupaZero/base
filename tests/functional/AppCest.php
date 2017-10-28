@@ -290,7 +290,7 @@ class AppCest {
 
     public function dynamicRouterDeniesAccessToInactiveRoute(FunctionalTester $I)
     {
-        $route        = factory(Route::class)
+        $route = factory(Route::class)
             ->states('inactiveTranslationEn', 'routableHelloWorld')
             ->make();
 

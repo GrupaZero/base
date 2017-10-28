@@ -16,6 +16,7 @@ use Gzero\Base\Policies\RoutePolicy;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Factory;
+use Illuminate\Http\Resources\Json\Resource;
 use Illuminate\Routing\Router;
 use Laravel\Passport\Http\Middleware\CreateFreshApiToken;
 use Laravel\Passport\Passport;
@@ -90,6 +91,8 @@ class ServiceProvider extends AbstractServiceProvider {
         Passport::tokensExpireIn(Carbon::now()->addDays(15));
 
         Passport::refreshTokensExpireIn(Carbon::now()->addDays(30));
+
+        Resource::withoutWrapping();
 
         $this->registerPolicies();
         $this->registerMigrations();

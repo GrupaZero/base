@@ -1,6 +1,8 @@
 <?php namespace Gzero\Base\Http\Controllers\Api;
 
 use Gzero\Base\Http\Controllers\ApiController;
+use Gzero\Base\Http\Resources\User as UserResource;
+use Gzero\Base\Http\Resources\UserCollection;
 use Gzero\Base\Jobs\DeleteUser;
 use Gzero\Base\Jobs\UpdateUser;
 use Gzero\Base\Models\User;
@@ -50,7 +52,7 @@ class AdminUserController extends ApiController {
      *   @SWG\Response(response="200", description="successful operation")
      * )
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return UserCollection
      */
     public function index()
     {
@@ -63,7 +65,8 @@ class AdminUserController extends ApiController {
             $params['page'],
             $params['perPage']
         );
-        return $this->respondWithSuccess($results, new UserTransformer);
+
+        return new UserCollection($results);
     }
 
     /**
@@ -89,14 +92,14 @@ class AdminUserController extends ApiController {
      * @param UserReadRepository $repository Query service
      * @param int                $id         user id
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return UserResource
      */
     public function show(UserReadRepository $repository, $id)
     {
         $user = $repository->getById($id);
         if (!empty($user)) {
             $this->authorize('read', $user);
-            return $this->respondWithSuccess($user, new UserTransformer);
+            return new UserResource($user);
         }
         return $this->respondNotFound();
     }
@@ -131,7 +134,7 @@ class AdminUserController extends ApiController {
      * @param UserReadRepository $repository Query service
      * @param int                $id         User id
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return UserResource
      */
     public function update(UserReadRepository $repository, $id)
     {
@@ -143,7 +146,7 @@ class AdminUserController extends ApiController {
                 ->bind('email', ['user_id' => $user->id])
                 ->validate('update');
             $user  = dispatch_now(new UpdateUser($user, $input));
-            return $this->respondWithSuccess($user, new UserTransformer());
+            return new UserResource($user);
         }
         return $this->respondNotFound();
     }

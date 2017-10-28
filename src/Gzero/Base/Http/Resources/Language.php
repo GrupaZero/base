@@ -1,6 +1,6 @@
-<?php namespace Gzero\Base\Transformers;
+<?php namespace Gzero\Base\Http\Resources;
 
-use Gzero\Base\Models\Language;
+use Illuminate\Http\Resources\Json\Resource;
 
 /**
  * @SWG\Definition(
@@ -25,23 +25,22 @@ use Gzero\Base\Models\Language;
  *   )
  * )
  */
-class LanguageTransformer extends AbstractTransformer {
+class Language extends Resource {
 
     /**
-     * Transforms lang entity
+     * Transform the resource into an array.
      *
-     * @param Language|array $lang Lang entity
+     * @param  \Illuminate\Http\Request $request request
      *
      * @return array
      */
-    public function transform($lang)
+    public function toArray($request)
     {
-        $lang = $this->entityToArray(Language::class, $lang);
         return [
-            'code'      => $lang['code'],
-            'i18n'      => $lang['i18n'],
-            'isEnabled' => (bool) $lang['is_enabled'],
-            'isDefault' => (bool) $lang['is_default'],
+            'code'       => $this->code,
+            'i18n'       => $this->i18n,
+            'is_enabled' => (bool) $this->is_enabled,
+            'is_default' => (bool) $this->is_default,
         ];
     }
 }

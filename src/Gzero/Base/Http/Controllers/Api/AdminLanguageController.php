@@ -1,7 +1,8 @@
 <?php namespace Gzero\Base\Http\Controllers\Api;
 
 use Gzero\Base\Http\Controllers\ApiController;
-use Gzero\Base\Transformers\LanguageTransformer;
+use Gzero\Base\Http\Resources\Language as LanguageResource;
+use Gzero\Base\Http\Resources\LanguageCollection;
 use Gzero\Base\Services\LanguageService;
 
 class AdminLanguageController extends ApiController {
@@ -34,11 +35,11 @@ class AdminLanguageController extends ApiController {
      *   @SWG\Response(response="200", description="successful operation")
      * )
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return LanguageCollection
      */
     public function index()
     {
-        return $this->respondWithSuccess($this->langService->getAll(), new LanguageTransformer);
+        return new LanguageCollection($this->langService->getAll());
     }
 
     /**
@@ -63,7 +64,7 @@ class AdminLanguageController extends ApiController {
      *
      * @param int $code Lang code
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return LanguageResource
      */
     public function show($code)
     {
@@ -71,7 +72,7 @@ class AdminLanguageController extends ApiController {
         if (empty($lang)) {
             return $this->respondNotFound();
         }
-        return $this->respondWithSuccess($lang, new LanguageTransformer);
+        return new LanguageResource($lang);
     }
 
 }
