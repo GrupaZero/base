@@ -1,7 +1,10 @@
 <?php namespace Gzero\Base\Http\Controllers\Api;
 
 use Gzero\Base\Http\Controllers\ApiController;
+use Gzero\Base\Jobs\DeleteUser;
+use Gzero\Base\Jobs\UpdateUser;
 use Gzero\Base\Models\User;
+use Gzero\Base\Services\UserQueryService;
 use Gzero\Base\Services\UserService;
 use Gzero\Base\Transformers\UserTransformer;
 use Gzero\Base\UrlParamsProcessor;
@@ -83,16 +86,64 @@ class AdminUserController extends ApiController {
      *   @SWG\Response(response="200", description="successful operation")
      * )
      *
-     * @param int $id user id
+     * @param UserQueryService $service Query service
+     * @param int              $id      user id
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show($id)
+    public function show(UserQueryService $service, $id)
     {
-        $user = $this->userService->getById($id);
+        $user = $service->getById($id);
         if (!empty($user)) {
             $this->authorize('read', $user);
             return $this->respondWithSuccess($user, new UserTransformer);
+        }
+        return $this->respondNotFound();
+    }
+
+    /**
+     * Updates the specified resource in the database.
+     *
+     * @SWG\Patch(path="/admin/users/{id}",
+     *   tags={"user"},
+     *   summary="Updated user",
+     *   description="Updated user",
+     *   operationId="updateUser",
+     *   produces={"application/json"},
+     *   @SWG\Parameter(
+     *     name="id",
+     *     in="path",
+     *     description="ID of user that needs to be updated",
+     *     required=true,
+     *     type="integer"
+     *   ),
+     *   @SWG\Parameter(
+     *     in="body",
+     *     name="body",
+     *     description="Updated user object",
+     *     required=true,
+     *     @SWG\Schema(ref="#/definitions/User")
+     *   ),
+     *   @SWG\Response(response=400, description="Invalid user supplied"),
+     *   @SWG\Response(response=404, description="User not found")
+     * )
+     *
+     * @param UserQueryService $service Query service
+     * @param int              $id      User id
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update(UserQueryService $service, $id)
+    {
+        $user = $service->getById($id);
+        if (!empty($user)) {
+            $this->authorize('update', $user);
+            $input = $this->validator
+                ->bind('name', ['user_id' => $user->id])
+                ->bind('email', ['user_id' => $user->id])
+                ->validate('update');
+            $user  = dispatch_now(new UpdateUser($user, $input));
+            return $this->respondWithSuccess($user, new UserTransformer());
         }
         return $this->respondNotFound();
     }
@@ -117,65 +168,21 @@ class AdminUserController extends ApiController {
      *   @SWG\Response(response="200", description="successful operation")
      * )
      *
-     * @param int $id Id of the user
+     * @param UserQueryService $service Query service
+     * @param int              $id      Id of the user
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy($id)
+    public function destroy(UserQueryService $service, $id)
     {
-        $user = $this->userService->getById($id);
+        $user = $service->getById($id);
 
         if (!empty($user)) {
             $this->authorize('delete', $user);
-            $user->delete();
+            dispatch_now(new DeleteUser($user));
             return $this->respondWithSimpleSuccess(['success' => true]);
         }
         return $this->respondNotFound();
     }
-
-    /**
-     * Updates the specified resource in the database.
-     *
-     * @SWG\Put(path="/admin/users/{id}",
-     *   tags={"user"},
-     *   summary="Updated user",
-     *   description="Updated user",
-     *   operationId="updateUser",
-     *   produces={"application/json"},
-     *   @SWG\Parameter(
-     *     name="id",
-     *     in="path",
-     *     description="ID of user that needs to be updated",
-     *     required=true,
-     *     type="integer"
-     *   ),
-     *   @SWG\Parameter(
-     *     in="body",
-     *     name="body",
-     *     description="Updated user object",
-     *     required=true,
-     *     @SWG\Schema(ref="#/definitions/User")
-     *   ),
-     *   @SWG\Response(response=400, description="Invalid user supplied"),
-     *   @SWG\Response(response=404, description="User not found")
-     * )
-     *
-     * @param int $id User id
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function update($id)
-    {
-        $user = $this->userService->getById($id);
-        if (!empty($user)) {
-            $this->authorize('update', $user);
-            $input = $this->validator->bind('name', ['user_id' => $user->id])->bind('email', ['user_id' => $user->id])
-                ->validate('update');
-            $user  = $this->userService->update($user, $input);
-            return $this->respondWithSuccess($user, new UserTransformer());
-        }
-        return $this->respondNotFound();
-    }
-
 
 }

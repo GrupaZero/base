@@ -22,11 +22,10 @@ Route::group(
         );
 
         // ======== Users ========
-        $router->resource(
-            'users',
-            'AdminUserController',
-            ['only' => ['index', 'show', 'destroy', 'update']]
-        );
+        $router->get('users/', 'AdminUserController@index');
+        $router->get('users/{id}', 'AdminUserController@show');
+        $router->patch('users/{id}', 'AdminUserController@update');
+        $router->delete('users/{id}', 'AdminUserController@destroy');
 
         // ======== Options ========
         $router->resource(
@@ -49,10 +48,7 @@ Route::group(
         /** @var \Illuminate\Routing\Router $router */
 
         // ======== Account ========
-        $router->put(
-            'account',
-            'PublicAccountController@update'
-        );
+        $router->patch('account', 'PublicAccountController@update');
 
     }
 );

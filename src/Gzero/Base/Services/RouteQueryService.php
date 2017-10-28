@@ -2,7 +2,17 @@
 
 use Gzero\Base\Models\Route;
 
-class RouteQueryService {
+class RouteQueryService implements QueryService {
+
+    /**
+     * @param int $id Entity id
+     *
+     * @return mixed
+     */
+    public function getById($id)
+    {
+        return Route::find($id);
+    }
 
     /**
      * @param string $path         URI path
@@ -24,5 +34,6 @@ class RouteQueryService {
             })
             ->first();
     }
+
 
 }

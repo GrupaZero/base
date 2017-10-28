@@ -7,7 +7,7 @@ class PublicAccountCest {
         $user = $I->haveUser();
         $I->loginWithToken($user->email);
 
-        $I->sendPUT(apiUrl('user/account'),
+        $I->sendPATCH(apiUrl('user/account'),
             [
                 'name'      => 'Modified user',
                 'firstName' => 'Johny',
@@ -33,7 +33,7 @@ class PublicAccountCest {
         $user = $I->haveUser();
         $I->loginWithToken($user->email);
 
-        $I->sendPUT(apiUrl('user/account'),
+        $I->sendPATCH(apiUrl('user/account'),
             [
                 'name'                  => $user->name,
                 'email'                 => $user->email,
@@ -52,7 +52,7 @@ class PublicAccountCest {
     {
         $user = $I->haveUser();
         $I->loginWithToken($user->email);
-        $I->sendPUT(apiUrl('user/account'),
+        $I->sendPATCH(apiUrl('user/account'),
             [
                 'name'     => $user->name,
                 'email'    => $user->email,
@@ -77,7 +77,7 @@ class PublicAccountCest {
         $user2 = $I->haveUser();
         $I->loginWithToken($user->email);
 
-        $I->sendPUT(apiUrl('user/account'),
+        $I->sendPATCH(apiUrl('user/account'),
             [
                 'name'  => $user2->name,
                 'email' => $user->email,
@@ -102,7 +102,7 @@ class PublicAccountCest {
         $user2 = $I->haveUser();
         $I->loginWithToken($user->email);
 
-        $I->sendPUT(apiUrl('user/account'),
+        $I->sendPATCH(apiUrl('user/account'),
             [
                 'name'  => $user->name,
                 'email' => $user2->email,

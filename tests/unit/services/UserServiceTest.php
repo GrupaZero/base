@@ -1,7 +1,11 @@
 <?php namespace Base;
 
 use Codeception\Test\Unit;
+use Gzero\Base\Jobs\CreateUser;
+use Gzero\Base\Jobs\DeleteUser;
+use Gzero\Base\Jobs\UpdateUser;
 use Gzero\Base\Models\User;
+use Gzero\Base\Services\UserQueryService;
 use Gzero\Base\Services\UserService;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Support\Facades\Hash;
@@ -19,8 +23,14 @@ class UserServiceTest extends Unit {
      */
     protected $repository;
 
+    /**
+     * @var UserQueryService
+     */
+    protected $service;
+
     protected function _before()
     {
+        $this->service    = new UserQueryService();
         $this->repository = new UserService(new User(), new Dispatcher());
     }
 
@@ -29,16 +39,8 @@ class UserServiceTest extends Unit {
      */
     public function canCreateUserAndGetItById()
     {
-        $userData = [
-            'email'      => 'john.doe@example.com',
-            'password'   => 'secret',
-            'name'       => 'Nickname',
-            'first_name' => 'John',
-            'last_name'  => 'Doe',
-        ];
-
-        $user       = $this->repository->create($userData);
-        $userFromDb = $this->repository->getById($user->id);
+        $user       = (new CreateUser('john.doe@example.com', 'secret', 'Nickname', 'John', 'Doe'))->handle();
+        $userFromDb = $this->service->getById($user->id);
 
         $this->assertEquals(
             [
@@ -63,33 +65,11 @@ class UserServiceTest extends Unit {
      */
     public function canCreateUserWithEmptyNameAsAnonymous()
     {
-        $data1 = [
-            'email'      => 'john.doe@example.com',
-            'password'   => 'secret',
-            'name'       => '',
-            'first_name' => 'John',
-            'last_name'  => 'Doe',
-        ];
-        $data2 = [
-            'email'      => 'jane.doe@example.com',
-            'password'   => 'secret',
-            'name'       => '',
-            'first_name' => 'Jane',
-            'last_name'  => 'Doe',
-        ];
-        $data3 = [
-            'email'      => 'jane.doe2@example.com',
-            'password'   => 'secret',
-            'name'       => '',
-            'first_name' => 'Jane',
-            'last_name'  => 'Doe2',
-        ];
+        $user1 = (new CreateUser('john.doe@example.com', 'secret', '', 'John', 'Doe'))->handle();
+        $user2 = (new CreateUser('jane.doe@example.com', 'secret', '', 'Jane', 'Doe'))->handle();
 
-        $user1 = $this->repository->create($data1);
-        $user2 = $this->repository->create($data2);
-
-        $user1Db = $this->repository->getById($user1->id);
-        $user2Db = $this->repository->getById($user2->id);
+        $user1Db = $this->service->getById($user1->id);
+        $user2Db = $this->service->getById($user2->id);
 
         $this->assertEquals(
             [
@@ -125,10 +105,10 @@ class UserServiceTest extends Unit {
         $this->assertRegExp('/^anonymous\-[a-z 0-9]{13}/', $user2Db->name);
 
         // Deleting user1 to make sure that we still return unique name
-        $this->repository->delete($user1);
+        (new DeleteUser($user1))->handle();
 
-        $user3   = $this->repository->create($data3);
-        $user3Db = $this->repository->getById($user3->id);
+        $user3   = (new CreateUser('jane.doe2@example.com', 'secret', '', 'Jane', 'Doe2'))->handle();
+        $user3Db = $this->service->getById($user3->id);
 
         $this->assertEquals(
             [
@@ -154,16 +134,9 @@ class UserServiceTest extends Unit {
      */
     public function itHashesUserPasswordWhenUpdatingUser()
     {
-        $user = $this->repository->create(
-            [
-                'email'      => 'john.doe@example.com',
-                'password'   => 'password',
-                'first_name' => 'John',
-                'last_name'  => 'Doe',
-            ]
-        );
+        $user = (new CreateUser('john.doe@example.com', 'password', '', 'John', 'Doe'))->handle();
 
-        $this->repository->update($user, ['password' => 'secret']);
+        $user = (new UpdateUser($user, ['password' => 'secret']))->handle();
 
         $this->assertTrue(Hash::check('secret', $user->password));
     }
@@ -173,23 +146,21 @@ class UserServiceTest extends Unit {
      */
     public function canDeleteUser()
     {
-        $userData = [
+        $user       = (new CreateUser('john.doe@example.com', 'secret', 'Nickname', 'John', 'Doe'))->handle();
+        $userFromDb = $this->service->getById($user->id);
+
+        $this->assertNotNull($userFromDb);
+        $this->assertNotNull(User::where([
             'email'      => 'john.doe@example.com',
             'password'   => 'secret',
             'name'       => 'Nickname',
             'first_name' => 'John',
             'last_name'  => 'Doe',
-        ];
+        ])->first());
 
-        $user       = $this->repository->create($userData);
-        $userFromDb = $this->repository->getById($user->id);
+        (new DeleteUser($user))->handle();
 
-        $this->assertNotNull($userFromDb);
-        $this->assertNotNull(User::where($userData)->first());
-
-        $this->repository->delete($user);
-
-        $userFromDb = $this->repository->getById($user->id);
+        $userFromDb = $this->service->getById($user->id);
 
         $this->assertNull($userFromDb);
     }
@@ -199,24 +170,8 @@ class UserServiceTest extends Unit {
      */
     public function canSortUsersList()
     {
-
-        $firstUser = $this->repository->create(
-            [
-                'email'      => 'john.doe@example.com',
-                'password'   => 'secret',
-                'first_name' => 'John',
-                'last_name'  => 'Doe'
-            ]
-        );
-
-        $secondUser = $this->repository->create(
-            [
-                'email'      => 'zoe.doe@example.com',
-                'password'   => 'secret',
-                'first_name' => 'Zoe',
-                'last_name'  => 'Doe'
-            ]
-        );
+        $firstUser  = (new CreateUser('john.doe@example.com', 'secret', null, 'John', 'Doe'))->handle();
+        $secondUser = (new CreateUser('zoe.doe@example.com', 'secret', null, 'Zoe', 'Doe'))->handle();
 
         // ASC
         $result = $this->repository->getUsers([], [['email', 'ASC']], null);

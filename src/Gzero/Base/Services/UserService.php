@@ -3,7 +3,6 @@
 use Gzero\Base\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Events\Dispatcher;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 
 class UserService extends BaseService implements AuthenticatableContract {
@@ -35,71 +34,6 @@ class UserService extends BaseService implements AuthenticatableContract {
     // @codingStandardsIgnoreStart
 
     /**
-     * Retrieve a user by given email
-     *
-     * @param  string $email
-     *
-     * @return User
-     */
-    public function getByEmail($email)
-    {
-        $qb = $this->newQuery()
-            ->table($this->getTableName())
-            ->where('email', '=', $email);
-        return $qb->first();
-    }
-
-    /**
-     * Create specific user entity
-     *
-     * @param array $data User entity to persist
-     *
-     * @return User
-     */
-    public function create(array $data)
-    {
-        // handle empty nickname users
-        if (empty($data['name'])) {
-            $data['name'] = $this->buildUniqueNickname();
-        }
-        $user = $this->newQuery()->transaction(
-            function () use ($data) {
-                $user = new User();
-                $user->fill($data);
-                $user->save();
-                return $user;
-            }
-        );
-        $this->events->fire('user.created', [$user]);
-        return $user;
-    }
-
-    /**
-     * Update specific user entity
-     *
-     * @param User  $user user entity
-     * @param array $data data to save
-     *
-     * @return User
-     * @throws \Exception
-     */
-    public function update(User $user, array $data)
-    {
-        $user = $this->newQuery()->transaction(
-            function () use ($user, $data) {
-                if (array_key_exists('password', $data)) {
-                    $data['password'] = Hash::make($data['password']);
-                }
-                $user->fill($data);
-                $user->save();
-                return $user;
-            }
-        );
-        $this->events->fire('user.updated', [$user]);
-        return $user;
-    }
-
-    /**
      * Eager load relations for eloquent collection
      *
      * @param Collection $results Eloquent collection
@@ -109,18 +43,6 @@ class UserService extends BaseService implements AuthenticatableContract {
     protected function listEagerLoad($results)
     {
         $results->load('roles');
-    }
-
-    /**
-     * Delete specific user entity
-     *
-     * @param User $user User entity to delete
-     *
-     * @return boolean
-     */
-    public function delete(User $user)
-    {
-        return $user->delete();
     }
 
     /**
@@ -233,17 +155,4 @@ class UserService extends BaseService implements AuthenticatableContract {
     | END AuthenticatableContract AND CanResetPasswordContract
     |--------------------------------------------------------------------------
     */
-
-    /**
-     * Function returns an unique user nickname from given url in specific language
-     *
-     * @param string $replacement string nick replacement to use, "Anonymous" is default
-     *
-     * @return string $nickname an unique user nickname
-     */
-    protected function buildUniqueNickname($replacement = 'anonymous')
-    {
-        $maxId = $this->newQuery()->table('users')->max('id');
-        return $replacement . '-' . uniqid($maxId);
-    }
 }

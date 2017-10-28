@@ -73,7 +73,7 @@ class AdminUserCest {
     {
         $user = $I->haveUser();
 
-        $I->sendPUT(apiUrl('admin/users', [$user->id]),
+        $I->sendPATCH(apiUrl('admin/users', [$user->id]),
             [
                 'name'      => 'Modified user',
                 'firstName' => 'Johny',
@@ -96,7 +96,7 @@ class AdminUserCest {
 
     public function checksIfUserExistsWhenUpdating(FunctionalTester $I)
     {
-        $I->sendPUT(apiUrl('admin/users', [4]));
+        $I->sendPATCH(apiUrl('admin/users', [4]));
 
         $I->seeResponseCodeIs(404);
         $I->seeResponseIsJson();
