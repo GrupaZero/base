@@ -3,7 +3,7 @@
 use Gzero\Base\Events\RouteMatched;
 use Gzero\Base\Models\Language;
 use Gzero\Base\Models\Route;
-use Gzero\Base\Services\RouteQueryService;
+use Gzero\Base\Repositories\RouteReadRepository;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -12,9 +12,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class DynamicRouter {
 
     /**
-     * @var RouteQueryService
+     * @var RouteReadRepository
      */
-    protected $readRepository;
+    protected $repository;
 
     /**
      * @var Gate
@@ -24,13 +24,13 @@ class DynamicRouter {
     /**
      * DynamicRouter constructor
      *
-     * @param RouteQueryService $query RouteQuery service
-     * @param Gate              $gate  Gate
+     * @param RouteReadRepository $query RouteQuery service
+     * @param Gate                $gate  Gate
      */
-    public function __construct(RouteQueryService $query, Gate $gate)
+    public function __construct(RouteReadRepository $query, Gate $gate)
     {
-        $this->readRepository = $query;
-        $this->gate           = $gate;
+        $this->repository = $query;
+        $this->gate       = $gate;
     }
 
     /**
@@ -45,9 +45,9 @@ class DynamicRouter {
     public function handleRequest(Request $request, Language $language)
     {
         $uri   = $this->getRequestedPath($request, $language);
-        $route = $this->readRepository->getByPath($uri, $language->code);
+        $route = $this->repository->getByPath($uri, $language->code);
 
-        if ($this->routeCannotBeShown($route, $language)) {
+        if (!$this->routeCanBeShown($route, $language)) {
             throw new NotFoundHttpException();
         }
         if ($route->getRoutable() === null) {
@@ -81,9 +81,9 @@ class DynamicRouter {
      *
      * @return bool
      */
-    protected function routeCannotBeShown($route, Language $language): bool
+    protected function routeCanBeShown($route, Language $language): bool
     {
-        return empty($route) || (!$route->hasActiveTranslation($language->code) && $this->gate->denies('viewInactive'));
+        return !empty($route) && ($route->hasActiveTranslation($language->code) || $this->gate->allows('viewInactive', $route));
     }
 
 }

@@ -1,6 +1,4 @@
-<?php
-
-namespace Gzero\Core\Policies;
+<?php namespace Gzero\Base\Policies;
 
 use Gzero\Base\Models\User;
 

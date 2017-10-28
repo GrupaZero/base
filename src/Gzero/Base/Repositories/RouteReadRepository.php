@@ -1,8 +1,8 @@
-<?php namespace Gzero\Base\Services;
+<?php namespace Gzero\Base\Repositories;
 
 use Gzero\Base\Models\Route;
 
-class RouteQueryService implements QueryService {
+class RouteReadRepository implements ReadRepository {
 
     /**
      * @param int $id Entity id
@@ -36,4 +36,8 @@ class RouteQueryService implements QueryService {
     }
 
 
+    public function getMany()
+    {
+        // TODO: Implement getMany() method.
+    }
 }

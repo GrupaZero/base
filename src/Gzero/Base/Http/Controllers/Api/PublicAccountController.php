@@ -2,7 +2,7 @@
 
 use Gzero\Base\Http\Controllers\ApiController;
 use Gzero\Base\Jobs\UpdateUser;
-use Gzero\Base\Services\UserQueryService;
+use Gzero\Base\Repositories\UserReadRepository;
 use Gzero\Base\UrlParamsProcessor;
 use Gzero\Base\Transformers\UserTransformer;
 use Gzero\Base\Validators\AccountValidator;
@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 class PublicAccountController extends ApiController {
 
     /**
-     * @var UserQueryService
+     * @var UserReadRepository
      */
     protected $service;
 
@@ -36,18 +36,18 @@ class PublicAccountController extends ApiController {
     /**
      * Updates the specified resource in the database.
      *
-     * @param UserQueryService $service Query service
-     * @param Request          $request Request object
+     * @param UserReadRepository $repository Query service
+     * @param Request            $request    Request object
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UserQueryService $service, Request $request)
+    public function update(UserReadRepository $repository, Request $request)
     {
         if (!$request->has('password')) {
             $this->validator->setData($request->except(['password', 'password_confirmation']));
         }
 
-        $user = $service->getById($request->user()->id);
+        $user = $repository->getById($request->user()->id);
         $this->authorize('update', $user);
         $input = $this->validator->bind('name', ['user_id' => $user->id])->bind('email', ['user_id' => $user->id])
             ->validate('update');

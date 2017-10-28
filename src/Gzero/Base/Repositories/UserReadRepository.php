@@ -1,8 +1,8 @@
-<?php namespace Gzero\Base\Services;
+<?php namespace Gzero\Base\Repositories;
 
 use Gzero\Base\Models\User;
 
-class UserQueryService implements QueryService {
+class UserReadRepository implements ReadRepository {
 
     /**
      * @param int $id Entity id
@@ -26,4 +26,8 @@ class UserQueryService implements QueryService {
         return User::query()->where('email', '=', $email)->first();
     }
 
+    public function getMany()
+    {
+        // TODO: Implement getMany() method.
+    }
 }

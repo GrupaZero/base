@@ -5,11 +5,10 @@ use Gzero\Base\Jobs\CreateUser;
 use Gzero\Base\Jobs\DeleteUser;
 use Gzero\Base\Jobs\UpdateUser;
 use Gzero\Base\Models\User;
-use Gzero\Base\Services\UserQueryService;
+use Gzero\Base\Repositories\UserReadRepository;
 use Gzero\Base\Services\UserService;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Support\Facades\Hash;
-
 
 class UserServiceTest extends Unit {
 
@@ -21,17 +20,17 @@ class UserServiceTest extends Unit {
     /**
      * @var UserService
      */
-    protected $repository;
+    protected $oldRepo;
 
     /**
-     * @var UserQueryService
+     * @var UserReadRepository
      */
-    protected $service;
+    protected $repository;
 
     protected function _before()
     {
-        $this->service    = new UserQueryService();
-        $this->repository = new UserService(new User(), new Dispatcher());
+        $this->repository = new UserReadRepository();
+        $this->oldRepo    = new UserService(new User(), new Dispatcher());
     }
 
     /**
@@ -40,7 +39,7 @@ class UserServiceTest extends Unit {
     public function canCreateUserAndGetItById()
     {
         $user       = (new CreateUser('john.doe@example.com', 'secret', 'Nickname', 'John', 'Doe'))->handle();
-        $userFromDb = $this->service->getById($user->id);
+        $userFromDb = $this->repository->getById($user->id);
 
         $this->assertEquals(
             [
@@ -68,8 +67,8 @@ class UserServiceTest extends Unit {
         $user1 = (new CreateUser('john.doe@example.com', 'secret', '', 'John', 'Doe'))->handle();
         $user2 = (new CreateUser('jane.doe@example.com', 'secret', '', 'Jane', 'Doe'))->handle();
 
-        $user1Db = $this->service->getById($user1->id);
-        $user2Db = $this->service->getById($user2->id);
+        $user1Db = $this->repository->getById($user1->id);
+        $user2Db = $this->repository->getById($user2->id);
 
         $this->assertEquals(
             [
@@ -108,7 +107,7 @@ class UserServiceTest extends Unit {
         (new DeleteUser($user1))->handle();
 
         $user3   = (new CreateUser('jane.doe2@example.com', 'secret', '', 'Jane', 'Doe2'))->handle();
-        $user3Db = $this->service->getById($user3->id);
+        $user3Db = $this->repository->getById($user3->id);
 
         $this->assertEquals(
             [
@@ -147,7 +146,7 @@ class UserServiceTest extends Unit {
     public function canDeleteUser()
     {
         $user       = (new CreateUser('john.doe@example.com', 'secret', 'Nickname', 'John', 'Doe'))->handle();
-        $userFromDb = $this->service->getById($user->id);
+        $userFromDb = $this->repository->getById($user->id);
 
         $this->assertNotNull($userFromDb);
         $this->assertNotNull(User::where([
@@ -160,7 +159,7 @@ class UserServiceTest extends Unit {
 
         (new DeleteUser($user))->handle();
 
-        $userFromDb = $this->service->getById($user->id);
+        $userFromDb = $this->repository->getById($user->id);
 
         $this->assertNull($userFromDb);
     }
@@ -174,14 +173,14 @@ class UserServiceTest extends Unit {
         $secondUser = (new CreateUser('zoe.doe@example.com', 'secret', null, 'Zoe', 'Doe'))->handle();
 
         // ASC
-        $result = $this->repository->getUsers([], [['email', 'ASC']], null);
+        $result = $this->oldRepo->getUsers([], [['email', 'ASC']], null);
 
         $this->assertEquals($result[0]->email, 'admin@gzero.pl');
         $this->assertEquals($result[1]->email, $firstUser->email);
         $this->assertEquals($result[2]->email, $secondUser->email);
 
         // DESC
-        $result = $this->repository->getUsers([], [['email', 'DESC']], null);
+        $result = $this->oldRepo->getUsers([], [['email', 'DESC']], null);
 
         $this->assertEquals($result[0]->email, $secondUser->email);
         $this->assertEquals($result[1]->email, $firstUser->email);

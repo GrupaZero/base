@@ -4,7 +4,7 @@ use Gzero\Base\Http\Controllers\ApiController;
 use Gzero\Base\Jobs\DeleteUser;
 use Gzero\Base\Jobs\UpdateUser;
 use Gzero\Base\Models\User;
-use Gzero\Base\Services\UserQueryService;
+use Gzero\Base\Repositories\UserReadRepository;
 use Gzero\Base\Services\UserService;
 use Gzero\Base\Transformers\UserTransformer;
 use Gzero\Base\UrlParamsProcessor;
@@ -86,14 +86,14 @@ class AdminUserController extends ApiController {
      *   @SWG\Response(response="200", description="successful operation")
      * )
      *
-     * @param UserQueryService $service Query service
-     * @param int              $id      user id
+     * @param UserReadRepository $repository Query service
+     * @param int                $id         user id
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(UserQueryService $service, $id)
+    public function show(UserReadRepository $repository, $id)
     {
-        $user = $service->getById($id);
+        $user = $repository->getById($id);
         if (!empty($user)) {
             $this->authorize('read', $user);
             return $this->respondWithSuccess($user, new UserTransformer);
@@ -128,14 +128,14 @@ class AdminUserController extends ApiController {
      *   @SWG\Response(response=404, description="User not found")
      * )
      *
-     * @param UserQueryService $service Query service
-     * @param int              $id      User id
+     * @param UserReadRepository $repository Query service
+     * @param int                $id         User id
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UserQueryService $service, $id)
+    public function update(UserReadRepository $repository, $id)
     {
-        $user = $service->getById($id);
+        $user = $repository->getById($id);
         if (!empty($user)) {
             $this->authorize('update', $user);
             $input = $this->validator
@@ -168,14 +168,14 @@ class AdminUserController extends ApiController {
      *   @SWG\Response(response="200", description="successful operation")
      * )
      *
-     * @param UserQueryService $service Query service
-     * @param int              $id      Id of the user
+     * @param UserReadRepository $repository Query service
+     * @param int                $id         Id of the user
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(UserQueryService $service, $id)
+    public function destroy(UserReadRepository $repository, $id)
     {
-        $user = $service->getById($id);
+        $user = $repository->getById($id);
 
         if (!empty($user)) {
             $this->authorize('delete', $user);

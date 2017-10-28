@@ -1,6 +1,6 @@
-<?php namespace Gzero\Base\Services;
+<?php namespace Gzero\Base\Repositories;
 
-interface QueryService {
+interface ReadRepository {
 
     /**
      * @param mixed $id Entity id
@@ -9,4 +9,5 @@ interface QueryService {
      */
     public function getById($id);
 
+    public function getMany();
 }
