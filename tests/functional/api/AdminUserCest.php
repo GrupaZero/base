@@ -17,6 +17,7 @@ class AdminUserCest {
 
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
+        $I->seeResponseJsonMatchesJsonPath('data[*]');
         $I->seeResponseContainsJson(
             [
                 'meta'   => [
@@ -50,11 +51,12 @@ class AdminUserCest {
 
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
+        $I->dontSeeResponseJsonMatchesJsonPath('data[*]');
         $I->seeResponseContainsJson(
             [
                 'name'      => 'Test user',
-                'firstName' => 'John',
-                'lastName'  => 'Doe',
+                'first_name' => 'John',
+                'last_name'  => 'Doe',
             ]
         );
     }
@@ -84,11 +86,12 @@ class AdminUserCest {
 
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
+        $I->dontSeeResponseJsonMatchesJsonPath('data[*]');
         $I->seeResponseContainsJson(
             [
                 'name'      => 'Modified user',
-                'firstName' => 'Johny',
-                'lastName'  => 'Stark',
+                'first_name' => 'Johny',
+                'last_name'  => 'Stark',
                 'email'     => $user->email,
             ]
         );
