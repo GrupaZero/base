@@ -20,17 +20,33 @@ class AdminUserCest {
         $I->seeResponseJsonMatchesJsonPath('data[*]');
         $I->seeResponseContainsJson(
             [
-                'meta'   => [
-                    'total'       => $usersNumber + 1,
-                    'perPage'     => 20,
-                    'currentPage' => 1,
-                    'lastPage'    => 1,
-                    'link'        => apiUrl('admin/users'),
+                'data'  => [
+                    'id'         => 1,
+                    'email'      => 'admin@gzero.pl',
+                    'name'       => 'Admin',
+                    'first_name' => 'John',
+                    'last_name'  => 'Doe',
+                    'roles'      => [
+                        [
+                            'id'   => 1,
+                            'name' => 'Admin'
+                        ]
+                    ],
                 ],
-                'params' => [
-                    'page'    => 1,
-                    'perPage' => 20,
-                    'filter'  => [],
+                'meta'  => [
+                    'current_page' => 1,
+                    'from'         => 1,
+                    'last_page'    => 1,
+                    'path'         => apiUrl('admin/users'),
+                    'per_page'     => 20,
+                    'to'           => $usersNumber + 1,
+                    'total'        => $usersNumber + 1,
+                ],
+                'links' => [
+                    'first' => '/?page=1',
+                    'last'  => '/?page=1',
+                    'prev'  => null,
+                    'next'  => null
                 ],
             ]
         );
@@ -54,7 +70,7 @@ class AdminUserCest {
         $I->dontSeeResponseJsonMatchesJsonPath('data[*]');
         $I->seeResponseContainsJson(
             [
-                'name'      => 'Test user',
+                'name'       => 'Test user',
                 'first_name' => 'John',
                 'last_name'  => 'Doe',
             ]
@@ -64,10 +80,10 @@ class AdminUserCest {
     public function checksIfUserExistsWhenGetting(FunctionalTester $I)
     {
         $I->sendGET(apiUrl('admin/users', [4]));
-        
+
         $I->seeResponseCodeIs(404);
         $I->seeResponseIsJson();
-        $I->seeResponseContainsJson(['message' => "Not found"]);
+        $I->seeResponseContainsJson(['message' => 'Not found']);
     }
 
 
@@ -89,10 +105,10 @@ class AdminUserCest {
         $I->dontSeeResponseJsonMatchesJsonPath('data[*]');
         $I->seeResponseContainsJson(
             [
-                'name'      => 'Modified user',
+                'name'       => 'Modified user',
                 'first_name' => 'Johny',
                 'last_name'  => 'Stark',
-                'email'     => $user->email,
+                'email'      => $user->email,
             ]
         );
     }
@@ -103,7 +119,7 @@ class AdminUserCest {
 
         $I->seeResponseCodeIs(404);
         $I->seeResponseIsJson();
-        $I->seeResponseContainsJson(['message' => "Not found"]);
+        $I->seeResponseContainsJson(['message' => 'Not found']);
     }
 
     public function deleteUser(FunctionalTester $I)

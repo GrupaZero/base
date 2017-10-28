@@ -46,7 +46,7 @@ class User extends Resource {
             'name'       => $this->name,
             'first_name' => $this->first_name,
             'last_name'  => $this->last_name,
-            'roles'      => RoleCollection::collection($this->whenLoaded('roles')),
+            'roles'      => Role::collection($this->whenLoaded('roles')),
         ];
     }
 }
