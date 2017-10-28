@@ -1,7 +1,6 @@
 <?php
 
 use Faker\Generator as Faker;
-use Gzero\Base\Models\Role;
 use Gzero\Base\Models\User;
 
 /*
@@ -25,19 +24,5 @@ $factory->define(User::class, function (Faker $faker) {
         'last_name'      => $faker->lastName,
         'password'       => $password ?: $password = bcrypt('secret'),
         'remember_token' => str_random(10),
-    ];
-});
-
-
-$factory->state(User::class, 'moderator', function (Faker $faker) {
-    return [
-        'acl_user_role' => [
-            'user_id' => function (Array $user) {
-                return $user['id'];
-            },
-            'role_id' => function () {
-                return factory(Role::class)->states('moderator')->make()->id;
-            }
-        ],
     ];
 });

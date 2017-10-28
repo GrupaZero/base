@@ -26,6 +26,9 @@ class UserReadRepository implements ReadRepository {
         return User::query()->where('email', '=', $email)->first();
     }
 
+    /**
+     * @return mixed
+     */
     public function getMany()
     {
         // TODO: Implement getMany() method.

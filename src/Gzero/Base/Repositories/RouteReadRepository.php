@@ -36,6 +36,9 @@ class RouteReadRepository implements ReadRepository {
     }
 
 
+    /**
+     * @return mixed
+     */
     public function getMany()
     {
         // TODO: Implement getMany() method.

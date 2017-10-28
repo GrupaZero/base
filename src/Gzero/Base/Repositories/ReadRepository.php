@@ -9,5 +9,8 @@ interface ReadRepository {
      */
     public function getById($id);
 
+    /**
+     * @return mixed
+     */
     public function getMany();
 }
