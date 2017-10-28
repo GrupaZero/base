@@ -9,21 +9,22 @@ class PublicAccountCest {
 
         $I->sendPATCH(apiUrl('user/account'),
             [
-                'name'      => 'Modified user',
-                'firstName' => 'Johny',
-                'lastName'  => 'Stark',
-                'email'     => 'newEmail@example.com'
+                'name'       => 'Modified user',
+                'first_name' => 'Johny',
+                'last_name'  => 'Stark',
+                'email'      => 'newEmail@example.com'
             ]
         );
 
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
+        $I->dontSeeResponseJsonMatchesJsonPath('data[*]');
         $I->seeResponseContainsJson(
             [
-                'name'      => 'Modified user',
-                'firstName' => 'Johny',
-                'lastName'  => 'Stark',
-                'email'     => 'newEmail@example.com',
+                'name'       => 'Modified user',
+                'first_name' => 'Johny',
+                'last_name'  => 'Stark',
+                'email'      => 'newEmail@example.com',
             ]
         );
     }
@@ -43,6 +44,7 @@ class PublicAccountCest {
         );
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
+        $I->dontSeeResponseJsonMatchesJsonPath('data[*]');
 
         $I->deleteHeader('Authorization');
         $I->login($user->email, 'newPassword');
@@ -61,6 +63,7 @@ class PublicAccountCest {
         );
         $I->seeResponseCodeIs(422);
         $I->seeResponseIsJson();
+        $I->dontSeeResponseJsonMatchesJsonPath('data[*]');
         $I->seeResponseContainsJson(
             [
                 'message' => 'The given data was invalid.',
@@ -86,6 +89,7 @@ class PublicAccountCest {
 
         $I->seeResponseCodeIs(422);
         $I->seeResponseIsJson();
+        $I->dontSeeResponseJsonMatchesJsonPath('data[*]');
         $I->seeResponseContainsJson(
             [
                 'message' => 'The given data was invalid.',
@@ -111,6 +115,7 @@ class PublicAccountCest {
 
         $I->seeResponseCodeIs(422);
         $I->seeResponseIsJson();
+        $I->dontSeeResponseJsonMatchesJsonPath('data[*]');
         $I->seeResponseContainsJson(
             [
                 'message' => 'The given data was invalid.',

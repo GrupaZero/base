@@ -4,7 +4,7 @@ use Gzero\Base\Http\Controllers\ApiController;
 use Gzero\Base\Jobs\UpdateUser;
 use Gzero\Base\Repositories\UserReadRepository;
 use Gzero\Base\UrlParamsProcessor;
-use Gzero\Base\Transformers\UserTransformer;
+use Gzero\Base\Http\Resources\User as UserResource;
 use Gzero\Base\Validators\AccountValidator;
 use Illuminate\Http\Request;
 
@@ -39,7 +39,7 @@ class PublicAccountController extends ApiController {
      * @param UserReadRepository $repository Query service
      * @param Request            $request    Request object
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return UserResource
      */
     public function update(UserReadRepository $repository, Request $request)
     {
@@ -52,7 +52,7 @@ class PublicAccountController extends ApiController {
         $input = $this->validator->bind('name', ['user_id' => $user->id])->bind('email', ['user_id' => $user->id])
             ->validate('update');
         $user  = dispatch_now(new UpdateUser($user, $input));
-        return $this->respondWithSuccess($user, new UserTransformer());
+        return new UserResource($user);
     }
 
 

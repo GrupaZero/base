@@ -43,8 +43,8 @@ class AdminUserCest {
                     'total'        => $usersNumber + 1,
                 ],
                 'links' => [
-                    'first' => '/?page=1',
-                    'last'  => '/?page=1',
+                    'first' => apiUrl('admin/users') . '?page=1',
+                    'last'  => apiUrl('admin/users') . '?page=1',
                     'prev'  => null,
                     'next'  => null
                 ],

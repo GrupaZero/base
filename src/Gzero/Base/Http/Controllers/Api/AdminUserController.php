@@ -65,7 +65,7 @@ class AdminUserController extends ApiController {
             $params['perPage']
         );
 
-        return new UserCollection($results);
+        return new UserCollection($results->setPath(apiUrl('admin/users')));
     }
 
     /**
