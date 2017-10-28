@@ -1,7 +1,7 @@
 <?php namespace Gzero\Base\Http\Controllers\Api;
 
 use Gzero\Base\Http\Controllers\ApiController;
-use Gzero\Base\Service\UserService;
+use Gzero\Base\Services\UserService;
 use Gzero\Base\UrlParamsProcessor;
 use Gzero\Base\Transformers\UserTransformer;
 use Gzero\Base\Validators\AccountValidator;

@@ -1,6 +1,6 @@
 <?php namespace Base;
 
-use Gzero\Base\Service\LanguageService;
+use Gzero\Base\Services\LanguageService;
 use Illuminate\Routing\RouteCollection;
 use Illuminate\Routing\Router;
 

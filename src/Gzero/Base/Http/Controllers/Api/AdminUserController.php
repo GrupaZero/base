@@ -2,7 +2,7 @@
 
 use Gzero\Base\Http\Controllers\ApiController;
 use Gzero\Base\Models\User;
-use Gzero\Base\Service\UserService;
+use Gzero\Base\Services\UserService;
 use Gzero\Base\Transformers\UserTransformer;
 use Gzero\Base\UrlParamsProcessor;
 use Gzero\Base\Validators\UserValidator;

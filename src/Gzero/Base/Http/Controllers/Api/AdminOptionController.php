@@ -2,8 +2,8 @@
 
 use Gzero\Base\Http\Controllers\ApiController;
 use Gzero\Base\Models\Option;
-use Gzero\Base\Service\OptionService;
-use Gzero\Base\Service\RepositoryValidationException;
+use Gzero\Base\Services\OptionService;
+use Gzero\Base\Services\RepositoryValidationException;
 use Gzero\Base\Transformers\OptionCategoryTransformer;
 use Gzero\Base\Transformers\OptionTransformer;
 use Gzero\Base\Validators\OptionValidator;

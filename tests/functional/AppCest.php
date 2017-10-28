@@ -5,8 +5,8 @@ use Gzero\Base\Models\Language;
 use Gzero\Base\Models\Routable;
 use Gzero\Base\Models\Route;
 use Gzero\Base\Models\RouteTranslation;
-use Gzero\Base\Queries\RouteQuery;
-use Gzero\Base\Service\LanguageService;
+use Gzero\Base\Services\LanguageService;
+use Gzero\Base\Services\RouteQueryService;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Router;
 use Mockery;
@@ -234,7 +234,7 @@ class AppCest {
             }
         });
 
-        $I->haveInstance(RouteQuery::class, Mockery::mock(RouteQuery::class, [
+        $I->haveInstance(RouteQueryService::class, Mockery::mock(RouteQueryService::class, [
             'getByPath' => $route,
         ]));
 

@@ -2,7 +2,7 @@
 
 use Gzero\Base\Http\Controllers\ApiController;
 use Gzero\Base\Transformers\LanguageTransformer;
-use Gzero\Base\Service\LanguageService;
+use Gzero\Base\Services\LanguageService;
 
 class AdminLanguageController extends ApiController {
 

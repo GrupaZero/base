@@ -1,4 +1,4 @@
-<?php namespace Gzero\Base\Service;
+<?php namespace Gzero\Base\Services;
 
 class RepositoryValidationException extends RepositoryException {
 

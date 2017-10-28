@@ -2,7 +2,7 @@
 
 use Codeception\Test\Unit;
 use Gzero\Base\Models\Language;
-use Gzero\Base\Service\LanguageService;
+use Gzero\Base\Services\LanguageService;
 
 class LanguageServiceTest extends Unit {
 

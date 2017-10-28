@@ -1,7 +1,7 @@
 <?php namespace Gzero\Base\Http\Controllers\Auth;
 
 use Gzero\Base\Jobs\SendWelcomeEmail;
-use Gzero\Base\Service\UserService;
+use Gzero\Base\Services\UserService;
 use Gzero\Base\Validators\BaseUserValidator;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Http\Request;

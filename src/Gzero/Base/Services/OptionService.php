@@ -1,4 +1,4 @@
-<?php namespace Gzero\Base\Service;
+<?php namespace Gzero\Base\Services;
 
 use Gzero\Base\Models\Option;
 use Gzero\Base\Models\OptionCategory;

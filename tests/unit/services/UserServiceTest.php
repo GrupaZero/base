@@ -2,7 +2,7 @@
 
 use Codeception\Test\Unit;
 use Gzero\Base\Models\User;
-use Gzero\Base\Service\UserService;
+use Gzero\Base\Services\UserService;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Support\Facades\Hash;
 

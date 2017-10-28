@@ -3,7 +3,7 @@
 use Gzero\Base\Events\RouteMatched;
 use Gzero\Base\Models\Language;
 use Gzero\Base\Models\Route;
-use Gzero\Base\Queries\RouteQuery;
+use Gzero\Base\Services\RouteQueryService;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -12,7 +12,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class DynamicRouter {
 
     /**
-     * @var RouteQuery
+     * @var RouteQueryService
      */
     protected $readRepository;
 
@@ -24,10 +24,10 @@ class DynamicRouter {
     /**
      * DynamicRouter constructor
      *
-     * @param RouteQuery $query RouteQuery service
-     * @param Gate       $gate  Gate
+     * @param RouteQueryService $query RouteQuery service
+     * @param Gate              $gate  Gate
      */
-    public function __construct(RouteQuery $query, Gate $gate)
+    public function __construct(RouteQueryService $query, Gate $gate)
     {
         $this->readRepository = $query;
         $this->gate           = $gate;

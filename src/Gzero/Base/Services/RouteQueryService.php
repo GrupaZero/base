@@ -1,8 +1,8 @@
-<?php namespace Gzero\Base\Queries;
+<?php namespace Gzero\Base\Services;
 
 use Gzero\Base\Models\Route;
 
-class RouteQuery {
+class RouteQueryService {
 
     /**
      * @param string $path         URI path

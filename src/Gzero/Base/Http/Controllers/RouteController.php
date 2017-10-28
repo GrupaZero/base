@@ -1,7 +1,7 @@
 <?php namespace Gzero\Base\Http\Controllers;
 
 use Gzero\Base\DynamicRouter;
-use Gzero\Base\Service\LanguageService;
+use Gzero\Base\Services\LanguageService;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
