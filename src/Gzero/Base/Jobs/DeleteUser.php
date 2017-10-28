@@ -12,7 +12,7 @@ class DeleteUser {
     /**
      * Create a new job instance.
      *
-     * @param User $user
+     * @param User $user User model
      */
     public function __construct(User $user)
     {

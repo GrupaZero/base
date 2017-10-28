@@ -33,11 +33,11 @@ class CreateUser {
     /**
      * Create a new job instance.
      *
-     * @param string $email
-     * @param string $password
-     * @param string $name
-     * @param string $firstName
-     * @param string $lastName
+     * @param string $email     Email
+     * @param string $password  Password
+     * @param string $name      Name
+     * @param string $firstName First name
+     * @param string $lastName  Last name
      */
     public function __construct(
         string $email,

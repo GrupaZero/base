@@ -17,7 +17,7 @@ class UserQueryService implements QueryService {
     /**
      * Retrieve a user by given email
      *
-     * @param  string $email
+     * @param  string $email User email
      *
      * @return User|mixed
      */

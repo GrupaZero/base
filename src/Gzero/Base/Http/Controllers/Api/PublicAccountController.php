@@ -36,7 +36,7 @@ class PublicAccountController extends ApiController {
     /**
      * Updates the specified resource in the database.
      *
-     * @param UserQueryService $service
+     * @param UserQueryService $service Query service
      * @param Request          $request Request object
      *
      * @return \Illuminate\Http\JsonResponse
