@@ -25,7 +25,8 @@ use Illuminate\Http\Resources\Json\Resource;
  *   ),
  *   @SWG\Property(
  *     property="roles",
- *     type="array"
+ *     type="array",
+ *     @SWG\Items(ref="#/definitions/Role")
  *   )
  * )
  */

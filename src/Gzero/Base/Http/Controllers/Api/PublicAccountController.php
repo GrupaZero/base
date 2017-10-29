@@ -36,6 +36,39 @@ class PublicAccountController extends ApiController {
     /**
      * Updates the specified resource in the database.
      *
+     * @SWG\Patch(path="/users/{id}",
+     *   tags={"user"},
+     *   summary="Updated user",
+     *   description="Updated user",
+     *   produces={"application/json"},
+     *   security={{"Bearer": {}}},
+     *   @SWG\Parameter(
+     *     name="id",
+     *     in="path",
+     *     description="ID of user that needs to be updated",
+     *     required=true,
+     *     type="integer"
+     *   ),
+     *   @SWG\Parameter(
+     *     in="body",
+     *     name="body",
+     *     description="Updated user object",
+     *     required=true,
+     *     @SWG\Schema(
+     *       type="object",
+     *       required={"email, name"},
+     *       @SWG\Property(property="email", type="string"),
+     *       @SWG\Property(property="name", type="string"),
+     *       @SWG\Property(property="first_name", type="string"),
+     *       @SWG\Property(property="last_name", type="string"),
+     *       @SWG\Property(property="password", type="string"),
+     *       @SWG\Property(property="password_confirmation", type="string"),
+     *     )
+     *   ),
+     *   @SWG\Response(response=400, description="Invalid user supplied"),
+     *   @SWG\Response(response=404, description="User not found")
+     * )
+     *
      * @param UserReadRepository $repository Query service
      * @param Request            $request    Request object
      *

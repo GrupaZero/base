@@ -45,7 +45,6 @@ class AdminUserController extends ApiController {
      *   path="/admin/users",
      *   tags={"user"},
      *   summary="List users",
-     *   operationId="getUsers",
      *   produces={"application/json"},
      *   security={{"Bearer": {}}},
      *   @SWG\Response(response="200", description="successful operation")
@@ -75,7 +74,6 @@ class AdminUserController extends ApiController {
      *   path="/admin/users/{id}",
      *   tags={"user"},
      *   summary="Info for a specific user",
-     *   operationId="getLanguages",
      *   produces={"application/json"},
      *   security={{"Bearer": {}}},
      *   @SWG\Parameter(
@@ -110,8 +108,8 @@ class AdminUserController extends ApiController {
      *   tags={"user"},
      *   summary="Updated user",
      *   description="Updated user",
-     *   operationId="updateUser",
      *   produces={"application/json"},
+     *   security={{"Bearer": {}}},
      *   @SWG\Parameter(
      *     name="id",
      *     in="path",
@@ -124,7 +122,14 @@ class AdminUserController extends ApiController {
      *     name="body",
      *     description="Updated user object",
      *     required=true,
-     *     @SWG\Schema(ref="#/definitions/User")
+     *     @SWG\Schema(
+     *       type="object",
+     *       required={"email, name"},
+     *       @SWG\Property(property="email", type="string"),
+     *       @SWG\Property(property="name", type="string"),
+     *       @SWG\Property(property="first_name", type="string"),
+     *       @SWG\Property(property="last_name", type="string"),
+     *     )
      *   ),
      *   @SWG\Response(response=400, description="Invalid user supplied"),
      *   @SWG\Response(response=404, description="User not found")
@@ -157,7 +162,6 @@ class AdminUserController extends ApiController {
      *   path="/admin/users/{id}",
      *   tags={"user"},
      *   summary="Delete user",
-     *   operationId="deleteUser",
      *   produces={"application/json"},
      *   security={{"Bearer": {}}},
      *   @SWG\Parameter(

@@ -4,7 +4,7 @@ use Illuminate\Http\Resources\Json\Resource;
 
 /**
  * @SWG\Definition(
- *   definition="role",
+ *   definition="Role",
  *   type="object",
  *   required={"name"},
  *   @SWG\Property(
