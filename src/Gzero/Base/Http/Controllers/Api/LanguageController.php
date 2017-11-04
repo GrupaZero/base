@@ -5,7 +5,7 @@ use Gzero\Base\Http\Resources\Language as LanguageResource;
 use Gzero\Base\Http\Resources\LanguageCollection;
 use Gzero\Base\Services\LanguageService;
 
-class AdminLanguageController extends ApiController {
+class LanguageController extends ApiController {
 
     /**
      * @var LanguageService
@@ -26,12 +26,10 @@ class AdminLanguageController extends ApiController {
      * Display a listing of the resource.
      *
      * @SWG\Get(
-     *   path="/admin/languages",
-     *   tags={"language"},
-     *   summary="List languages",
-     *   operationId="getLanguages",
+     *   path="/languages",
+     *   tags={"language", "public"},
+     *   summary="List of all languages",
      *   produces={"application/json"},
-     *   security={{"Bearer": {}}},
      *   @SWG\Response(response="200", description="successful operation")
      * )
      *
@@ -46,12 +44,10 @@ class AdminLanguageController extends ApiController {
      * Display the specified resource.
      *
      * @SWG\Get(
-     *   path="/admin/languages/{code}",
-     *   tags={"language"},
-     *   summary="Info for a specific language",
-     *   operationId="getLanguageByCode",
+     *   path="/languages/{code}",
+     *   tags={"language", "public"},
+     *   summary="Get specific language",
      *   produces={"application/json"},
-     *   security={{"Bearer": {}}},
      *   @SWG\Parameter(
      *     name="code",
      *     in="path",
@@ -62,7 +58,7 @@ class AdminLanguageController extends ApiController {
      *   @SWG\Response(response="200", description="successful operation")
      * )
      *
-     * @param int $code Lang code
+     * @param string $code Lang code
      *
      * @return LanguageResource
      */

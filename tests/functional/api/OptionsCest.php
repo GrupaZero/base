@@ -1,12 +1,10 @@
 <?php namespace Base;
 
-class AdminOptionsCest {
-
-    use AdminApiTest;
+class OptionsCest {
 
     public function getOptionsCategories(FunctionalTester $I)
     {
-        $I->sendGET(apiUrl('admin/options'));
+        $I->sendGET(apiUrl('options'));
 
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
@@ -22,7 +20,7 @@ class AdminOptionsCest {
 
     public function getOptionsFromGivenCategory(FunctionalTester $I)
     {
-        $I->sendGET(apiUrl('admin/options/seo'));
+        $I->sendGET(apiUrl('options/seo'));
 
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
@@ -48,7 +46,8 @@ class AdminOptionsCest {
 
     public function updateOptionValue(FunctionalTester $I)
     {
-        $I->sendPUT(apiUrl('admin/options/seo'),
+        $I->loginAsAdmin();
+        $I->sendPUT(apiUrl('options/seo'),
             [
                 'key'   => 'desc_length',
                 'value' => [
@@ -84,7 +83,7 @@ class AdminOptionsCest {
 
     public function getOptionsFromNonExistingCategory(FunctionalTester $I)
     {
-        $I->sendGET(apiUrl('admin/options/some_category'));
+        $I->sendGET(apiUrl('options/some_category'));
 
         $I->seeResponseCodeIs(400);
         $I->seeResponseIsJson();
@@ -97,7 +96,8 @@ class AdminOptionsCest {
 
     public function updateNonExistingOption(FunctionalTester $I)
     {
-        $I->sendPUT(apiUrl('admin/options/seo'),
+        $I->loginAsAdmin();
+        $I->sendPUT(apiUrl('options/seo'),
             [
                 'key'   => 'not_an_option',
                 'value' => [
@@ -123,7 +123,8 @@ class AdminOptionsCest {
 
     public function updateOptionInNonExistingCategory(FunctionalTester $I)
     {
-        $I->sendPUT(apiUrl('admin/options/some_category'),
+        $I->loginAsAdmin();
+        $I->sendPUT(apiUrl('options/some_category'),
             [
                 'key'   => 'not_an_option',
                 'value' => [

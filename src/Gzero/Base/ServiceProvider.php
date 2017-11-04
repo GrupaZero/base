@@ -68,7 +68,7 @@ class ServiceProvider extends AbstractServiceProvider {
         if ($this->app->environment() !== 'testing') { // We're manually registering it for test cases
             $this->app->booted(function () {
                 addMultiLanguageRoutes(function ($router) {
-                    $router->get('{path?}', 'Gzero\Base\Http\Controller\RouteController@dynamicRouter')->where('path', '.*');
+                    $router->get('{path?}', 'Gzero\Base\Http\Controllers\RouteController@dynamicRouter')->where('path', '.*');
                 });
             });
         }
@@ -83,6 +83,7 @@ class ServiceProvider extends AbstractServiceProvider {
     {
         $this->setDefaultLocale();
 
+        $this->registerRoutePatterns();
         $this->registerRoutes();
 
         /** @TODO Probably we can move this to routes file */
@@ -305,6 +306,17 @@ class ServiceProvider extends AbstractServiceProvider {
             ],
             'gzero-base views'
         );
+    }
+
+    /**
+     * It registers global route patterns
+     *
+     * @return void
+     */
+    protected function registerRoutePatterns()
+    {
+        $router = resolve(Router::class);
+        $router->pattern('id', '[0-9]+');
     }
 
 }

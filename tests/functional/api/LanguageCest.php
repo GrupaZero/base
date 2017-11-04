@@ -1,12 +1,10 @@
 <?php namespace Base;
 
-class AdminLanguageCest {
+class LanguageCest {
 
-    use AdminApiTest;
-
-    public function getSingleLanguage(FunctionalTester $I)
+    public function shouldGetSingleLanguage(FunctionalTester $I)
     {
-        $I->sendGet(apiUrl('admin/languages', ['en']));
+        $I->sendGet(apiUrl('languages', ['en']));
 
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
@@ -21,9 +19,9 @@ class AdminLanguageCest {
         );
     }
 
-    public function getLanguages(FunctionalTester $I)
+    public function shouldGetListOfLanguages(FunctionalTester $I)
     {
-        $I->sendGet(apiUrl('admin/languages'));
+        $I->sendGet(apiUrl('languages'));
 
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();

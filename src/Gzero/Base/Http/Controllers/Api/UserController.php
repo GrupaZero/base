@@ -12,12 +12,17 @@ use Gzero\Base\UrlParamsProcessor;
 use Gzero\Base\Validators\UserValidator;
 use Illuminate\Http\Request;
 
-class AdminUserController extends ApiController {
+class UserController extends ApiController {
 
     /**
      * @var UserService
      */
     protected $userService;
+
+    /**
+     * @var UserValidator
+     */
+    protected $validator;
 
     /**
      * UserController constructor.
@@ -39,14 +44,14 @@ class AdminUserController extends ApiController {
     }
 
     /**
-     * Display list of users
+     * Display list of all users
      *
      * @SWG\Get(
-     *   path="/admin/users",
+     *   path="/users",
      *   tags={"user"},
-     *   summary="List users",
+     *   summary="List of all users",
      *   produces={"application/json"},
-     *   security={{"Bearer": {}}},
+     *   security={{"AdminAccess": {}}},
      *   @SWG\Response(response="200", description="successful operation")
      * )
      *
@@ -64,18 +69,18 @@ class AdminUserController extends ApiController {
             $params['perPage']
         );
 
-        return new UserCollection($results->setPath(apiUrl('admin/users')));
+        return new UserCollection($results->setPath(apiUrl('users')));
     }
 
     /**
      * Display the specified resource.
      *
      * @SWG\Get(
-     *   path="/admin/users/{id}",
+     *   path="/users/{id}",
      *   tags={"user"},
-     *   summary="Info for a specific user",
+     *   summary="Get specific user",
      *   produces={"application/json"},
-     *   security={{"Bearer": {}}},
+     *   security={{"AdminAccess": {}}},
      *   @SWG\Parameter(
      *     name="id",
      *     in="path",
@@ -102,14 +107,14 @@ class AdminUserController extends ApiController {
     }
 
     /**
-     * Updates the specified resource in the database.
+     * Updates the specified resource.
      *
-     * @SWG\Patch(path="/admin/users/{id}",
+     * @SWG\Patch(path="/users/{id}",
      *   tags={"user"},
-     *   summary="Updated user",
-     *   description="Updated user",
+     *   summary="Updated specific user",
+     *   description="Updates specific user",
      *   produces={"application/json"},
-     *   security={{"Bearer": {}}},
+     *   security={{"AdminAccess": {}}},
      *   @SWG\Parameter(
      *     name="id",
      *     in="path",
@@ -156,14 +161,62 @@ class AdminUserController extends ApiController {
     }
 
     /**
+     * Updates the specified resource in the database.
+     *
+     * @SWG\Patch(path="/users/me",
+     *   tags={"user"},
+     *   summary="Updated current user",
+     *   description="Updated current user",
+     *   produces={"application/json"},
+     *   security={{"Auth": {}}, {"AdminAccess": {}}},
+     *   @SWG\Parameter(
+     *     in="body",
+     *     name="body",
+     *     description="Updated user object",
+     *     required=true,
+     *     @SWG\Schema(
+     *       type="object",
+     *       required={"email, name"},
+     *       @SWG\Property(property="email", type="string"),
+     *       @SWG\Property(property="name", type="string"),
+     *       @SWG\Property(property="first_name", type="string"),
+     *       @SWG\Property(property="last_name", type="string"),
+     *       @SWG\Property(property="password", type="string"),
+     *       @SWG\Property(property="password_confirmation", type="string"),
+     *     )
+     *   ),
+     *   @SWG\Response(response=400, description="Invalid user supplied"),
+     *   @SWG\Response(response=404, description="User not found")
+     * )
+     *
+     * @param UserReadRepository $repository Query service
+     * @param Request            $request    Request object
+     *
+     * @return UserResource
+     */
+    public function updateMe(UserReadRepository $repository, Request $request)
+    {
+        if (!$request->has('password')) {
+            $this->validator->setData($request->except(['password', 'password_confirmation']));
+        }
+
+        $user = $repository->getById($request->user()->id);
+        $this->authorize('update', $user);
+        $input = $this->validator->bind('name', ['user_id' => $user->id])->bind('email', ['user_id' => $user->id])
+            ->validate('updateMe');
+        $user  = dispatch_now(new UpdateUser($user, $input));
+        return new UserResource($user);
+    }
+
+    /**
      * Remove the specified user from database.
      *
      * @SWG\Delete(
-     *   path="/admin/users/{id}",
+     *   path="/users/{id}",
      *   tags={"user"},
-     *   summary="Delete user",
+     *   summary="Delete specific user",
      *   produces={"application/json"},
-     *   security={{"Bearer": {}}},
+     *   security={{"AdminAccess": {}}},
      *   @SWG\Parameter(
      *     name="id",
      *     in="path",

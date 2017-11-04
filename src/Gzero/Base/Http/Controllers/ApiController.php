@@ -39,6 +39,10 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
  *   name="options",
  *   description="Everything about app options"
  *   )
+ * @SWG\Tag(
+ *   name="public",
+ *   description="Everything public"
+ *   )
  * )
  */
 class ApiController extends Controller {

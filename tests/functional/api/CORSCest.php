@@ -1,8 +1,6 @@
 <?php namespace Base;
 
-class AdminCORSCest {
-
-    use AdminApiTest;
+class CORSCest {
 
     public function allowedHeadersOPTIONS(FunctionalTester $I)
     {
@@ -10,7 +8,7 @@ class AdminCORSCest {
         $I->haveHttpHeader('Access-Control-Request-Method', 'GET');
         $I->haveHttpHeader('Origin', 'http://example.com');
 
-        $I->sendOPTIONS(apiUrl('admin/languages'));
+        $I->sendOPTIONS(apiUrl('languages'));
 
         $I->seeResponseCodeIs(200);
         $I->seeHttpHeader('Access-Control-Allow-Credentials', 'true');
@@ -19,11 +17,12 @@ class AdminCORSCest {
 
     public function optionsPUTSuccessResponse(FunctionalTester $I)
     {
+        $I->loginAsAdmin();
         $I->haveHttpHeader('X-Requested-With', 'XMLHttpRequest');
         $I->haveHttpHeader('Origin', 'https://example.com');
 
         $I->sendPUT(
-            apiUrl('admin/options/seo'),
+            apiUrl('options/seo'),
             [
                 'key'   => 'desc_length',
                 'value' => [
@@ -43,10 +42,11 @@ class AdminCORSCest {
 
     public function validationError(FunctionalTester $I)
     {
+        $I->loginAsAdmin();
         $I->haveHttpHeader('X-Requested-With', 'XMLHttpRequest');
         $I->haveHttpHeader('Origin', 'http://dev.gzero.pl');
 
-        $I->sendPUT(apiUrl('admin/options/seo'));
+        $I->sendPUT(apiUrl('options/seo'));
 
         $I->seeResponseCodeIs(422);
         $I->seeHttpHeader('Access-Control-Allow-Credentials', 'true');
@@ -68,7 +68,7 @@ class AdminCORSCest {
         $I->haveHttpHeader('X-Requested-With', 'XMLHttpRequest');
         $I->haveHttpHeader('Origin', 'http://localhost');
 
-        $I->sendPOST(apiUrl('admin/options'));
+        $I->sendPOST(apiUrl('options'));
         $I->seeResponseCodeIs(405);
         // Asserting CORS headers won't be added
         $I->dontSeeHttpHeader('Access-Control-Allow-Credentials', 'true');

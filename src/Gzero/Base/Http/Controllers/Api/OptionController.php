@@ -10,7 +10,7 @@ use Gzero\Base\Validators\OptionValidator;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
-class AdminOptionController extends ApiController {
+class OptionController extends ApiController {
 
     /**
      * @var OptionService
@@ -39,12 +39,11 @@ class AdminOptionController extends ApiController {
      * Display a listing of the resource.
      *
      * @SWG\Get(
-     *   path="/admin/options",
-     *   tags={"options"},
+     *   path="/options",
+     *   tags={"options", "public"},
      *   summary="Get all option categories",
      *   operationId="getOptions",
      *   produces={"application/json"},
-     *   security={{"Bearer": {}}},
      *   @SWG\Response(response="200", description="successful operation")
      * )
      *
@@ -52,7 +51,6 @@ class AdminOptionController extends ApiController {
      */
     public function index()
     {
-        $this->authorize('read', Option::class);
         return $this->respondWithSuccess($this->optionService->getCategories(), new OptionCategoryTransformer);
     }
 
@@ -60,12 +58,11 @@ class AdminOptionController extends ApiController {
      * Display all options from selected category.
      *
      * @SWG\Get(
-     *   path="/admin/options/{category}",
-     *   tags={"options"},
+     *   path="/options/{category}",
+     *   tags={"options", "public"},
      *   summary="Get all options from selected category",
      *   operationId="getOptionsByCategory",
      *   produces={"application/json"},
-     *   security={{"Bearer": {}}},
      *   @SWG\Parameter(
      *     name="category",
      *     in="path",
@@ -82,7 +79,6 @@ class AdminOptionController extends ApiController {
      */
     public function show($key)
     {
-        $this->authorize('read', Option::class);
         try {
             $option = $this->optionService->getOptions($key);
             return $this->respondWithSuccess($option, new OptionTransformer);
@@ -95,12 +91,12 @@ class AdminOptionController extends ApiController {
      * Updates the specified resource in the database.
      *
      * @SWG\Put(
-     *   path="/admin/options/{category}",
+     *   path="/options/{category}",
      *   tags={"options"},
      *   summary="Updates selected option within the given category",
      *   operationId="putOptionsByCategory",
      *   produces={"application/json"},
-     *   security={{"Bearer": {}}},
+     *   security={{"AdminAccess": {}}},
      *   @SWG\Parameter(
      *     name="category",
      *     in="path",

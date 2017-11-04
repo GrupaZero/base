@@ -1,11 +1,8 @@
 <?php
 
 use Faker\Generator as Faker;
-use Gzero\Base\Models\Language;
-use Gzero\Base\Models\Routable;
 use Gzero\Base\Models\Route;
 use Gzero\Base\Models\RouteTranslation;
-use Illuminate\Http\Response;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,12 +44,7 @@ $factory->state(Route::class, 'inactiveTranslationEn', function (Faker $faker) {
 $factory->state(Route::class, 'routableHelloWorld', function (Faker $faker) {
     return [
         'routable' => function () {
-            return new class implements Routable {
-                public function handle(Route $route, Language $lang): Response
-                {
-                    return response('Hello World');
-                }
-            };
+            return new App\HelloWorld();
         }
     ];
 });

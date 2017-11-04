@@ -2,7 +2,7 @@
 
 use Closure;
 
-class AdminApiAccess {
+class AdminAccess {
 
     /**
      * Return 404 if user is not authenticated or got no admin rights
@@ -14,7 +14,7 @@ class AdminApiAccess {
      */
     public function handle($request, Closure $next)
     {
-        if ($request->user()->hasPermission('admin-api-access') || $request->user()->isSuperAdmin()) {
+        if ($request->user()->hasPermission('admin-access') || $request->user()->isSuperAdmin()) {
             return $next($request);
         }
         return abort(404);
