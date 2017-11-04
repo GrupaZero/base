@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Hash;
 
 class UserCest {
 
-    public function getUsers(FunctionalTester $I)
+    public function adminShouldBeAbleToGetListOfUsers(FunctionalTester $I)
     {
         $I->loginAsAdmin();
         $usersNumber = 4;
@@ -51,7 +51,7 @@ class UserCest {
         );
     }
 
-    public function getSingleUser(FunctionalTester $I)
+    public function adminShouldBeAbleToGetSingleUser(FunctionalTester $I)
     {
         $I->loginAsAdmin();
         $user = $I->haveUser(
@@ -77,7 +77,7 @@ class UserCest {
         );
     }
 
-    public function checksIfUserExistsWhenGetting(FunctionalTester $I)
+    public function adminShouldNotBeAbleToGetNonExistingUser(FunctionalTester $I)
     {
         $I->loginAsAdmin();
 
@@ -88,7 +88,7 @@ class UserCest {
         $I->seeResponseContainsJson(['message' => 'Not found']);
     }
 
-    public function updateUser(FunctionalTester $I)
+    public function adminShouldBeAbleToUpdateUser(FunctionalTester $I)
     {
         $I->loginAsAdmin();
         $user = $I->haveUser();
@@ -115,7 +115,7 @@ class UserCest {
         );
     }
 
-    public function checksIfUserExistsWhenUpdating(FunctionalTester $I)
+    public function adminShouldNotBeAbleToUpdateNonExistingUser(FunctionalTester $I)
     {
         $I->loginAsAdmin();
 
@@ -126,7 +126,7 @@ class UserCest {
         $I->seeResponseContainsJson(['message' => 'Not found']);
     }
 
-    public function deleteUser(FunctionalTester $I)
+    public function adminShouldBeAbleToDeleteUser(FunctionalTester $I)
     {
         $I->loginAsAdmin();
         $user = $I->haveUser();
@@ -138,12 +138,7 @@ class UserCest {
         $I->seeResponseContainsJson(['success' => true]);
     }
 
-
-    /**
-     * @TODO Fix those tests
-     */
-
-    public function updateAccount(FunctionalTester $I)
+    public function shouldBeAbleToUpdateMyPersonalInformation(FunctionalTester $I)
     {
         $I->loginAsUser();
 
@@ -169,7 +164,7 @@ class UserCest {
         );
     }
 
-    public function updatePassword(FunctionalTester $I)
+    public function shouldBeAbleToUpdateMyPassword(FunctionalTester $I)
     {
         $user = $I->loginAsUser();
 
@@ -190,7 +185,7 @@ class UserCest {
         $I->login($user->email, 'newPassword');
     }
 
-    public function cantChangePasswordWithoutConfirmation(FunctionalTester $I)
+    public function cantChangeMyPasswordWithoutConfirmation(FunctionalTester $I)
     {
         $user = $I->loginAsUser();
 
@@ -215,7 +210,7 @@ class UserCest {
         );
     }
 
-    public function cantChangeNameToAlreadyTaken(FunctionalTester $I)
+    public function cantChangeMyNameToAlreadyTaken(FunctionalTester $I)
     {
         $user  = $I->loginAsUser();
         $user2 = $I->haveUser();
@@ -240,7 +235,7 @@ class UserCest {
         );
     }
 
-    public function cantChangeEmailToAlreadyTaken(FunctionalTester $I)
+    public function cantChangeMyEmailToAlreadyTaken(FunctionalTester $I)
     {
         $user  = $I->loginAsUser();
         $user2 = $I->haveUser();

@@ -2,7 +2,7 @@
 
 class OptionsCest {
 
-    public function getOptionsCategories(FunctionalTester $I)
+    public function shouldGetListOfOptionsCategories(FunctionalTester $I)
     {
         $I->sendGET(apiUrl('options'));
 
@@ -18,7 +18,7 @@ class OptionsCest {
         );
     }
 
-    public function getOptionsFromGivenCategory(FunctionalTester $I)
+    public function shouldGetListOfOptionsFromGivenCategory(FunctionalTester $I)
     {
         $I->sendGET(apiUrl('options/seo'));
 
@@ -44,7 +44,7 @@ class OptionsCest {
         );
     }
 
-    public function updateOptionValue(FunctionalTester $I)
+    public function adminShouldBeAbleToUpdateOptionValue(FunctionalTester $I)
     {
         $I->loginAsAdmin();
         $I->sendPUT(apiUrl('options/seo'),
@@ -81,7 +81,7 @@ class OptionsCest {
         );
     }
 
-    public function getOptionsFromNonExistingCategory(FunctionalTester $I)
+    public function shouldNotBeAbleToGetOptionsFromNonExistingCategory(FunctionalTester $I)
     {
         $I->sendGET(apiUrl('options/some_category'));
 
@@ -94,7 +94,7 @@ class OptionsCest {
         );
     }
 
-    public function updateNonExistingOption(FunctionalTester $I)
+    public function adminShouldNotBeAbleToUpdateNonExistingOption(FunctionalTester $I)
     {
         $I->loginAsAdmin();
         $I->sendPUT(apiUrl('options/seo'),
@@ -121,7 +121,7 @@ class OptionsCest {
         );
     }
 
-    public function updateOptionInNonExistingCategory(FunctionalTester $I)
+    public function adminShouldNotBeAbleToUpdateOptionInNonExistingCategory(FunctionalTester $I)
     {
         $I->loginAsAdmin();
         $I->sendPUT(apiUrl('options/some_category'),
