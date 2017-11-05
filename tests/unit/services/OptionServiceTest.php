@@ -180,7 +180,7 @@ class OptionServiceTest extends \Codeception\Test\Unit {
         $categoryKey = 'general';
 
         $this->assertEquals(
-            $this->expectedOptions[$categoryKey],
+            collect($this->expectedOptions[$categoryKey]),
             $this->service->getOptions($categoryKey)
         );
 

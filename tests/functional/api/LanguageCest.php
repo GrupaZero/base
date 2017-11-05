@@ -27,7 +27,6 @@ class LanguageCest {
         $I->seeResponseIsJson();
         $I->seeResponseJsonMatchesJsonPath('data[*]');
         $I->seeResponseContainsJson(
-
             [
                 'code'       => 'pl',
                 'i18n'       => 'pl_PL',

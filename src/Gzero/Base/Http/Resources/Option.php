@@ -1,12 +1,12 @@
-<?php namespace Gzero\Base\Transformers;
+<?php namespace Gzero\Base\Http\Resources;
 
-use Gzero\Base\Models\Option;
+use Illuminate\Http\Resources\Json\Resource;
 
 /**
  * @SWG\Definition(
  *   definition="Option",
  *   type="object",
- *   required={"key", "value"},
+ *   required={"key", "value", "category_key"},
  *   @SWG\Property(
  *     property="key",
  *     type="string"
@@ -21,18 +21,17 @@ use Gzero\Base\Models\Option;
  *   )
  * )
  */
-class OptionTransformer extends AbstractTransformer {
+class Option extends Resource {
 
     /**
-     * Transforms option entity
+     * Transform the resource into an array.
      *
-     * @param Option|array $option Option entity
+     * @param  \Illuminate\Http\Request $request request
      *
      * @return array
      */
-    public function transform($option)
+    public function toArray($request)
     {
-        $option = $this->entityToArray(Option::class, $option);
-        return $option;
+        return $this->resource;
     }
 }

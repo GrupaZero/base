@@ -5,6 +5,7 @@ use Gzero\Base\Models\OptionCategory;
 use Illuminate\Cache\CacheManager;
 use Illuminate\Cache\Repository;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Support\Collection;
 
 class OptionService {
 
@@ -63,11 +64,11 @@ class OptionService {
     /**
      * Get all option categories
      *
-     * @return array array with category names
+     * @return Collection collection with category names
      */
     public function getCategories()
     {
-        return array_keys($this->options);
+        return collect(array_keys($this->options));
     }
 
     /**
@@ -75,14 +76,14 @@ class OptionService {
      *
      * @param string $categoryKey category key
      *
-     * @return array array mapping option keys (within the given category) to their values
+     * @return Collection collection mapping option keys (within the given category) to their values
      * @throws RepositoryException When queried for non-existent category
      */
     public function getOptions($categoryKey)
     {
         $this->requireCategoryExists($categoryKey);
 
-        return $this->options[$categoryKey];
+        return collect($this->options[$categoryKey]);
     }
 
     /**

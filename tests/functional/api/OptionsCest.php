@@ -8,12 +8,11 @@ class OptionsCest {
 
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
+        $I->seeResponseJsonMatchesJsonPath('data[*]');
         $I->seeResponseContainsJson(
             [
-                'data' => [
-                    ['key' => 'general'],
-                    ['key' => 'seo']
-                ]
+                ['key' => 'general'],
+                ['key' => 'seo']
             ]
         );
     }
@@ -24,6 +23,7 @@ class OptionsCest {
 
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
+        $I->seeResponseJsonMatchesJsonPath('data[*]');
         $I->seeResponseContainsJson(
             [
                 'google_analytics_id' =>
@@ -61,22 +61,13 @@ class OptionsCest {
 
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
+        $I->dontSeeResponseJsonMatchesJsonPath('data[*]');
         $I->seeResponseContainsJson(
             [
-                'google_analytics_id' =>
-                    [
-                        'en' => null,
-                        'pl' => null,
-                        'de' => null,
-                        'fr' => null,
-                    ],
-                'desc_length'         =>
-                    [
-                        'en' => 160,
-                        'pl' => 161,
-                        'de' => 162,
-                        'fr' => 163,
-                    ],
+                'en' => 160,
+                'pl' => 161,
+                'de' => 162,
+                'fr' => 163,
             ]
         );
     }

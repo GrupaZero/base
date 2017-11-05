@@ -2,10 +2,11 @@
 
 use Gzero\Base\Http\Controllers\ApiController;
 use Gzero\Base\Models\Option;
+use Gzero\Base\Http\Resources\Option as OptionResource;
+use Gzero\Base\Http\Resources\OptionCollection;
+use Gzero\Base\Http\Resources\OptionCategoryCollection;
 use Gzero\Base\Services\OptionService;
 use Gzero\Base\Services\RepositoryValidationException;
-use Gzero\Base\Transformers\OptionCategoryTransformer;
-use Gzero\Base\Transformers\OptionTransformer;
 use Gzero\Base\Validators\OptionValidator;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -42,16 +43,15 @@ class OptionController extends ApiController {
      *   path="/options",
      *   tags={"options", "public"},
      *   summary="Get all option categories",
-     *   operationId="getOptions",
      *   produces={"application/json"},
      *   @SWG\Response(response="200", description="successful operation")
      * )
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return OptionCategoryCollection
      */
     public function index()
     {
-        return $this->respondWithSuccess($this->optionService->getCategories(), new OptionCategoryTransformer);
+        return new OptionCategoryCollection($this->optionService->getCategories());
     }
 
     /**
@@ -61,7 +61,6 @@ class OptionController extends ApiController {
      *   path="/options/{category}",
      *   tags={"options", "public"},
      *   summary="Get all options from selected category",
-     *   operationId="getOptionsByCategory",
      *   produces={"application/json"},
      *   @SWG\Parameter(
      *     name="category",
@@ -75,13 +74,13 @@ class OptionController extends ApiController {
      *
      * @param string $key option category key
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return OptionCollection
      */
     public function show($key)
     {
         try {
             $option = $this->optionService->getOptions($key);
-            return $this->respondWithSuccess($option, new OptionTransformer);
+            return new OptionCollection($option);
         } catch (RepositoryValidationException $e) {
             return $this->respondWithError($e->getMessage());
         }
@@ -94,7 +93,6 @@ class OptionController extends ApiController {
      *   path="/options/{category}",
      *   tags={"options"},
      *   summary="Updates selected option within the given category",
-     *   operationId="putOptionsByCategory",
      *   produces={"application/json"},
      *   security={{"AdminAccess": {}}},
      *   @SWG\Parameter(
@@ -109,14 +107,19 @@ class OptionController extends ApiController {
      *     in="body",
      *     description="option that we want to update",
      *     required=true,
-     *     @SWG\Schema(ref="#/definitions/Option"),
+     *     @SWG\Schema(
+     *       type="object",
+     *       required={"key, value"},
+     *       @SWG\Property(property="key", type="string"),
+     *       @SWG\Property(property="value", type="array")
+     *     )
      *   ),
      *   @SWG\Response(response="200", description="successful operation")
      * )
      *
      * @param string $categoryKey option category key
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return OptionResource
      * @throws ValidationException
      *
      */
@@ -126,7 +129,7 @@ class OptionController extends ApiController {
         $this->authorize('update', [Option::class, $categoryKey]);
         try {
             $this->optionService->updateOrCreateOption($categoryKey, $input['key'], $input['value']);
-            return $this->respondWithSuccess($this->optionService->getOptions($categoryKey), new OptionTransformer);
+            return new OptionResource($this->optionService->getOption($categoryKey, $input['key']));
         } catch (RepositoryValidationException $e) {
             return $this->respondWithError($e->getMessage());
         }

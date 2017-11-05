@@ -26,6 +26,23 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
  */
 
 /**
+ * @SWG\SecurityScheme(
+ *     securityDefinition="Auth",
+ *     type="apiKey",
+ *     description="Bearer token",
+ *     name="Authorization",
+ *     in="header"
+ *   )
+ *   @SWG\SecurityScheme(
+ *     securityDefinition="AdminAccess",
+ *     type="apiKey",
+ *     description="Bearer token",
+ *     name="Authorization",
+ *     in="header"
+ *   )
+ */
+
+/**
  * @SWG\Tag(
  *   name="language",
  *   description="Everything about app languages"
