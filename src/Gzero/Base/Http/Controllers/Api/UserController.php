@@ -50,6 +50,7 @@ class UserController extends ApiController {
      *   path="/users",
      *   tags={"user"},
      *   summary="List of all users",
+     *   description="List of all available users, <b>'admin-access'</b> policy is required.",
      *   produces={"application/json"},
      *   security={{"AdminAccess": {}}},
      *   @SWG\Response(response="200", description="successful operation")
@@ -79,12 +80,13 @@ class UserController extends ApiController {
      *   path="/users/{id}",
      *   tags={"user"},
      *   summary="Get specific user",
+     *   description="Returns a specific user by id, <b>'admin-access'</b> policy is required.",
      *   produces={"application/json"},
      *   security={{"AdminAccess": {}}},
      *   @SWG\Parameter(
      *     name="id",
      *     in="path",
-     *     description="ID of user that needs to be returned",
+     *     description="ID of user that needs to be returned.",
      *     required=true,
      *     type="integer"
      *   ),
@@ -112,20 +114,20 @@ class UserController extends ApiController {
      * @SWG\Patch(path="/users/{id}",
      *   tags={"user"},
      *   summary="Updated specific user",
-     *   description="Updates specific user",
+     *   description="Updates specified user, <b>'admin-access'</b> policy is required.",
      *   produces={"application/json"},
      *   security={{"AdminAccess": {}}},
      *   @SWG\Parameter(
      *     name="id",
      *     in="path",
-     *     description="ID of user that needs to be updated",
+     *     description="ID of user that needs to be updated.",
      *     required=true,
      *     type="integer"
      *   ),
      *   @SWG\Parameter(
      *     in="body",
      *     name="body",
-     *     description="Updated user object",
+     *     description="Fields to update.",
      *     required=true,
      *     @SWG\Schema(
      *       type="object",
@@ -166,13 +168,13 @@ class UserController extends ApiController {
      * @SWG\Patch(path="/users/me",
      *   tags={"user"},
      *   summary="Updated current user",
-     *   description="Updated current user",
+     *   description="Updates currently logged in user.",
      *   produces={"application/json"},
      *   security={{"Auth": {}}, {"AdminAccess": {}}},
      *   @SWG\Parameter(
      *     in="body",
      *     name="body",
-     *     description="Updated user object",
+     *     description="Fields to update, <b>'password'</b> is not required, if provided it must match <b>'password_confirmation'</b>.",
      *     required=true,
      *     @SWG\Schema(
      *       type="object",
@@ -215,12 +217,13 @@ class UserController extends ApiController {
      *   path="/users/{id}",
      *   tags={"user"},
      *   summary="Delete specific user",
+     *   description="Deletes specified user, <b>'admin-access'</b> policy is required.",
      *   produces={"application/json"},
      *   security={{"AdminAccess": {}}},
      *   @SWG\Parameter(
      *     name="id",
      *     in="path",
-     *     description="ID of user that needs to be deleted",
+     *     description="ID of user that needs to be deleted.",
      *     required=true,
      *     type="integer"
      *   ),

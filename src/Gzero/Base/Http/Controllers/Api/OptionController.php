@@ -43,6 +43,7 @@ class OptionController extends ApiController {
      *   path="/options",
      *   tags={"options", "public"},
      *   summary="Get all option categories",
+     *   description="Retrieves a list of all available option categories.",
      *   produces={"application/json"},
      *   @SWG\Response(response="200", description="successful operation")
      * )
@@ -60,12 +61,13 @@ class OptionController extends ApiController {
      * @SWG\Get(
      *   path="/options/{category}",
      *   tags={"options", "public"},
-     *   summary="Get all options from selected category",
+     *   summary="Get all options from selected category, returned as key, value pairs for each available language.",
+     *   description="Retrieves a list of all available options from specified category.",
      *   produces={"application/json"},
      *   @SWG\Parameter(
      *     name="category",
      *     in="path",
-     *     description="category key that need to be returned",
+     *     description="Category key that need to be returned",
      *     required=true,
      *     type="string"
      *   ),
@@ -93,25 +95,26 @@ class OptionController extends ApiController {
      *   path="/options/{category}",
      *   tags={"options"},
      *   summary="Updates selected option within the given category",
+     *   description="Updates specified option for the given category, <b>'admin-access'</b> policy is required.",
      *   produces={"application/json"},
      *   security={{"AdminAccess": {}}},
      *   @SWG\Parameter(
      *     name="category",
      *     in="path",
-     *     description="category key that the updated option belongs to",
+     *     description="Category key that the updated option belongs to",
      *     required=true,
      *     type="string"
      *   ),
      *   @SWG\Parameter(
      *     name="option",
      *     in="body",
-     *     description="option that we want to update",
+     *     description="Option that we want to update with value for each available language..",
      *     required=true,
      *     @SWG\Schema(
      *       type="object",
      *       required={"key, value"},
-     *       @SWG\Property(property="key", type="string"),
-     *       @SWG\Property(property="value", type="array")
+     *       @SWG\Property(property="key", type="string", example="example_key"),
+     *       @SWG\Property(property="value", type="array", example="['en' => null,'pl' => null,'de' => null,'fr' => null]")
      *     )
      *   ),
      *   @SWG\Response(response="200", description="successful operation")

@@ -29,6 +29,7 @@ class LanguageController extends ApiController {
      *   path="/languages",
      *   tags={"language", "public"},
      *   summary="List of all languages",
+     *   description="Retrieves a list of all available languages, with <b>'is_active'</b> and <b>'is_default'</b> flags to mark active and default languages.",
      *   produces={"application/json"},
      *   @SWG\Response(response="200", description="successful operation")
      * )
@@ -47,11 +48,12 @@ class LanguageController extends ApiController {
      *   path="/languages/{code}",
      *   tags={"language", "public"},
      *   summary="Get specific language",
+     *   description="Retrieve specific languages from database, by it's code.",
      *   produces={"application/json"},
      *   @SWG\Parameter(
      *     name="code",
      *     in="path",
-     *     description="language code that need to be returned",
+     *     description="Language code that need to be returned, e.g <b>'en'</b>.",
      *     required=true,
      *     type="string"
      *   ),

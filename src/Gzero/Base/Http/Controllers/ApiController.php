@@ -58,7 +58,7 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
  *   )
  * @SWG\Tag(
  *   name="public",
- *   description="Everything public"
+ *   description="Actions that do not require authentication."
  *   )
  * )
  */
