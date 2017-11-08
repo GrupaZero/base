@@ -6,36 +6,22 @@ use Gzero\Base\Jobs\DeleteUser;
 use Gzero\Base\Jobs\UpdateUser;
 use Gzero\Base\Models\User;
 use Gzero\Base\Repositories\UserReadRepository;
-use Gzero\Base\Services\UserService;
-use Illuminate\Events\Dispatcher;
 use Illuminate\Support\Facades\Hash;
 
 class UserServiceTest extends Unit {
 
-    /**
-     * @var UnitTester
-     */
+    /** @var UnitTester */
     protected $tester;
 
-    /**
-     * @var UserService
-     */
-    protected $oldRepo;
-
-    /**
-     * @var UserReadRepository
-     */
+    /** @var UserReadRepository */
     protected $repository;
 
     protected function _before()
     {
         $this->repository = new UserReadRepository();
-        $this->oldRepo    = new UserService(new User(), new Dispatcher());
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function canCreateUserAndGetItById()
     {
         $user       = (new CreateUser('john.doe@example.com', 'secret', 'Nickname', 'John', 'Doe'))->handle();
@@ -59,9 +45,7 @@ class UserServiceTest extends Unit {
         );
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function canCreateUserWithEmptyNameAsAnonymous()
     {
         $user1 = (new CreateUser('john.doe@example.com', 'secret', '', 'John', 'Doe'))->handle();
@@ -128,9 +112,7 @@ class UserServiceTest extends Unit {
         $this->assertCount(3, array_unique([$user1Db->name, $user2Db->name, $user3Db->name]));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function itHashesUserPasswordWhenUpdatingUser()
     {
         $user = (new CreateUser('john.doe@example.com', 'password', '', 'John', 'Doe'))->handle();
@@ -140,9 +122,7 @@ class UserServiceTest extends Unit {
         $this->assertTrue(Hash::check('secret', $user->password));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function canDeleteUser()
     {
         $user       = (new CreateUser('john.doe@example.com', 'secret', 'Nickname', 'John', 'Doe'))->handle();
@@ -164,27 +144,5 @@ class UserServiceTest extends Unit {
         $this->assertNull($userFromDb);
     }
 
-    /**
-     * @test
-     */
-    public function canSortUsersList()
-    {
-        $firstUser  = (new CreateUser('john.doe@example.com', 'secret', null, 'John', 'Doe'))->handle();
-        $secondUser = (new CreateUser('zoe.doe@example.com', 'secret', null, 'Zoe', 'Doe'))->handle();
-
-        // ASC
-        $result = $this->oldRepo->getUsers([], [['email', 'ASC']], null);
-
-        $this->assertEquals($result[0]->email, 'admin@gzero.pl');
-        $this->assertEquals($result[1]->email, $firstUser->email);
-        $this->assertEquals($result[2]->email, $secondUser->email);
-
-        // DESC
-        $result = $this->oldRepo->getUsers([], [['email', 'DESC']], null);
-
-        $this->assertEquals($result[0]->email, $secondUser->email);
-        $this->assertEquals($result[1]->email, $firstUser->email);
-        $this->assertEquals($result[2]->email, 'admin@gzero.pl');
-    }
 }
 

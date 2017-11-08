@@ -1,5 +1,7 @@
 <?php namespace Gzero\Base\Repositories;
 
+use Gzero\Base\QueryBuilder;
+
 interface ReadRepository {
 
     /**
@@ -10,7 +12,10 @@ interface ReadRepository {
     public function getById($id);
 
     /**
+     * @param QueryBuilder $builder Query builder
+     * @param int          $page    Page number
+     *
      * @return mixed
      */
-    public function getMany();
+    public function getMany(QueryBuilder $builder, int $page = 1);
 }

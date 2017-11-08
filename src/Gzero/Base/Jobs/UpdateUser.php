@@ -35,16 +35,14 @@ class UpdateUser {
      */
     public function handle()
     {
-        $user = DB::transaction(
-            function () {
-                if (array_key_exists('password', $this->attributes)) {
-                    $this->attributes['password'] = Hash::make($this->attributes['password']);
-                }
-                $this->user->fill($this->attributes);
-                $this->user->save();
-                return $this->user;
+        $user = DB::transaction(function () {
+            if (array_key_exists('password', $this->attributes)) {
+                $this->attributes['password'] = Hash::make($this->attributes['password']);
             }
-        );
+            $this->user->fill($this->attributes);
+            $this->user->save();
+            return $this->user;
+        });
         event('user.updated', [$user]);
         return $user;
     }

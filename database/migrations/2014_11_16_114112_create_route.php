@@ -34,7 +34,7 @@ class CreateRoute extends Migration {
                 $table->foreign('route_id')->references('id')->on('routes')->onDelete('CASCADE');
                 $table->foreign('language_code')->references('code')->on('languages')->onDelete('CASCADE');
                 $table->unique(['language_code', 'route_id']); // Only one translation in specific language
-                $table->unique(['language_code', 'url']); // Unique url in specific language
+                $table->unique(['language_code', 'path']); // Unique path in specific language
             }
         );
     }

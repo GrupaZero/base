@@ -1,6 +1,7 @@
 <?php namespace Gzero\Base\Repositories;
 
 use Gzero\Base\Models\User;
+use Gzero\Base\QueryBuilder;
 
 class UserReadRepository implements ReadRepository {
 
@@ -27,10 +28,20 @@ class UserReadRepository implements ReadRepository {
     }
 
     /**
-     * @return mixed
+     * @param QueryBuilder $builder Query builder
+     * @param int          $page    Page number
+     *
+     * @return \Illuminate\Database\Eloquent\Collection|static[]
      */
-    public function getMany()
+    public function getMany(QueryBuilder $builder, int $page = 1)
     {
-        // TODO: Implement getMany() method.
+        $query = User::query();
+
+        $builder->applyFilters($query);
+        $builder->applySorts($query);
+
+        return $query->offset($builder->getPageSize() * ($page - 1))
+            ->limit($builder->getPageSize())
+            ->get(['users.*']);
     }
 }

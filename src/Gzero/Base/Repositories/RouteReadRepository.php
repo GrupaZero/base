@@ -1,6 +1,8 @@
 <?php namespace Gzero\Base\Repositories;
 
 use Gzero\Base\Models\Route;
+use Gzero\Base\QueryBuilder;
+use Gzero\Base\Services\RepositoryException;
 
 class RouteReadRepository implements ReadRepository {
 
@@ -37,10 +39,33 @@ class RouteReadRepository implements ReadRepository {
 
 
     /**
-     * @return mixed
+     * @param QueryBuilder $builder Query builder
+     * @param int          $page    Page number
+     *
+     * @throws RepositoryException
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getMany()
+    public function getMany(QueryBuilder $builder, int $page = 1)
     {
-        // TODO: Implement getMany() method.
+        $query = Route::query();
+
+        if ($builder->hasRelation('translations')) {
+            if (!$builder->getRelationCondition('translations', 'language_code')) {
+                throw new RepositoryException('Language code is required');
+            }
+            $query->join('route_translations as t', 'routes.id', '=', 't.route_id');
+            $builder->applyRelationFilters('translations', 't', $query);
+            $builder->applyRelationSorts('translations', 't', $query);
+        }
+
+        $builder->applyFilters($query);
+        $builder->applySorts($query);
+
+        /** @TODO Pagination */
+
+        return $query->offset($builder->getPageSize() * ($page - 1))
+            ->limit($builder->getPageSize())
+            ->get(['routes.*']);
     }
 }

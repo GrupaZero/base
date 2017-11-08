@@ -1,5 +1,7 @@
 <?php namespace Gzero\Base;
 
+use Illuminate\Database\Eloquent\Builder;
+
 class QueryBuilder {
 
     /**
@@ -8,13 +10,20 @@ class QueryBuilder {
     const ITEMS_PER_PAGE = 20;
 
     /**
-     * @var \Illuminate\Support\Collection
+     * @var array
      */
-    protected $filters;
+    protected $relations = [];
+
     /**
-     * @var \Illuminate\Support\Collection
+     * @var array
      */
-    protected $sorts;
+    protected $filters = [];
+
+    /**
+     * @var array
+     */
+    protected $sorts = [];
+
     /**
      * @var string
      */
@@ -35,10 +44,105 @@ class QueryBuilder {
      */
     public function __construct(array $filters = [], array $sorts = [], $search = null, $pageSize = self::ITEMS_PER_PAGE)
     {
-        $this->filters     = collect($filters);
-        $this->sorts       = collect($sorts);
         $this->searchQuery = $search;
         $this->pageSize    = $pageSize;
+    }
+
+    public function where($key, $operation, $value)
+    {
+        if (str_contains($key, '.')) {
+            $fullPath            = explode('.', $key);
+            $relationPath        = implode('.', array_slice($fullPath, 0, -1));
+            $relationKey         = last($fullPath);
+            $result              = array_get($this->relations, $relationPath, ['filters' => [], 'sort' => []]);
+            $result['filters'][] = new Condition($relationKey, $operation, $value);
+            array_set($this->relations, $relationPath, $result);
+        } else {
+            $this->filters[] = new Condition($key, $operation, $value);
+        }
+        return $this;
+    }
+
+    public function orderBy($key, $direction)
+    {
+        if (str_contains($key, '.')) {
+            $fullPath         = explode('.', $key);
+            $relationPath     = implode('.', array_slice($fullPath, 0, -1));
+            $relationKey      = last($fullPath);
+            $result           = array_get($this->relations, $relationPath, ['filters' => [], 'sort' => []]);
+            $result['sort'][] = new OrderBy($relationKey, $direction);
+            array_set($this->relations, $relationPath, $result);
+        } else {
+            $this->sorts[] = new OrderBy($key, $direction);
+        }
+        return $this;
+    }
+
+    public function getFilters(): array
+    {
+        return $this->filters;
+    }
+
+    public function getSorts(): array
+    {
+        return $this->sorts;
+    }
+
+    public function hasRelation($name): bool
+    {
+        return array_has($this->relations, $name);
+    }
+
+    public function getRelationCondition($relationName, $conditionName)
+    {
+        return array_first($this->relations[$relationName]['filters'], function ($condition) use ($conditionName) {
+            return $condition->getName() === $conditionName;
+        });
+    }
+
+    public function getRelationSort($relationName, $sortName)
+    {
+        return array_first($this->relations[$relationName]['sorts'], function ($sort) use ($sortName) {
+            return $sort->getName() === $sortName;
+        });
+    }
+
+    public function getRelationFilters($name): array
+    {
+        return array_get($this->relations, $name . '.filters', []);
+    }
+
+    public function getRelationSorts($name): array
+    {
+        return array_get($this->relations, $name . '.sorts', []);
+    }
+
+    public function applyFilters($query)
+    {
+        foreach ($this->getFilters() as $filter) {
+            $filter->apply($query);
+        }
+    }
+
+    public function applyRelationFilters(string $relationName, string $alias, Builder $query)
+    {
+        foreach ($this->getRelationFilters($relationName) as $filter) {
+            $filter->apply($query, $alias);
+        }
+    }
+
+    public function applySorts($query)
+    {
+        foreach ($this->getSorts() as $sort) {
+            $sort->apply($query);
+        }
+    }
+
+    public function applyRelationSorts(string $relationName, string $alias, Builder $query)
+    {
+        foreach ($this->getRelationSorts($relationName) as $sorts) {
+            $sorts->apply($query, $alias);
+        }
     }
 
     /**
@@ -48,57 +152,10 @@ class QueryBuilder {
      */
     public function reset()
     {
-        $this->filters     = collect([]);
-        $this->sorts       = collect([]);
+        $this->filters     = collect();
+        $this->sorts       = collect();
         $this->searchQuery = null;
         $this->pageSize    = self::ITEMS_PER_PAGE;
-    }
-
-    /**
-     * It resets filters
-     *
-     * @return void
-     */
-    public function resetFilters()
-    {
-        $this->filters = collect([]);
-    }
-
-    /**
-     * It resets filters
-     *
-     * @return void
-     */
-    public function resetSorts()
-    {
-        $this->sorts = collect([]);
-    }
-
-    /**
-     * Adds next criteria entry
-     *
-     * @param string $name      Column name
-     * @param string $condition Condition
-     * @param mixed  $value     Value
-     *
-     * @return void
-     */
-    public function addFilter(string $name, string $condition, $value)
-    {
-        $this->filters->push([$name, $condition, $value]);
-    }
-
-    /**
-     * Adds next order by entry
-     *
-     * @param string $name      Column name
-     * @param string $direction Direction ASC|DESC
-     *
-     * @return void
-     */
-    public function addSort(string $name, string $direction = 'DESC')
-    {
-        $this->sorts->push([$name, $direction]);
     }
 
     /**
@@ -133,26 +190,6 @@ class QueryBuilder {
     public function hasSearchQuery()
     {
         return (bool) $this->searchQuery;
-    }
-
-    /**
-     * Get criteria collection
-     *
-     * @return \Illuminate\Support\Collection
-     */
-    public function getFilters()
-    {
-        return $this->filters;
-    }
-
-    /**
-     * Get order by collection
-     *
-     * @return \Illuminate\Support\Collection
-     */
-    public function getSorts()
-    {
-        return $this->sorts;
     }
 
     /**
