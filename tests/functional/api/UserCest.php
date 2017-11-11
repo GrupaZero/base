@@ -81,12 +81,6 @@ class UserCest {
     public function adminShouldNotBeAbleToFilterListOfUsersByInvalidEmail(FunctionalTester $I)
     {
         $I->loginAsAdmin();
-        $I->haveUser([
-            'email'      => 'john.doe@example.com',
-            'name'       => 'JohnDoe',
-            'first_name' => 'John',
-            'last_name'  => 'Doe',
-        ]);
 
         $I->sendGET(apiUrl('users?email=john.doeexample.com'));
 
