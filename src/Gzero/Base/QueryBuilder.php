@@ -4,158 +4,42 @@ use Illuminate\Database\Eloquent\Builder;
 
 class QueryBuilder {
 
-    /**
-     * Default number of items per page
-     */
+    /** Default number of items per page */
     const ITEMS_PER_PAGE = 20;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $relations = [];
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $filters = [];
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $sorts = [];
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $searchQuery;
 
-    /**
-     * @var int
-     */
+    /** @var int */
     protected $pageSize;
 
     /**
-     * Query constructor.
+     * It returns all filters
      *
-     * @param array $filters  Criteria array
-     * @param array $sorts    Order by array
-     * @param null  $search   Search query
-     * @param int   $pageSize Page size
+     * @return array
      */
-    public function __construct(array $filters = [], array $sorts = [], $search = null, $pageSize = self::ITEMS_PER_PAGE)
-    {
-        $this->searchQuery = $search;
-        $this->pageSize    = $pageSize;
-    }
-
-    public function where($key, $operation, $value)
-    {
-        if (str_contains($key, '.')) {
-            $fullPath            = explode('.', $key);
-            $relationPath        = implode('.', array_slice($fullPath, 0, -1));
-            $relationKey         = last($fullPath);
-            $result              = array_get($this->relations, $relationPath, ['filters' => [], 'sort' => []]);
-            $result['filters'][] = new Condition($relationKey, $operation, $value);
-            array_set($this->relations, $relationPath, $result);
-        } else {
-            $this->filters[] = new Condition($key, $operation, $value);
-        }
-        return $this;
-    }
-
-    public function orderBy($key, $direction)
-    {
-        if (str_contains($key, '.')) {
-            $fullPath         = explode('.', $key);
-            $relationPath     = implode('.', array_slice($fullPath, 0, -1));
-            $relationKey      = last($fullPath);
-            $result           = array_get($this->relations, $relationPath, ['filters' => [], 'sort' => []]);
-            $result['sort'][] = new OrderBy($relationKey, $direction);
-            array_set($this->relations, $relationPath, $result);
-        } else {
-            $this->sorts[] = new OrderBy($key, $direction);
-        }
-        return $this;
-    }
-
     public function getFilters(): array
     {
         return $this->filters;
     }
 
+    /**
+     * It returns all sorts
+     *
+     * @return array
+     */
     public function getSorts(): array
     {
         return $this->sorts;
-    }
-
-    public function hasRelation($name): bool
-    {
-        return array_has($this->relations, $name);
-    }
-
-    public function getRelationCondition($relationName, $conditionName)
-    {
-        return array_first($this->relations[$relationName]['filters'], function ($condition) use ($conditionName) {
-            return $condition->getName() === $conditionName;
-        });
-    }
-
-    public function getRelationSort($relationName, $sortName)
-    {
-        return array_first($this->relations[$relationName]['sorts'], function ($sort) use ($sortName) {
-            return $sort->getName() === $sortName;
-        });
-    }
-
-    public function getRelationFilters($name): array
-    {
-        return array_get($this->relations, $name . '.filters', []);
-    }
-
-    public function getRelationSorts($name): array
-    {
-        return array_get($this->relations, $name . '.sorts', []);
-    }
-
-    public function applyFilters($query)
-    {
-        foreach ($this->getFilters() as $filter) {
-            $filter->apply($query);
-        }
-    }
-
-    public function applyRelationFilters(string $relationName, string $alias, Builder $query)
-    {
-        foreach ($this->getRelationFilters($relationName) as $filter) {
-            $filter->apply($query, $alias);
-        }
-    }
-
-    public function applySorts($query)
-    {
-        foreach ($this->getSorts() as $sort) {
-            $sort->apply($query);
-        }
-    }
-
-    public function applyRelationSorts(string $relationName, string $alias, Builder $query)
-    {
-        foreach ($this->getRelationSorts($relationName) as $sorts) {
-            $sorts->apply($query, $alias);
-        }
-    }
-
-    /**
-     * It resets query builder
-     *
-     * @return void
-     */
-    public function reset()
-    {
-        $this->filters     = collect();
-        $this->sorts       = collect();
-        $this->searchQuery = null;
-        $this->pageSize    = self::ITEMS_PER_PAGE;
     }
 
     /**
@@ -197,9 +81,9 @@ class QueryBuilder {
      *
      * @return string
      */
-    public function getSearchQeury()
+    public function getSearchQuery()
     {
-        return $this->searchQuery;
+        return ($this->searchQuery) ?: self::ITEMS_PER_PAGE;
     }
 
     /**
@@ -213,56 +97,182 @@ class QueryBuilder {
     }
 
     /**
-     * Query factory method
+     * It adds where condition
      *
-     * @param array $filters  Criteria array
-     * @param array $sorts    Order by array
-     * @param null  $search   Search query
-     * @param int   $pageSize Page size
+     * @param string $key       Column name
+     * @param string $operation Operation
+     * @param string $value     Value
      *
-     * @return QueryBuilder
+     * @return $this
      */
-    public static function with(array $filters = [], array $sorts = [], $search = null, $pageSize = self::ITEMS_PER_PAGE)
+    public function where(string $key, string $operation, $value)
     {
-        return new self($filters, $sorts, $search, $pageSize);
+        if (str_contains($key, '.')) {
+            $fullPath            = explode('.', $key);
+            $relationPath        = implode('.', array_slice($fullPath, 0, -1));
+            $relationKey         = last($fullPath);
+            $result              = array_get($this->relations, $relationPath, ['filters' => [], 'sort' => []]);
+            $result['filters'][] = new Condition($relationKey, $operation, $value);
+            array_set($this->relations, $relationPath, $result);
+        } else {
+            $this->filters[] = new Condition($key, $operation, $value);
+        }
+        return $this;
     }
 
     /**
-     * Query factory method
+     * It adds order by
      *
-     * @param array $sorts    Order by array
-     * @param null  $search   Search query
-     * @param int   $pageSize Page size
+     * @param string $key       Column name
+     * @param string $direction Direction
      *
-     * @return QueryBuilder
+     * @return $this
      */
-    public static function withSort(array $sorts = [], $search = null, $pageSize = self::ITEMS_PER_PAGE)
+    public function orderBy(string $key, string $direction)
     {
-        return new self([], $sorts, $search, $pageSize);
+        if (str_contains($key, '.')) {
+            $fullPath          = explode('.', $key);
+            $relationPath      = implode('.', array_slice($fullPath, 0, -1));
+            $relationKey       = last($fullPath);
+            $result            = array_get($this->relations, $relationPath, ['filters' => [], 'sort' => []]);
+            $result['sorts'][] = new OrderBy($relationKey, $direction);
+            array_set($this->relations, $relationPath, $result);
+        } else {
+            $this->sorts[] = new OrderBy($key, $direction);
+        }
+        return $this;
     }
 
     /**
-     * Query factory method
+     * Checks if specific relation was used during building query
      *
-     * @param null $search   Search query
-     * @param int  $pageSize Page size
+     * @param string $name Relation name
      *
-     * @return QueryBuilder
+     * @return bool
      */
-    public static function withSearch($search = null, $pageSize = self::ITEMS_PER_PAGE)
+    public function hasRelation(string $name): bool
     {
-        return new self([], [], $search, $pageSize);
+        return array_has($this->relations, $name);
     }
 
     /**
-     * Query factory method
+     * Return all filters for specific relation
      *
-     * @param int $pageSize Page size
+     * @param string $name Relation name
      *
-     * @return QueryBuilder
+     * @return array
      */
-    public static function withPageSize($pageSize = self::ITEMS_PER_PAGE)
+    public function getRelationFilters(string $name): array
     {
-        return new self([], [], null, $pageSize);
+        return array_get($this->relations, $name . '.filters', []);
     }
+
+    /**
+     * Returns filter for specific relation
+     *
+     * @param string $relationName Relation name
+     * @param string $filterName   Filter name
+     *
+     * @return Condition|null
+     */
+    public function getRelationFilter(string $relationName, string $filterName)
+    {
+        if (!$this->hasRelation($relationName)) {
+            return null;
+        }
+        return array_first($this->relations[$relationName]['filters'], function ($filter) use ($filterName) {
+            return $filter->getName() === $filterName;
+        });
+    }
+
+    /**
+     * Returns all sorts for specific relation
+     *
+     * @param string $name Relation name
+     *
+     * @return array
+     */
+    public function getRelationSorts(string $name): array
+    {
+        return array_get($this->relations, $name . '.sorts', []);
+    }
+
+    /**
+     * Returns sort for specific relation
+     *
+     * @param string $relationName Relation name
+     * @param string $sortName     Sort name
+     *
+     * @return OrderBy|null
+     */
+    public function getRelationSort(string $relationName, string $sortName)
+    {
+        if (!$this->hasRelation($relationName)) {
+            return null;
+        }
+        return array_first($this->relations[$relationName]['sorts'], function ($sort) use ($sortName) {
+            return $sort->getName() === $sortName;
+        });
+    }
+
+    /**
+     * Applies filter to Eloquent Query builder
+     *
+     * @param Builder $query Eloquent query builder
+     *
+     * @return void
+     */
+    public function applyFilters(Builder $query)
+    {
+        foreach ($this->getFilters() as $filter) {
+            $filter->apply($query);
+        }
+    }
+
+    /**
+     * Applies filters Eloquent Query builder for relation
+     *
+     * @param string  $relationName Relation name
+     * @param string  $alias        SQL alias
+     * @param Builder $query        Eloquent query builder
+     *
+     * @return void
+     */
+    public function applyRelationFilters(string $relationName, string $alias, Builder $query)
+    {
+        foreach ($this->getRelationFilters($relationName) as $filter) {
+            $filter->apply($query, $alias);
+        }
+    }
+
+    /**
+     * Applies sorts Eloquent Query builder
+     *
+     * @param Builder $query Eloquent query builder
+     *
+     * @return void
+     */
+    public function applySorts(Builder $query)
+    {
+        foreach ($this->getSorts() as $sort) {
+            $sort->apply($query);
+        }
+    }
+
+    /**
+     * Applies sorts Eloquent Query builder for relation
+     *
+     * @param string  $relationName Relation name
+     * @param string  $alias        SQL alias
+     * @param Builder $query        Eloquent query builder
+     *
+     * @return void
+     */
+    public function applyRelationSorts(string $relationName, string $alias, Builder $query)
+    {
+        foreach ($this->getRelationSorts($relationName) as $sorts) {
+            $sorts->apply($query, $alias);
+        }
+    }
+
 }

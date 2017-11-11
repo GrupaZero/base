@@ -35,9 +35,9 @@ class Condition {
     /**
      * Condition constructor.
      *
-     * @param string $name
-     * @param string $operation
-     * @param mixed  $value
+     * @param string $name      Column name
+     * @param string $operation Operation
+     * @param mixed  $value     Value
      *
      * @throws Exception
      */
@@ -52,22 +52,39 @@ class Condition {
         $this->validate();
     }
 
+    /**
+     * Returns name
+     *
+     * @return string
+     */
     public function getName()
     {
         return $this->name;
     }
 
+    /**
+     * Returns operation
+     *
+     * @return string
+     */
     public function getOperation()
     {
         return $this->operation;
     }
 
+    /**
+     * Return value
+     *
+     * @return mixed
+     */
     public function getValue()
     {
         return $this->value;
     }
 
     /**
+     * Check if it's negate operation
+     *
      * @return bool
      */
     public function isNegate(): bool
@@ -76,6 +93,8 @@ class Condition {
     }
 
     /**
+     * Check if it's a null condition case
+     *
      * @return bool
      */
     public function isNullCondition(): bool
@@ -83,24 +102,36 @@ class Condition {
         return $this->value === null;
     }
 
+    /**
+     * Applies condition to Eloquent query builder
+     *
+     * @param Builder     $query      Eloquent query builder
+     * @param string|null $tableAlias SQL table alias
+     *
+     * @throws Exception
+     * @return void
+     */
     public function apply(Builder $query, string $tableAlias = null)
     {
         $tableAlias = ($tableAlias != null) ? str_finish($tableAlias, '.') : '';
 
         switch ($this->operation) {
-            case '=' :
+            case '=':
                 $query->where($tableAlias . $this->name, $this->operation, $this->value);
                 break;
             case '!=':
                 $query->notWhere($tableAlias . $this->name, $this->value);
                 break;
-            default;
+            default:
                 throw new Exception('Unsupported operation');
         }
     }
 
     /**
+     * Validates operation
+     *
      * @throws Exception
+     * @return void
      */
     protected function validate()
     {
@@ -113,6 +144,8 @@ class Condition {
     }
 
     /**
+     * Checks if it's correct range format
+     *
      * @return bool
      */
     protected function isCorrectRangeFormat(): bool

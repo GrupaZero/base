@@ -4,19 +4,13 @@ use Illuminate\Database\Eloquent\Builder;
 
 class OrderBy {
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $name;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $direction;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     public static $allowedOperations = [
         'asc',
         'desc'
@@ -25,8 +19,8 @@ class OrderBy {
     /**
      * OrderBy constructor.
      *
-     * @param string $name
-     * @param string $direction
+     * @param string $name      Column name
+     * @param string $direction Direction
      *
      * @throws Exception
      */
@@ -40,16 +34,34 @@ class OrderBy {
         $this->validate();
     }
 
+    /**
+     * Returns name
+     *
+     * @return string
+     */
     public function getName()
     {
         return $this->name;
     }
 
+    /**
+     * Return direction
+     *
+     * @return string
+     */
     public function getDirection()
     {
         return $this->direction;
     }
 
+    /**
+     * Applies orderBy on Eloquent query builder
+     *
+     * @param Builder     $query      Eloquent query builder
+     * @param string|null $tableAlias SQL table alias
+     *
+     * @return void
+     */
     public function apply(Builder $query, $tableAlias = null)
     {
         $tableAlias = ($tableAlias != null) ? str_finish($tableAlias, '.') : '';
@@ -57,7 +69,10 @@ class OrderBy {
     }
 
     /**
+     * Validates
+     *
      * @throws Exception
+     * @return void
      */
     protected function validate()
     {

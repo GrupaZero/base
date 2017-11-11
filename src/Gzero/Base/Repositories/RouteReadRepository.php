@@ -37,7 +37,6 @@ class RouteReadRepository implements ReadRepository {
             ->first();
     }
 
-
     /**
      * @param QueryBuilder $builder Query builder
      * @param int          $page    Page number
@@ -51,7 +50,7 @@ class RouteReadRepository implements ReadRepository {
         $query = Route::query();
 
         if ($builder->hasRelation('translations')) {
-            if (!$builder->getRelationCondition('translations', 'language_code')) {
+            if (!$builder->getRelationFilter('translations', 'language_code')) {
                 throw new RepositoryException('Language code is required');
             }
             $query->join('route_translations as t', 'routes.id', '=', 't.route_id');

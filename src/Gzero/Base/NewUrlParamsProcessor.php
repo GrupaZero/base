@@ -1,51 +1,30 @@
 <?php namespace Gzero\Base;
 
-use Gzero\Base\Http\Filters\QueryFilter;
 use Illuminate\Contracts\Validation\Factory;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
 
 class NewUrlParamsProcessor {
 
-    /**
-     * @var int
-     */
+    /** @var int */
     protected $page = 1;
 
-    /**
-     * @var int
-     */
+    /** @var int */
     protected $perPage = QueryBuilder::ITEMS_PER_PAGE;
 
-    /**
-     * @var Collection
-     */
-    protected $filters;
+    /** @var array */
+    protected $parsers = [];
 
-    /**
-     * @var array
-     */
-    protected $filterDefinitions = [];
+    /** @var array */
+    protected $sorts = [];
 
-    /**
-     * @var array
-     */
-    protected $orderBy = [];
-
-    /**
-     * @var null
-     */
+    /** @var null */
     protected $searchQuery = null;
 
-    /**
-     * @var Factory
-     */
+    /** @var Factory */
     protected $validator;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $rules = [
         'page'     => 'numeric',
         'per_page' => 'numeric',
@@ -56,12 +35,11 @@ class NewUrlParamsProcessor {
     /**
      * UrlParamsProcessor constructor.
      *
-     * @param Factory $validator
+     * @param Factory $validator Validator factory
      */
     public function __construct(Factory $validator)
     {
         $this->validator = $validator;
-        $this->filters   = collect();
     }
 
     /**
@@ -85,27 +63,27 @@ class NewUrlParamsProcessor {
     }
 
     /**
-     * Returns orderBy array
+     * Returns sorts array
      *
      * @return array
      */
-    public function getOrderByParams(): array
+    public function getSorts(): array
     {
-        return $this->orderBy;
+        return $this->sorts;
     }
 
     /**
-     *  Returns filters collection
+     *  Returns parsers array
      *
-     * @return Collection
+     * @return array
      */
-    public function getFilters(): Collection
+    public function getParsers(): array
     {
-        return $this->filters;
+        return $this->parsers;
     }
 
     /**
-     *  Returns filter array
+     *  Returns search query string
      *
      * @return string
      */
@@ -115,29 +93,23 @@ class NewUrlParamsProcessor {
     }
 
     /**
-     * Returns array with all processed fields
-     *
-     * @return array
-     */
-    public function getProcessedFields()
-    {
-        return [
-            'page'    => $this->getPage(),
-            'perPage' => $this->getPerPage(),
-            'filters' => $this->filters,
-            'orderBy' => $this->orderBy,
-            'query'   => $this->searchQuery
-        ];
-    }
-
-    /**
-     * @param QueryFilter $filter
+     * @param ConditionParser $parser          Parser
+     * @param string|null     $validationRules additional validation rules
      *
      * @return $this
      */
-    public function setFilters(QueryFilter $filter) // Interface
+    public function addFilter(ConditionParser $parser, string $validationRules = null)
     {
-        $this->filters = $filter;
+        $this->parsers[] = $parser;
+        if ($validationRules !== null) {
+            $rules                           = (is_object($parser->getValidationRule())) ?
+                [$validationRules, $parser->getValidationRule()] : $validationRules . '|' . $parser->getValidationRule();
+            $this->rules[$parser->getName()] = $rules;
+        } else {
+            if (!empty($parser->getValidationRule())) {
+                $this->rules[$parser->getName()] = [$parser->getValidationRule()];
+            }
+        }
         return $this;
     }
 
@@ -150,15 +122,7 @@ class NewUrlParamsProcessor {
      */
     public function process(Request $request)
     {
-        $rules = $this->rules;
-        // Register all validation rules for additional filters
-        $this->filters->each(function ($filter) use (&$rules) { // Reference?:( Maybe map
-            $rules = array_merge($rules, $filter->getValidationRules());
-        });
-
-        $this->validate($request->all(), $rules);
-
-        // Get all default fields like page, per_page, query
+        $this->validate($request->all(), $this->rules);
 
         // Handle all custom filters on validated data
 
@@ -174,20 +138,45 @@ class NewUrlParamsProcessor {
         }
         $this->processPageParams($request);
 
-        $this->filters->each(function ($filter) use ($request) { // Reference?:( Maybe map
-            $filter->handle($request);
-        });
+        foreach ($this->parsers as $parser) {
+            $parser->parse($request);
+        }
+
         return $this;
     }
 
     /**
-     * @param $data
-     * @param $rules
+     * Builds QueryBuilder instance based on parsed filters & sorts
      *
-     * @return $this
-     * @throws ValidationException
+     * @return QueryBuilder
      */
-    protected function validate($data, $rules)
+    public function buildQueryBuilder()
+    {
+        $builder = new QueryBuilder();
+
+        foreach ($this->parsers as $parser) {
+            if ($parser->wasApplied()) {
+                $parser->apply($builder);
+            }
+        }
+
+        foreach ($this->sorts as $sort) {
+            $builder->orderBy($sort[0], $sort[1]);
+        }
+
+        return $builder;
+    }
+
+    /**
+     * Validates
+     *
+     * @param array $data  Data to validate
+     * @param array $rules Validation rules
+     *
+     * @throws ValidationException
+     * @return $this
+     */
+    protected function validate(array $data, array $rules)
     {
         $validator = $this->validator->make($data, $rules);
         if ($validator->fails()) {
@@ -205,9 +194,9 @@ class NewUrlParamsProcessor {
      */
     protected function processOrderByParams($sort)
     {
-        $direction       = (substr($sort, 0, 1) == '-') ? 'DESC' : 'ASC';
-        $field           = (substr($sort, 0, 1) == '-') ? substr($sort, 1) : $sort;
-        $this->orderBy[] = [$field, $direction];
+        $direction     = (substr($sort, 0, 1) == '-') ? 'DESC' : 'ASC';
+        $field         = (substr($sort, 0, 1) == '-') ? substr($sort, 1) : $sort;
+        $this->sorts[] = [$field, $direction];
     }
 
     /**
@@ -215,6 +204,7 @@ class NewUrlParamsProcessor {
      *
      * @param Request $request Request object
      *
+     * @return void
      */
     protected function processPageParams(Request $request)
     {
