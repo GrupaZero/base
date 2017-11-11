@@ -58,6 +58,50 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  *   )
  * )
  */
+
+/**
+ * @SWG\Definition(
+ *   definition="ValidationErrors",
+ *   type="object",
+ *   @SWG\Property(
+ *     property="message",
+ *     type="string",
+ *     example="The given data was invalid."
+ *   ),
+ *   @SWG\Property(
+ *     property="errors",
+ *     type="array",
+ *     @SWG\Items(ref="#/definitions/ValidationError")
+ *   )
+ * )
+ * @SWG\Definition(
+ *   definition="ValidationError",
+ *   type="object",
+ *   @SWG\Property(
+ *     property="field_name",
+ *     type="string",
+ *     example="Validation message."
+ *   )
+ * )
+ * @SWG\Definition(
+ *   definition="ServerError",
+ *   type="object",
+ *   @SWG\Property(
+ *     property="message",
+ *     type="string",
+ *     example="Server Error"
+ *   )
+ * )
+ * @SWG\Definition(
+ *   definition="BadRequestError",
+ *   type="object",
+ *   @SWG\Property(
+ *     property="message",
+ *     type="string",
+ *     example="Bad Request"
+ *   )
+ * )
+ */
 class ApiController extends Controller {
 
     use AuthorizesRequests;

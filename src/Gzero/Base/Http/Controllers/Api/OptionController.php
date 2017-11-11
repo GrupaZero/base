@@ -76,7 +76,11 @@ class OptionController extends ApiController {
      *     type="string"
      *   ),
      *   @SWG\Response(response=200, description="Successful operation"),
-     *   @SWG\Response(response=404, description="Category not found")
+     *   @SWG\Response(
+     *     response=400,
+     *     description="Category not found",
+     *     @SWG\Schema(ref="#/definitions/BadRequestError")
+     *   )
      * )
      *
      * @param string $key option category key
@@ -136,7 +140,16 @@ class OptionController extends ApiController {
      *     description="Successful operation",
      *     @SWG\Schema(type="object", ref="#/definitions/Option"),
      *   ),
-     *   @SWG\Response(response=404, description="Category not found")
+     *   @SWG\Response(
+     *     response=400,
+     *     description="Category not found",
+     *     @SWG\Schema(ref="#/definitions/BadRequestError")
+     *   ),
+     *   @SWG\Response(
+     *     response=422,
+     *     description="Validation Error",
+     *     @SWG\Schema(ref="#/definitions/ValidationErrors")
+     *  )
      * )
      *
      * @param string $categoryKey option category key

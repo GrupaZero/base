@@ -91,6 +91,11 @@ class UserController extends ApiController {
      *     response=200,
      *     description="Successful operation",
      *     @SWG\Schema(type="array", @SWG\Items(ref="#/definitions/User")),
+     *  ),
+     *   @SWG\Response(
+     *     response=422,
+     *     description="Validation Error",
+     *     @SWG\Schema(ref="#/definitions/ValidationErrors")
      *  )
      * )
      *
@@ -138,7 +143,7 @@ class UserController extends ApiController {
      *     description="Successful operation",
      *     @SWG\Schema(type="object", ref="#/definitions/User"),
      *   ),
-     *   @SWG\Response(response=404, description="Category not found")
+     *   @SWG\Response(response=404, description="User not found")
      * )
      *
      * @param int $id user id
@@ -192,8 +197,12 @@ class UserController extends ApiController {
      *     description="Successful operation",
      *     @SWG\Schema(type="object", ref="#/definitions/User"),
      *   ),
-     *   @SWG\Response(response=400, description="Invalid user supplied"),
-     *   @SWG\Response(response=404, description="User not found")
+     *   @SWG\Response(response=404, description="User not found"),
+     *   @SWG\Response(
+     *     response=422,
+     *     description="Validation Error",
+     *     @SWG\Schema(ref="#/definitions/ValidationErrors")
+     *  )
      * )
      *
      * @param int $id User id
@@ -247,8 +256,12 @@ class UserController extends ApiController {
      *     description="Successful operation",
      *     @SWG\Schema(type="object", ref="#/definitions/User"),
      *   ),
-     *   @SWG\Response(response=400, description="Invalid user supplied"),
-     *   @SWG\Response(response=404, description="User not found")
+     *   @SWG\Response(response=404, description="User not found"),
+     *   @SWG\Response(
+     *     response=422,
+     *     description="Validation Error",
+     *     @SWG\Schema(ref="#/definitions/ValidationErrors")
+     *  )
      * )
      *
      * @return UserResource

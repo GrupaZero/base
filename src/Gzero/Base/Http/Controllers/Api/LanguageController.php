@@ -66,10 +66,7 @@ class LanguageController extends ApiController {
      *     description="Successful operation",
      *     @SWG\Schema(type="object", ref="#/definitions/Language"),
      *   ),
-     *   @SWG\Response(
-     *     response=404,
-     *     description="Language not found"
-     *   )
+     *   @SWG\Response(response=404,description="Language not found")
      * )
      *
      * @param string $code Lang code
