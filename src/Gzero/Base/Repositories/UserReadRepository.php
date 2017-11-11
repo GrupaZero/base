@@ -47,7 +47,7 @@ class UserReadRepository implements ReadRepository {
             ->get(['users.*']);
 
         return new LengthAwarePaginator(
-            $results->all(),
+            $results,
             $count->select('users.id')->count(),
             $builder->getPageSize(),
             $builder->getPage()
