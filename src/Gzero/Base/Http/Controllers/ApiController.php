@@ -1,8 +1,11 @@
 <?php namespace Gzero\Base\Http\Controllers;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * @SWG\Swagger(
@@ -66,11 +69,11 @@ class ApiController extends Controller {
      * @param int   $code    Response code
      * @param array $headers HTTP headers
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     protected function respond($data, $code, array $headers = [])
     {
-        return response()->json($data, $code, array_merge($this->defaultHeaders(), $headers));
+        return new JsonResponse($data, $code, array_merge($this->defaultHeaders(), $headers));
     }
 
     /**
@@ -78,9 +81,9 @@ class ApiController extends Controller {
      *
      * @param array $headers HTTP headers
      *
-     * @return mixed
+     * @return JsonResponse
      */
-    protected function respondNoContent(array $headers = [])
+    protected function successNoContent(array $headers = [])
     {
         return $this->respond(null, SymfonyResponse::HTTP_NO_CONTENT, $headers);
     }
@@ -89,30 +92,29 @@ class ApiController extends Controller {
      * Return server error response in json format
      *
      * @param string $message Custom error message
-     * @param int    $code    Error code
      * @param array  $headers HTTP headers
+     *
+     * @throws HttpException
      *
      * @return mixed
      */
-    protected function respondWithError(
-        $message = 'Bad Request',
-        $code = SymfonyResponse::HTTP_BAD_REQUEST,
-        array $headers = []
-    ) {
-        return abort($code, $message, $headers);
+    protected function errorBadRequest($message = 'Bad Request', array $headers = [])
+    {
+        return abort(SymfonyResponse::HTTP_BAD_REQUEST, $message, $headers);
     }
 
     /**
      * Return not found response in json format
      *
-     * @param string $message Custom message
-     * @param array  $headers HTTP headers
+     * @param array $headers HTTP headers
+     *
+     * @throws NotFoundHttpException
      *
      * @return mixed
      */
-    protected function respondNotFound($message = 'Not found', array $headers = [])
+    protected function errorNotFound(array $headers = [])
     {
-        return abort(SymfonyResponse::HTTP_NOT_FOUND, $message, $headers);
+        return abort(SymfonyResponse::HTTP_NOT_FOUND, 'Not found', $headers);
     }
 
     /**

@@ -76,7 +76,7 @@ class OptionsCest {
     {
         $I->sendGET(apiUrl('options/some_category'));
 
-        $I->seeResponseCodeIs(404);
+        $I->seeResponseCodeIs(400);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson(
             [

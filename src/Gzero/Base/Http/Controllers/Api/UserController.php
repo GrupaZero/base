@@ -148,11 +148,13 @@ class UserController extends ApiController {
     public function show($id)
     {
         $user = $this->repository->getById($id);
-        if (!empty($user)) {
-            $this->authorize('read', $user);
-            return new UserResource($user);
+
+        if (!$user) {
+            return $this->errorNotFound();
         }
-        return $this->respondNotFound();
+
+        $this->authorize('read', $user);
+        return new UserResource($user);
     }
 
     /**
@@ -201,16 +203,18 @@ class UserController extends ApiController {
     public function update($id)
     {
         $user = $this->repository->getById($id);
-        if (!empty($user)) {
-            $this->authorize('update', $user);
-            $input = $this->validator
-                ->bind('name', ['user_id' => $user->id])
-                ->bind('email', ['user_id' => $user->id])
-                ->validate('update');
-            $user  = dispatch_now(new UpdateUser($user, $input));
-            return new UserResource($user);
+
+        if (!$user) {
+            return $this->errorNotFound();
         }
-        return $this->respondNotFound();
+
+        $this->authorize('update', $user);
+        $input = $this->validator
+            ->bind('name', ['user_id' => $user->id])
+            ->bind('email', ['user_id' => $user->id])
+            ->validate('update');
+        $user  = dispatch_now(new UpdateUser($user, $input));
+        return new UserResource($user);
     }
 
     /**
@@ -256,8 +260,15 @@ class UserController extends ApiController {
         }
 
         $user = $this->repository->getById($this->request->user()->id);
+
+        if (!$user) {
+            return $this->errorNotFound();
+        }
+
         $this->authorize('update', $user);
-        $input = $this->validator->bind('name', ['user_id' => $user->id])->bind('email', ['user_id' => $user->id])
+        $input = $this->validator
+            ->bind('name', ['user_id' => $user->id])
+            ->bind('email', ['user_id' => $user->id])
             ->validate('updateMe');
         $user  = dispatch_now(new UpdateUser($user, $input));
         return new UserResource($user);
@@ -292,12 +303,13 @@ class UserController extends ApiController {
     {
         $user = $this->repository->getById($id);
 
-        if (!empty($user)) {
-            $this->authorize('delete', $user);
-            dispatch_now(new DeleteUser($user));
-            return $this->respondNoContent();
+        if (!$user) {
+            return $this->errorNotFound();
         }
-        return $this->respondNotFound();
+
+        $this->authorize('delete', $user);
+        dispatch_now(new DeleteUser($user));
+        return $this->successNoContent();
     }
 
 }

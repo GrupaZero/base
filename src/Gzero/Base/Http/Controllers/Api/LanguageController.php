@@ -79,9 +79,11 @@ class LanguageController extends ApiController {
     public function show($code)
     {
         $lang = $this->langService->getByCode($code);
-        if (empty($lang)) {
-            return $this->respondNotFound();
+
+        if (!$lang) {
+            return $this->errorNotFound();
         }
+
         return new LanguageResource($lang);
     }
 

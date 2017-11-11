@@ -89,7 +89,7 @@ class OptionController extends ApiController {
             $option = $this->optionService->getOptions($key);
             return new OptionCollection($option);
         } catch (RepositoryValidationException $e) {
-            return $this->respondWithError($e->getMessage(), $e->getCode());
+            return $this->errorBadRequest($e->getMessage());
         }
     }
 
@@ -153,7 +153,7 @@ class OptionController extends ApiController {
             $this->optionService->updateOrCreateOption($categoryKey, $input['key'], $input['value']);
             return new OptionResource($this->optionService->getOption($categoryKey, $input['key']));
         } catch (RepositoryValidationException $e) {
-            return $this->respondWithError($e->getMessage(), $e->getCode());
+            return $this->errorBadRequest($e->getMessage());
         }
     }
 }
