@@ -2,7 +2,6 @@
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controller;
-use Gzero\Base\NewUrlParamsProcessor;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 /**
@@ -59,21 +58,6 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 class ApiController extends Controller {
 
     use AuthorizesRequests;
-
-    /**
-     * @var NewUrlParamsProcessor
-     */
-    protected $processor;
-
-    /**
-     * ApiController constructor
-     *
-     * @param NewUrlParamsProcessor $processor Url processor
-     */
-    public function __construct(NewUrlParamsProcessor $processor)
-    {
-        $this->processor = $processor;
-    }
 
     /**
      * Return response in json format

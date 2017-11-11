@@ -1,5 +1,6 @@
 <?php namespace Gzero\Base\Http\Resources;
 
+use Illuminate\Support\Collection;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class UserCollection extends ResourceCollection {
@@ -9,12 +10,10 @@ class UserCollection extends ResourceCollection {
      *
      * @param  \Illuminate\Http\Request $request request
      *
-     * @return array
+     * @return Collection
      */
     public function toArray($request)
     {
-        return [
-            'data' => $this->collection,
-        ];
+        return $this->collection;
     }
 }

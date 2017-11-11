@@ -1,124 +1,156 @@
 <?php namespace Base;
 
 use Codeception\Test\Unit;
+use Gzero\Base\Condition;
 use Gzero\Base\UrlParamsProcessor;
+use Gzero\Base\OrderBy;
+use Gzero\Base\StringParser;
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class UrlParamsProcessorTest extends Unit {
 
-    /**
-     * @var UnitTester
-     */
+    /** @var UnitTester */
     protected $tester;
 
-    /**
-     * @var UrlParamsProcessor
-     */
+    /** @var UrlParamsProcessor */
     protected $processor;
 
-    protected function _before()
+    public function _before()
     {
-        $this->processor = $this->initClass();
-
+        $this->processor = new UrlParamsProcessor(resolve('Illuminate\Contracts\Validation\Factory'));
     }
 
-    /**
-     * @test
-     */
-    public function is_instantiable()
+    /** @test */
+    public function isInstantiable()
     {
         $this->tester->assertInstanceOf(UrlParamsProcessor::class, $this->processor);
     }
 
-    /**
-     * @test
-     */
-    public function can_filter_params()
+    /** @test */
+    public function canRegisterParsers()
     {
-        $this->tester->assertEquals(
-            $this->processor->getFilterParams(),
-            [
-                ['lang', '=', 'en'],
-                ['test2', '=', 'test2'],
-                ['translation.language_code', '=', 'en']
-            ]
-        );
+        $this->processor
+            ->addFilter(new StringParser('translations.url'))
+            ->addFilter(new StringParser('translations.language_code'))
+            ->process(new Request([
+                'sort'         => '-test1,test2,author.createdAt',
+                'page'         => 3,
+                'per_page'     => 21,
+                'translations' => [
+                    'language_code' => 'en',
+                    'url'           => 'awesome-url'
+                ]
+            ]));
     }
 
-    /**
-     * @test
-     */
-    public function can_process_search_query()
+    /** @test */
+    public function shouldMergeValidationRulesFromFilter()
     {
+        try {
+            $this->processor
+                ->addFilter(new StringParser('translations.language_code'), 'required_with:translations.url|string')
+                ->process(new Request([
+                    'sort'         => '-test1,test2,author.createdAt',
+                    'page'         => 3,
+                    'per_page'     => 21,
+                    'translations' => [
+                        'url' => 'awesome-url'
+                    ]
+                ]));
+        } catch (ValidationException $exception) {
+            $this->assertEquals(
+                [
+                    'translations.language_code' => [
+                        'The translations.language code field is required when translations.url is present.'
+                    ]
+                ],
+                $exception->errors());
+            return;
+        }
+        $this->fail('Exception should be thrown');
+    }
+
+    /** @test */
+    public function shouldReturnParsers()
+    {
+        $this->processor
+            ->addFilter(new StringParser('translations.url'))
+            ->process(new Request([
+                'sort'         => '-test1,test2,author.createdAt',
+                'page'         => 3,
+                'per_page'     => 21,
+                'translations' => [
+                    'language_code' => 'en',
+                    'url'           => 'awesome-url'
+                ]
+            ]));
+
+        $this->tester->assertCount(1, $this->processor->getParsers());
+        $this->tester->assertInstanceOf(StringParser::class, $this->processor->getParsers()[0]);
+    }
+
+    /** @test */
+    public function canProcessSearchQuery()
+    {
+        $this->processor->process(new Request(['q' => 'Lore Ipsum']));
+
         $this->tester->assertEquals(
             $this->processor->getSearchQuery(),
             'Lore Ipsum'
         );
     }
 
-    /**
-     * @test
-     */
-    public function is_returning_page_params()
+    /** @test */
+    public function isReturningPageParams()
     {
+        $this->processor->process(new Request([
+            'page'     => 3,
+            'per_page' => 21
+        ]));
+
         $this->tester->assertEquals($this->processor->getPage(), 3);
         $this->tester->assertEquals($this->processor->getPerPage(), 21);
     }
 
-    /**
-     * @test
-     */
-    public function can_process_sort_params()
+    /** @test */
+    public function shouldReturnQueryBuilderWithCorrectOrderBy()
     {
-        $this->tester->assertEquals(
-            $this->processor->getOrderByParams(),
-            [
-                ['test1', 'DESC'],
-                ['test2', 'ASC'],
-                ['author.created_at', 'ASC'],
-            ]
-        );
+        $this->processor->process(new Request(['sort' => '-test1,test2,author.created_at']));
+
+        $query = $this->processor->buildQueryBuilder();
+
+        $this->tester->assertEquals([new OrderBy('test1', 'DESC'), new OrderBy('test2', 'ASC')], $query->getSorts());
+        $this->tester->assertEquals([new OrderBy('created_at', 'ASC')], $query->getRelationSorts('author'));
+        $this->tester->assertEquals(new OrderBy('created_at', 'ASC'), $query->getRelationSort('author', 'created_at'));
     }
 
-    /**
-     * @test
-     */
-    public function is_returning_processed_fields_in_correct_format()
+    /** @test */
+    public function shouldReturnQueryBuilderWithCorrectFilters()
     {
-        $this->tester->assertEquals(
-            $this->processor->getProcessedFields(),
-            [
-                'page'    => 3,
-                'perPage' => 21,
-                'filter'  => [
-                    ['lang', '=', 'en'],
-                    ['test2', '=', 'test2'],
-                    ['translation.language_code', '=', 'en']
-                ],
-                'orderBy' => [
-                    ['test1', 'DESC'],
-                    ['test2', 'ASC'],
-                    ['author.created_at', 'ASC'],
-                ],
-                'query'   => 'Lore Ipsum'
-            ]
-        );
-    }
-
-    /**
-     * @return UrlParamsProcessor
-     */
-    protected function initClass()
-    {
-        return (new UrlParamsProcessor())->process(
-            [
-                'sort'                      => '-test1,test2,author.createdAt',
-                'page'                      => 3,
-                'per_page'                  => 21,
+        $this->processor
+            ->addFilter(new StringParser('not_required_filter'))
+            ->addFilter(new StringParser('lang'))
+            ->addFilter(new StringParser('test2'), 'required')
+            ->addFilter(new StringParser('translation.language_code'))
+            ->process(new Request([
                 'lang'                      => 'en',
                 'test2'                     => 'test2',
                 'translation.language_code' => 'en',
-                'q'                         => 'Lore Ipsum'
-            ]
+            ]));
+        $query = $this->processor->buildQueryBuilder();
+
+        $this->assertEquals(
+            [new Condition('lang', '=', 'en'), new Condition('test2', '=', 'test2')],
+            $query->getFilters()
+        );
+        $this->assertEquals(
+            [new Condition('language_code', '=', 'en')],
+            $query->getRelationFilters('translation')
+        );
+        $this->assertEquals(
+            new Condition('language_code', '=', 'en'),
+            $query->getRelationFilter('translation', 'language_code')
         );
     }
 }

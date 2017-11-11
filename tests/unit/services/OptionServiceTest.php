@@ -9,14 +9,10 @@ use Gzero\Base\Services\RepositoryValidationException;
 
 class OptionServiceTest extends \Codeception\Test\Unit {
 
-    /**
-     * @var UnitTester
-     */
+    /** @var UnitTester */
     protected $tester;
 
-    /**
-     * @var OptionService
-     */
+    /** @var OptionService */
     protected $service;
 
     protected $expectedOptions;

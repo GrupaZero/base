@@ -16,21 +16,16 @@ class UserCest {
 
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
-        $I->seeResponseJsonMatchesJsonPath('data[*]');
         $I->seeResponseContainsJson(
             [
                 'data'  => [
-                    'id'         => 1,
-                    'email'      => 'admin@gzero.pl',
-                    'name'       => 'Admin',
-                    'first_name' => 'John',
-                    'last_name'  => 'Doe',
-                    'roles'      => [
-                        [
-                            'id'   => 1,
-                            'name' => 'Admin'
-                        ]
-                    ],
+                    [
+                        'id'         => 1,
+                        'email'      => 'admin@gzero.pl',
+                        'name'       => 'Admin',
+                        'first_name' => 'John',
+                        'last_name'  => 'Doe'
+                    ]
                 ],
                 'meta'  => [
                     'current_page' => 1,

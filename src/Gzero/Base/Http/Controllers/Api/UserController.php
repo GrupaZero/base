@@ -6,42 +6,35 @@ use Gzero\Base\Http\Resources\UserCollection;
 use Gzero\Base\Jobs\DeleteUser;
 use Gzero\Base\Jobs\UpdateUser;
 use Gzero\Base\Models\User;
-use Gzero\Base\NewUrlParamsProcessor;
+use Gzero\Base\UrlParamsProcessor;
 use Gzero\Base\Repositories\UserReadRepository;
-use Gzero\Base\Services\UserService;
 use Gzero\Base\StringParser;
 use Gzero\Base\Validators\UserValidator;
 use Illuminate\Http\Request;
 
 class UserController extends ApiController {
 
-    /**
-     * @var UserService
-     */
-    protected $userService;
+    /** @var Request */
+    protected $request;
 
-    /**
-     * @var UserValidator
-     */
+    /** @var UserReadRepository */
+    protected $repository;
+
+    /** @var UserValidator */
     protected $validator;
 
     /**
      * UserController constructor.
      *
-     * @param NewUrlParamsProcessor $processor   Url processor
-     * @param UserService           $userService User repository
-     * @param UserValidator         $validator   User validator
-     * @param Request               $request     Request object
+     * @param UserReadRepository $repository User repository
+     * @param UserValidator      $validator  User validator
+     * @param Request            $request    Request object
      */
-    public function __construct(
-        NewUrlParamsProcessor $processor,
-        UserService $userService,
-        UserValidator $validator,
-        Request $request
-    ) {
-        parent::__construct($processor);
-        $this->validator   = $validator->setData($request->all());
-        $this->userService = $userService;
+    public function __construct(UserReadRepository $repository, UserValidator $validator, Request $request)
+    {
+        $this->request    = $request;
+        $this->repository = $repository;
+        $this->validator  = $validator->setData($request->all());
     }
 
     /**
@@ -89,23 +82,23 @@ class UserController extends ApiController {
      *  )
      * )
      *
-     * @param UserReadRepository $repository Query service
-     * @param Request            $request    Request object
+     * @param UrlParamsProcessor $processor Params processor
      *
      * @return UserCollection
      */
-    public function index(UserReadRepository $repository, Request $request)
+    public function index(UrlParamsProcessor $processor)
     {
         $this->authorize('readList', User::class);
 
-        $this->processor
+        $processor
             ->addFilter(new StringParser('email'), 'email')
             ->addFilter(new StringParser('name'))
             ->addFilter(new StringParser('first_name'))
             ->addFilter(new StringParser('last_name'))
-            ->process($request);
+            ->process($this->request);
 
-        $results = $repository->getMany($this->processor->buildQueryBuilder());
+        $results = $this->repository->getMany($processor->buildQueryBuilder());
+        $results->setPath(apiUrl('users'));
 
         return new UserCollection($results);
     }
@@ -135,14 +128,13 @@ class UserController extends ApiController {
      *   @SWG\Response(response=404, description="Category not found")
      * )
      *
-     * @param UserReadRepository $repository Query service
-     * @param int                $id         user id
+     * @param int $id user id
      *
      * @return UserResource
      */
-    public function show(UserReadRepository $repository, $id)
+    public function show($id)
     {
-        $user = $repository->getById($id);
+        $user = $this->repository->getById($id);
         if (!empty($user)) {
             $this->authorize('read', $user);
             return new UserResource($user);
@@ -189,14 +181,13 @@ class UserController extends ApiController {
      *   @SWG\Response(response=404, description="User not found")
      * )
      *
-     * @param UserReadRepository $repository Query service
-     * @param int                $id         User id
+     * @param int $id User id
      *
      * @return UserResource
      */
-    public function update(UserReadRepository $repository, $id)
+    public function update($id)
     {
-        $user = $repository->getById($id);
+        $user = $this->repository->getById($id);
         if (!empty($user)) {
             $this->authorize('update', $user);
             $input = $this->validator
@@ -243,18 +234,15 @@ class UserController extends ApiController {
      *   @SWG\Response(response=404, description="User not found")
      * )
      *
-     * @param UserReadRepository $repository Query service
-     * @param Request            $request    Request object
-     *
      * @return UserResource
      */
-    public function updateMe(UserReadRepository $repository, Request $request)
+    public function updateMe()
     {
-        if (!$request->has('password')) {
-            $this->validator->setData($request->except(['password', 'password_confirmation']));
+        if (!$this->request->has('password')) {
+            $this->validator->setData($this->request->except(['password', 'password_confirmation']));
         }
 
-        $user = $repository->getById($request->user()->id);
+        $user = $this->repository->getById($this->request->user()->id);
         $this->authorize('update', $user);
         $input = $this->validator->bind('name', ['user_id' => $user->id])->bind('email', ['user_id' => $user->id])
             ->validate('updateMe');
@@ -283,14 +271,13 @@ class UserController extends ApiController {
      *   @SWG\Response(response=404, description="User not found")
      * )
      *
-     * @param UserReadRepository $repository Query service
-     * @param int                $id         Id of the user
+     * @param int $id Id of the user
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(UserReadRepository $repository, $id)
+    public function destroy($id)
     {
-        $user = $repository->getById($id);
+        $user = $this->repository->getById($id);
 
         if (!empty($user)) {
             $this->authorize('delete', $user);

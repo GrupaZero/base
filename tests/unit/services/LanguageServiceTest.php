@@ -6,14 +6,10 @@ use Gzero\Base\Services\LanguageService;
 
 class LanguageServiceTest extends Unit {
 
-    /**
-     * @var \Base\UnitTester
-     */
+    /** @var \Base\UnitTester */
     protected $tester;
 
-    /**
-     * @var LanguageService
-     */
+    /** @var LanguageService */
     protected $service;
 
     protected function _before()

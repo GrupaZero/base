@@ -39,13 +39,12 @@ class RouteReadRepository implements ReadRepository {
 
     /**
      * @param QueryBuilder $builder Query builder
-     * @param int          $page    Page number
      *
      * @throws RepositoryException
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getMany(QueryBuilder $builder, int $page = 1)
+    public function getMany(QueryBuilder $builder)
     {
         $query = Route::query();
 
@@ -63,7 +62,7 @@ class RouteReadRepository implements ReadRepository {
 
         /** @TODO Pagination */
 
-        return $query->offset($builder->getPageSize() * ($page - 1))
+        return $query->offset($builder->getPageSize() * ($builder->getPage() - 1))
             ->limit($builder->getPageSize())
             ->get(['routes.*']);
     }

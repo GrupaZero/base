@@ -20,6 +20,9 @@ class QueryBuilder {
     protected $searchQuery;
 
     /** @var int */
+    protected $page;
+
+    /** @var int */
     protected $pageSize;
 
     /**
@@ -59,11 +62,25 @@ class QueryBuilder {
      *
      * @param int $pageSize Page size
      *
-     * @return void
+     * @return QueryBuilder
      */
     public function setPageSize(int $pageSize)
     {
         $this->pageSize = $pageSize;
+        return $this;
+    }
+
+    /**
+     * Set page
+     *
+     * @param int $page Page
+     *
+     * @return QueryBuilder
+     */
+    public function setPage(int $page)
+    {
+        $this->page = $page;
+        return $this;
     }
 
     /**
@@ -83,7 +100,17 @@ class QueryBuilder {
      */
     public function getSearchQuery()
     {
-        return ($this->searchQuery) ?: self::ITEMS_PER_PAGE;
+        return $this->searchQuery;
+    }
+
+    /**
+     * Get page
+     *
+     * @return int
+     */
+    public function getPage(): int
+    {
+        return ($this->page) ?: 1;
     }
 
     /**
@@ -91,9 +118,9 @@ class QueryBuilder {
      *
      * @return int
      */
-    public function getPageSize()
+    public function getPageSize(): int
     {
-        return $this->pageSize;
+        return ($this->pageSize) ?: self::ITEMS_PER_PAGE;
     }
 
     /**

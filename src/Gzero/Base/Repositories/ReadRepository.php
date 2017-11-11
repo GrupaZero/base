@@ -13,9 +13,8 @@ interface ReadRepository {
 
     /**
      * @param QueryBuilder $builder Query builder
-     * @param int          $page    Page number
      *
      * @return mixed
      */
-    public function getMany(QueryBuilder $builder, int $page = 1);
+    public function getMany(QueryBuilder $builder);
 }

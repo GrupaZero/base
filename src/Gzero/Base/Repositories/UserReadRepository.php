@@ -2,6 +2,7 @@
 
 use Gzero\Base\Models\User;
 use Gzero\Base\QueryBuilder;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class UserReadRepository implements ReadRepository {
 
@@ -29,19 +30,27 @@ class UserReadRepository implements ReadRepository {
 
     /**
      * @param QueryBuilder $builder Query builder
-     * @param int          $page    Page number
      *
-     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     * @return LengthAwarePaginator
      */
-    public function getMany(QueryBuilder $builder, int $page = 1)
+    public function getMany(QueryBuilder $builder)
     {
         $query = User::query();
 
         $builder->applyFilters($query);
         $builder->applySorts($query);
 
-        return $query->offset($builder->getPageSize() * ($page - 1))
-            ->limit($builder->getPageSize())
+        $count = clone $query->getQuery();
+
+        $results = $query->limit($builder->getPageSize())
+            ->offset($builder->getPageSize() * ($builder->getPage() - 1))
             ->get(['users.*']);
+
+        return new LengthAwarePaginator(
+            $results->all(),
+            $count->select('users.id')->count(),
+            $builder->getPageSize(),
+            $builder->getPage()
+        );
     }
 }

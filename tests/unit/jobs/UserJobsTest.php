@@ -8,7 +8,7 @@ use Gzero\Base\Models\User;
 use Gzero\Base\Repositories\UserReadRepository;
 use Illuminate\Support\Facades\Hash;
 
-class UserServiceTest extends Unit {
+class UserJobsTest extends Unit {
 
     /** @var UnitTester */
     protected $tester;
