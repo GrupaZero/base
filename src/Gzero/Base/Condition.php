@@ -117,10 +117,8 @@ class Condition {
 
         switch ($this->operation) {
             case '=':
-                $query->where($tableAlias . $this->name, $this->operation, $this->value);
-                break;
             case '!=':
-                $query->notWhere($tableAlias . $this->name, $this->value);
+                $query->where($tableAlias . $this->name, $this->operation, $this->value);
                 break;
             default:
                 throw new Exception('Unsupported operation');

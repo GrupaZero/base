@@ -71,6 +71,22 @@ class UserCest {
                 ]
             ]
         );
+
+        $I->sendGET(apiUrl('users?email=!john.doe@example.com'));
+
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseJsonMatchesJsonPath('data[*]');
+        $I->dontSeeResponseContainsJson(
+            [
+                'data' => [
+                    'email'      => 'john.doe@example.com',
+                    'name'       => 'JohnDoe',
+                    'first_name' => 'John',
+                    'last_name'  => 'Doe'
+                ]
+            ]
+        );
     }
 
     public function adminShouldNotBeAbleToFilterListOfUsersByInvalidEmail(FunctionalTester $I)
@@ -90,6 +106,44 @@ class UserCest {
                 ]
             ]
         );
+    }
+
+    public function adminShouldBeAbleToSortListOfUsers(FunctionalTester $I)
+    {
+        $I->loginAsAdmin();
+        $I->haveUser([
+            'email'      => 'john.doe@example.com',
+            'name'       => 'JohnDoe',
+            'first_name' => 'John',
+            'last_name'  => 'Doe',
+        ]);
+
+        $I->haveUser([
+            'email'      => 'zoe.doe@example.com',
+            'name'       => 'ZoeDoe',
+            'first_name' => 'Zoe',
+            'last_name'  => 'Doe',
+        ]);
+
+        $I->sendGET(apiUrl('users?sort=-email'));
+
+        $firstUserEmail = $I->grabDataFromResponseByJsonPath('data[0].email');
+        $secondUserEmail = $I->grabDataFromResponseByJsonPath('data[1].email');
+
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->assertEquals('zoe.doe@example.com', head($firstUserEmail));
+        $I->assertEquals('john.doe@example.com', head($secondUserEmail));
+
+        $I->sendGET(apiUrl('users?sort=email'));
+
+        $firstUserEmail = $I->grabDataFromResponseByJsonPath('data[0].email');
+        $secondUserEmail = $I->grabDataFromResponseByJsonPath('data[1].email');
+
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->assertEquals('john.doe@example.com', head($firstUserEmail));
+        $I->assertEquals('zoe.doe@example.com', head($secondUserEmail));
     }
 
     public function adminShouldBeAbleToGetSingleUser(FunctionalTester $I)
