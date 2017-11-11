@@ -9,16 +9,25 @@ use Illuminate\Http\Resources\Json\Resource;
  *   required={"key", "value", "category_key"},
  *   @SWG\Property(
  *     property="key",
- *     type="string"
+ *     type="string",
+ *     example="site_name"
  *   ),
  *   @SWG\Property(
  *     property="value",
- *     type="string"
+ *     type="string",
+ *     example="{'en':'GZERO-CMS','de':'GZERO-CMS','fr':'GZERO-CMS','pl':'GZERO-CMS'}"
  *   ),
  *   @SWG\Property(
  *     property="category_key",
- *     type="string"
+ *     type="string",
+ *     example="general"
  *   )
+ * )
+ *
+ * @SWG\Definition(
+ *   definition="OptionResponse",
+ *   type="object",
+ *   example="'google_analytics_id' => ['en'=>'GZERO-CMS','de'=>'GZERO-CMS','fr'=>'GZERO-CMS','pl'=>'GZERO-CMS']"
  * )
  */
 class Option extends Resource {

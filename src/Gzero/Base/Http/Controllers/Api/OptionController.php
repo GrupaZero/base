@@ -45,7 +45,11 @@ class OptionController extends ApiController {
      *   summary="Get all option categories",
      *   description="Retrieves a list of all available option categories.",
      *   produces={"application/json"},
-     *   @SWG\Response(response="200", description="successful operation")
+     *   @SWG\Response(
+     *     response=200,
+     *     description="Successful operation",
+     *     @SWG\Schema(type="array", @SWG\Items(ref="#/definitions/OptionCategory")),
+     *  )
      * )
      *
      * @return OptionCategoryCollection
@@ -71,7 +75,12 @@ class OptionController extends ApiController {
      *     required=true,
      *     type="string"
      *   ),
-     *   @SWG\Response(response="200", description="successful operation")
+     *   @SWG\Response(
+     *     response=200,
+     *     description="Successful operation",
+     *     @SWG\Schema(type="array", @SWG\Items(ref="#/definitions/OptionResponse")),
+     *  ),
+     *   @SWG\Response(response=404, description="Category not found")
      * )
      *
      * @param string $key option category key
@@ -84,7 +93,7 @@ class OptionController extends ApiController {
             $option = $this->optionService->getOptions($key);
             return new OptionCollection($option);
         } catch (RepositoryValidationException $e) {
-            return $this->respondWithError($e->getMessage());
+            return $this->respondWithError($e->getMessage(), $e->getCode());
         }
     }
 
@@ -113,11 +122,25 @@ class OptionController extends ApiController {
      *     @SWG\Schema(
      *       type="object",
      *       required={"key, value"},
-     *       @SWG\Property(property="key", type="string", example="example_key"),
-     *       @SWG\Property(property="value", type="array", example="['en' => null,'pl' => null,'de' => null,'fr' => null]")
+     *       @SWG\Property(
+     *         property="key",
+     *         type="string",
+     *         example="example_key"
+     *       ),
+     *       @SWG\Property(
+     *         property="value",
+     *         type="array",
+     *         example="['en' => null,'pl' => null,'de' => null,'fr' => null]",
+     *         @SWG\Items(type="string"),
+     *       )
      *     )
      *   ),
-     *   @SWG\Response(response="200", description="successful operation")
+     *   @SWG\Response(
+     *     response=200,
+     *     description="Successful operation",
+     *     @SWG\Schema(type="object", ref="#/definitions/Option"),
+     *   ),
+     *   @SWG\Response(response=404, description="Category not found")
      * )
      *
      * @param string $categoryKey option category key
@@ -134,7 +157,7 @@ class OptionController extends ApiController {
             $this->optionService->updateOrCreateOption($categoryKey, $input['key'], $input['value']);
             return new OptionResource($this->optionService->getOption($categoryKey, $input['key']));
         } catch (RepositoryValidationException $e) {
-            return $this->respondWithError($e->getMessage());
+            return $this->respondWithError($e->getMessage(), $e->getCode());
         }
     }
 }

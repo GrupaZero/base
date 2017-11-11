@@ -9,7 +9,8 @@ use Illuminate\Http\Resources\Json\Resource;
  *   required={"name"},
  *   @SWG\Property(
  *     property="name",
- *     type="string"
+ *     type="string",
+ *     example="Moderator"
  *   )
  * )
  */

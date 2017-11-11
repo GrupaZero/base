@@ -53,7 +53,11 @@ class UserController extends ApiController {
      *   description="List of all available users, <b>'admin-access'</b> policy is required.",
      *   produces={"application/json"},
      *   security={{"AdminAccess": {}}},
-     *   @SWG\Response(response="200", description="successful operation")
+     *   @SWG\Response(
+     *     response=200,
+     *     description="Successful operation",
+     *     @SWG\Schema(type="array", @SWG\Items(ref="#/definitions/User")),
+     *  )
      * )
      *
      * @return UserCollection
@@ -90,7 +94,12 @@ class UserController extends ApiController {
      *     required=true,
      *     type="integer"
      *   ),
-     *   @SWG\Response(response="200", description="successful operation")
+     *   @SWG\Response(
+     *     response=200,
+     *     description="Successful operation",
+     *     @SWG\Schema(type="object", ref="#/definitions/User"),
+     *   ),
+     *   @SWG\Response(response=404, description="Category not found")
      * )
      *
      * @param UserReadRepository $repository Query service
@@ -132,11 +141,16 @@ class UserController extends ApiController {
      *     @SWG\Schema(
      *       type="object",
      *       required={"email, name"},
-     *       @SWG\Property(property="email", type="string"),
-     *       @SWG\Property(property="name", type="string"),
-     *       @SWG\Property(property="first_name", type="string"),
-     *       @SWG\Property(property="last_name", type="string"),
+     *       @SWG\Property(property="email", type="string", example="john.doe@example.com"),
+     *       @SWG\Property(property="name", type="string", example="JohnDoe"),
+     *       @SWG\Property(property="first_name", type="string", example="John"),
+     *       @SWG\Property(property="last_name", type="string", example="Doe")
      *     )
+     *   ),
+     *   @SWG\Response(
+     *     response=200,
+     *     description="Successful operation",
+     *     @SWG\Schema(type="object", ref="#/definitions/User"),
      *   ),
      *   @SWG\Response(response=400, description="Invalid user supplied"),
      *   @SWG\Response(response=404, description="User not found")
@@ -174,18 +188,23 @@ class UserController extends ApiController {
      *   @SWG\Parameter(
      *     in="body",
      *     name="body",
-     *     description="Fields to update, <b>'password'</b> is not required, if provided it must match <b>'password_confirmation'</b>.",
+     *     description="Fields to update, <b>'password'</b> is not required, it must match <b>'password_confirmation'</b>.",
      *     required=true,
      *     @SWG\Schema(
      *       type="object",
      *       required={"email, name"},
-     *       @SWG\Property(property="email", type="string"),
-     *       @SWG\Property(property="name", type="string"),
-     *       @SWG\Property(property="first_name", type="string"),
-     *       @SWG\Property(property="last_name", type="string"),
-     *       @SWG\Property(property="password", type="string"),
-     *       @SWG\Property(property="password_confirmation", type="string"),
+     *       @SWG\Property(property="email", type="string", example="john.doe@example.com"),
+     *       @SWG\Property(property="name", type="string", example="JohnDoe"),
+     *       @SWG\Property(property="first_name", type="string", example="John"),
+     *       @SWG\Property(property="last_name", type="string", example="Doe"),
+     *       @SWG\Property(property="password", type="string", example="secret"),
+     *       @SWG\Property(property="password_confirmation", type="string", example="secret")
      *     )
+     *   ),
+     *   @SWG\Response(
+     *     response=200,
+     *     description="Successful operation",
+     *     @SWG\Schema(type="object", ref="#/definitions/User"),
      *   ),
      *   @SWG\Response(response=400, description="Invalid user supplied"),
      *   @SWG\Response(response=404, description="User not found")
@@ -227,7 +246,8 @@ class UserController extends ApiController {
      *     required=true,
      *     type="integer"
      *   ),
-     *   @SWG\Response(response="200", description="successful operation")
+     *   @SWG\Response(response=204, description="Successful operation"),
+     *   @SWG\Response(response=404, description="User not found")
      * )
      *
      * @param UserReadRepository $repository Query service
@@ -242,7 +262,7 @@ class UserController extends ApiController {
         if (!empty($user)) {
             $this->authorize('delete', $user);
             dispatch_now(new DeleteUser($user));
-            return $this->respondWithSimpleSuccess(['success' => true]);
+            return $this->respondNoContent();
         }
         return $this->respondNotFound();
     }

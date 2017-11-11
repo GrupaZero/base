@@ -29,9 +29,13 @@ class LanguageController extends ApiController {
      *   path="/languages",
      *   tags={"language", "public"},
      *   summary="List of all languages",
-     *   description="Retrieves a list of all available languages, with <b>'is_active'</b> and <b>'is_default'</b> flags to mark active and default languages.",
+     *   description="Retrieves a list of all available languages.",
      *   produces={"application/json"},
-     *   @SWG\Response(response="200", description="successful operation")
+     *   @SWG\Response(
+     *     response=200,
+     *     description="Successful operation",
+     *     @SWG\Schema(type="array", @SWG\Items(ref="#/definitions/Language")),
+     *  )
      * )
      *
      * @return LanguageCollection
@@ -57,7 +61,15 @@ class LanguageController extends ApiController {
      *     required=true,
      *     type="string"
      *   ),
-     *   @SWG\Response(response="200", description="successful operation")
+     *   @SWG\Response(
+     *     response=200,
+     *     description="Successful operation",
+     *     @SWG\Schema(type="object", ref="#/definitions/Language"),
+     *   ),
+     *   @SWG\Response(
+     *     response=404,
+     *     description="Language not found"
+     *   )
      * )
      *
      * @param string $code Lang code

@@ -9,19 +9,23 @@ use Illuminate\Http\Resources\Json\Resource;
  *   required={"email", "name"},
  *   @SWG\Property(
  *     property="email",
- *     type="string"
+ *     type="string",
+ *     example="john.doe@example.com"
  *   ),
  *   @SWG\Property(
  *     property="name",
- *     type="string"
+ *     type="string",
+ *     example="JohnDoe"
  *   ),
  *   @SWG\Property(
  *     property="first_name",
- *     type="string"
+ *     type="string",
+ *     example="John"
  *   ),
  *   @SWG\Property(
  *     property="last_name",
- *     type="string"
+ *     type="string",
+ *     example="Doe"
  *   ),
  *   @SWG\Property(
  *     property="roles",

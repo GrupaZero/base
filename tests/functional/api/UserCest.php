@@ -133,9 +133,7 @@ class UserCest {
 
         $I->sendDELETE(apiUrl('users', [$user->id]));
 
-        $I->seeResponseCodeIs(200);
-        $I->seeResponseIsJson();
-        $I->seeResponseContainsJson(['success' => true]);
+        $I->seeResponseCodeIs(204);
     }
 
     public function shouldBeAbleToUpdateMyPersonalInformation(FunctionalTester $I)

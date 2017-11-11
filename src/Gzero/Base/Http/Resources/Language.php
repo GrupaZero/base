@@ -9,19 +9,23 @@ use Illuminate\Http\Resources\Json\Resource;
  *   required={"code", "i18n"},
  *   @SWG\Property(
  *     property="code",
- *     type="string"
+ *     type="string",
+ *     example="en"
  *   ),
  *   @SWG\Property(
  *     property="i18n",
- *     type="string"
+ *     type="string",
+ *     example="en_US"
  *   ),
  *   @SWG\Property(
  *     property="is_enabled",
- *     type="boolean"
+ *     type="boolean",
+ *     example="true"
  *   ),
  *   @SWG\Property(
  *     property="is_default",
- *     type="boolean"
+ *     type="boolean",
+ *     example="false"
  *   )
  * )
  */

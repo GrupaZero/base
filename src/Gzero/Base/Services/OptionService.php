@@ -317,7 +317,7 @@ class OptionService {
     private function requireCategoryExists($categoryKey)
     {
         if (!$this->categoryExists($categoryKey)) {
-            throw new RepositoryValidationException('Category ' . $categoryKey . ' does not exist');
+            throw new RepositoryValidationException('Category ' . $categoryKey . ' does not exist', 404);
         }
     }
 
