@@ -6,11 +6,9 @@ class UserCest {
 
     public function adminShouldBeAbleToGetListOfUsers(FunctionalTester $I)
     {
-        $I->loginAsAdmin();
         $usersNumber = 4;
-        for ($i = 0; $i < $usersNumber; $i++) {
-            $I->haveUser();
-        }
+        $I->loginAsAdmin();
+        $I->haveUsers($usersNumber);
 
         $I->sendGET(apiUrl('users'));
 
@@ -111,39 +109,44 @@ class UserCest {
     public function adminShouldBeAbleToSortListOfUsers(FunctionalTester $I)
     {
         $I->loginAsAdmin();
-        $I->haveUser([
-            'email'      => 'john.doe@example.com',
-            'name'       => 'JohnDoe',
-            'first_name' => 'John',
-            'last_name'  => 'Doe',
-        ]);
-
-        $I->haveUser([
-            'email'      => 'zoe.doe@example.com',
-            'name'       => 'ZoeDoe',
-            'first_name' => 'Zoe',
-            'last_name'  => 'Doe',
+        $I->haveUsers([
+            [
+                'email'      => 'john.doe@example.com',
+                'name'       => 'JohnDoe',
+                'first_name' => 'John',
+                'last_name'  => 'Doe',
+            ],
+            [
+                'email'      => 'zoe.doe@example.com',
+                'name'       => 'ZoeDoe',
+                'first_name' => 'Zoe',
+                'last_name'  => 'Doe',
+            ]
         ]);
 
         $I->sendGET(apiUrl('users?sort=-email'));
 
-        $firstUserEmail  = $I->grabDataFromResponseByJsonPath('data[0].email');
-        $secondUserEmail = $I->grabDataFromResponseByJsonPath('data[1].email');
+        $first  = $I->grabDataFromResponseByJsonPath('data[0].email');
+        $second = $I->grabDataFromResponseByJsonPath('data[1].email');
+        $third  = $I->grabDataFromResponseByJsonPath('data[2].email');
 
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
-        $I->assertEquals('zoe.doe@example.com', head($firstUserEmail));
-        $I->assertEquals('john.doe@example.com', head($secondUserEmail));
+        $I->assertEquals('zoe.doe@example.com', head($first));
+        $I->assertEquals('john.doe@example.com', head($second));
+        $I->assertEquals('admin@gzero.pl', head($third));
 
         $I->sendGET(apiUrl('users?sort=email'));
 
-        $firstUserEmail  = $I->grabDataFromResponseByJsonPath('data[0].email');
-        $secondUserEmail = $I->grabDataFromResponseByJsonPath('data[1].email');
+        $first  = $I->grabDataFromResponseByJsonPath('data[0].email');
+        $second = $I->grabDataFromResponseByJsonPath('data[1].email');
+        $third  = $I->grabDataFromResponseByJsonPath('data[2].email');
 
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
-        $I->assertEquals('john.doe@example.com', head($firstUserEmail));
-        $I->assertEquals('zoe.doe@example.com', head($secondUserEmail));
+        $I->assertEquals('admin@gzero.pl', head($first));
+        $I->assertEquals('john.doe@example.com', head($second));
+        $I->assertEquals('zoe.doe@example.com', head($third));
     }
 
     public function adminShouldBeAbleToGetSingleUser(FunctionalTester $I)

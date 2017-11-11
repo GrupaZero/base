@@ -21,6 +21,29 @@ class Functional extends \Codeception\Module {
     }
 
     /**
+     * Create users and return collection
+     *
+     * @param array|integer $users
+     *
+     * @return array
+     */
+    public function haveUsers($users)
+    {
+
+        if (is_numeric($users)) {
+            return factory(User::class, $users)->create();
+        }
+
+        $result = [];
+
+        foreach ($users as $attributes) {
+            $result[] = $this->haveUser($attributes);
+        }
+
+        return $result;
+    }
+
+    /**
      * @param callable $closure
      */
     public function haveMlRoutes(callable $closure)
