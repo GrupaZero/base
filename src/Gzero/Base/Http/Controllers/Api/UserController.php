@@ -6,9 +6,10 @@ use Gzero\Base\Http\Resources\UserCollection;
 use Gzero\Base\Jobs\DeleteUser;
 use Gzero\Base\Jobs\UpdateUser;
 use Gzero\Base\Models\User;
+use Gzero\Base\NewUrlParamsProcessor;
 use Gzero\Base\Repositories\UserReadRepository;
 use Gzero\Base\Services\UserService;
-use Gzero\Base\UrlParamsProcessor;
+use Gzero\Base\StringParser;
 use Gzero\Base\Validators\UserValidator;
 use Illuminate\Http\Request;
 
@@ -27,13 +28,13 @@ class UserController extends ApiController {
     /**
      * UserController constructor.
      *
-     * @param UrlParamsProcessor $processor   Url processor
-     * @param UserService        $userService User repository
-     * @param UserValidator      $validator   User validator
-     * @param Request            $request     Request object
+     * @param NewUrlParamsProcessor $processor   Url processor
+     * @param UserService           $userService User repository
+     * @param UserValidator         $validator   User validator
+     * @param Request               $request     Request object
      */
     public function __construct(
-        UrlParamsProcessor $processor,
+        NewUrlParamsProcessor $processor,
         UserService $userService,
         UserValidator $validator,
         Request $request
@@ -53,6 +54,34 @@ class UserController extends ApiController {
      *   description="List of all available users, <b>'admin-access'</b> policy is required.",
      *   produces={"application/json"},
      *   security={{"AdminAccess": {}}},
+     *   @SWG\Parameter(
+     *     name="email",
+     *     in="query",
+     *     description="Valid email address to filter by",
+     *     required=false,
+     *     type="string"
+     *   ),
+     *   @SWG\Parameter(
+     *     name="name",
+     *     in="query",
+     *     description="Name to filter by",
+     *     required=false,
+     *     type="string"
+     *   ),
+     *   @SWG\Parameter(
+     *     name="first_name",
+     *     in="query",
+     *     description="First name to filter by",
+     *     required=false,
+     *     type="string"
+     *   ),
+     *   @SWG\Parameter(
+     *     name="last_name",
+     *     in="query",
+     *     description="Last name to filter by",
+     *     required=false,
+     *     type="string"
+     *   ),
      *   @SWG\Response(
      *     response=200,
      *     description="Successful operation",
@@ -60,21 +89,25 @@ class UserController extends ApiController {
      *  )
      * )
      *
+     * @param UserReadRepository $repository Query service
+     * @param Request            $request    Request object
+     *
      * @return UserCollection
      */
-    public function index()
+    public function index(UserReadRepository $repository, Request $request)
     {
         $this->authorize('readList', User::class);
-        $input   = $this->validator->validate('list');
-        $params  = $this->processor->process($input)->getProcessedFields();
-        $results = $this->userService->getUsers(
-            $params['filter'],
-            $params['orderBy'],
-            $params['page'],
-            $params['perPage']
-        );
 
-        return new UserCollection($results->setPath(apiUrl('users')));
+        $this->processor
+            ->addFilter(new StringParser('email'), 'email')
+            ->addFilter(new StringParser('name'))
+            ->addFilter(new StringParser('first_name'))
+            ->addFilter(new StringParser('last_name'))
+            ->process($request);
+
+        $results = $repository->getMany($this->processor->buildQueryBuilder());
+
+        return new UserCollection($results);
     }
 
     /**

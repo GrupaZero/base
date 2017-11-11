@@ -2,7 +2,7 @@
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controller;
-use Gzero\Base\UrlParamsProcessor;
+use Gzero\Base\NewUrlParamsProcessor;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 /**
@@ -61,16 +61,16 @@ class ApiController extends Controller {
     use AuthorizesRequests;
 
     /**
-     * @var UrlParamsProcessor
+     * @var NewUrlParamsProcessor
      */
     protected $processor;
 
     /**
      * ApiController constructor
      *
-     * @param UrlParamsProcessor $processor Url processor
+     * @param NewUrlParamsProcessor $processor Url processor
      */
-    public function __construct(UrlParamsProcessor $processor)
+    public function __construct(NewUrlParamsProcessor $processor)
     {
         $this->processor = $processor;
     }

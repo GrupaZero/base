@@ -23,12 +23,6 @@ use Illuminate\Http\Resources\Json\Resource;
  *     example="general"
  *   )
  * )
- *
- * @SWG\Definition(
- *   definition="OptionResponse",
- *   type="object",
- *   example="'google_analytics_id' => ['en'=>'GZERO-CMS','de'=>'GZERO-CMS','fr'=>'GZERO-CMS','pl'=>'GZERO-CMS']"
- * )
  */
 class Option extends Resource {
 

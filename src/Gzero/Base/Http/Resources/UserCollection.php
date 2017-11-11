@@ -9,10 +9,12 @@ class UserCollection extends ResourceCollection {
      *
      * @param  \Illuminate\Http\Request $request request
      *
-     * @return \Illuminate\Support\Collection
+     * @return array
      */
     public function toArray($request)
     {
-        return $this->collection;
+        return [
+            'data' => $this->collection,
+        ];
     }
 }

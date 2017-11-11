@@ -75,11 +75,7 @@ class OptionController extends ApiController {
      *     required=true,
      *     type="string"
      *   ),
-     *   @SWG\Response(
-     *     response=200,
-     *     description="Successful operation",
-     *     @SWG\Schema(type="array", @SWG\Items(ref="#/definitions/OptionResponse")),
-     *  ),
+     *   @SWG\Response(response=200, description="Successful operation"),
      *   @SWG\Response(response=404, description="Category not found")
      * )
      *

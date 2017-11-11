@@ -51,6 +51,58 @@ class UserCest {
         );
     }
 
+    public function adminShouldBeAbleToFilterListOfUsersByEmail(FunctionalTester $I)
+    {
+        $I->loginAsAdmin();
+        $I->haveUser([
+            'email'      => 'john.doe@example.com',
+            'name'       => 'JohnDoe',
+            'first_name' => 'John',
+            'last_name'  => 'Doe',
+        ]);
+
+        $I->sendGET(apiUrl('users?email=john.doe@example.com'));
+
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseJsonMatchesJsonPath('data[*]');
+        $I->seeResponseContainsJson(
+            [
+                'data' => [
+                    'email'      => 'john.doe@example.com',
+                    'name'       => 'JohnDoe',
+                    'first_name' => 'John',
+                    'last_name'  => 'Doe'
+                ]
+            ]
+        );
+    }
+
+    public function adminShouldNotBeAbleToFilterListOfUsersByInvalidEmail(FunctionalTester $I)
+    {
+        $I->loginAsAdmin();
+        $I->haveUser([
+            'email'      => 'john.doe@example.com',
+            'name'       => 'JohnDoe',
+            'first_name' => 'John',
+            'last_name'  => 'Doe',
+        ]);
+
+        $I->sendGET(apiUrl('users?email=john.doeexample.com'));
+
+        $I->seeResponseCodeIs(422);
+        $I->seeResponseIsJson();
+        $I->dontSeeResponseJsonMatchesJsonPath('data[*]');
+        $I->seeResponseContainsJson(
+            [
+                'message' => 'The given data was invalid.',
+                'errors'  => [
+                    'email' => ["The email must be a valid email address."],
+                ]
+            ]
+        );
+    }
+
     public function adminShouldBeAbleToGetSingleUser(FunctionalTester $I)
     {
         $I->loginAsAdmin();
