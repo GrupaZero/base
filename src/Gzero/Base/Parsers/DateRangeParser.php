@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
  * @TODO we should always have two dates
  * @TODO human readable? e.g. -7days,+2days
  */
-class DataRangeParser implements ConditionParser {
+class DateRangeParser implements ConditionParser {
 
     /** @var string */
     protected $name;
