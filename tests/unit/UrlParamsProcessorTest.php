@@ -2,6 +2,7 @@
 
 use Codeception\Test\Unit;
 use Gzero\Base\Condition;
+use Gzero\Base\QueryBuilder;
 use Gzero\Base\UrlParamsProcessor;
 use Gzero\Base\OrderBy;
 use Gzero\Base\Parsers\StringParser;
@@ -34,7 +35,7 @@ class UrlParamsProcessorTest extends Unit {
             ->addFilter(new StringParser('translations.url'))
             ->addFilter(new StringParser('translations.language_code'))
             ->process(new Request([
-                'sort'         => '-test1,test2,author.createdAt',
+                'sort'         => '-test1,test2,author.created_at',
                 'page'         => 3,
                 'per_page'     => 21,
                 'translations' => [
@@ -51,7 +52,7 @@ class UrlParamsProcessorTest extends Unit {
             $this->processor
                 ->addFilter(new StringParser('translations.language_code'), 'required_with:translations.url|string')
                 ->process(new Request([
-                    'sort'         => '-test1,test2,author.createdAt',
+                    'sort'         => '-test1,test2,author.created_at',
                     'page'         => 3,
                     'per_page'     => 21,
                     'translations' => [
@@ -77,7 +78,7 @@ class UrlParamsProcessorTest extends Unit {
         $this->processor
             ->addFilter(new StringParser('translations.url'))
             ->process(new Request([
-                'sort'         => '-test1,test2,author.createdAt',
+                'sort'         => '-test1,test2,author.created_at',
                 'page'         => 3,
                 'per_page'     => 21,
                 'translations' => [
@@ -88,6 +89,24 @@ class UrlParamsProcessorTest extends Unit {
 
         $this->tester->assertCount(1, $this->processor->getParsers());
         $this->tester->assertInstanceOf(StringParser::class, $this->processor->getParsers()[0]);
+    }
+
+    /** @test */
+    public function shouldReturnSorts()
+    {
+        $this->processor
+            ->process(new Request([
+                'sort' => '-test1,test2,author.created_at'
+            ]));
+
+        $this->tester->assertCount(3, $this->processor->getSorts());
+        $this->tester->assertEquals(
+            [
+                ['test1', 'DESC'],
+                ['test2', 'ASC'],
+                ['author.created_at', 'ASC']
+            ],
+            $this->processor->getSorts());
     }
 
     /** @test */
@@ -104,13 +123,23 @@ class UrlParamsProcessorTest extends Unit {
     /** @test */
     public function isReturningPageParams()
     {
-        $this->processor->process(new Request([
-            'page'     => 3,
-            'per_page' => 21
-        ]));
+        $this->processor->process(new Request(['page' => 3, 'per_page' => 21]));
+        $builder = $this->processor->buildQueryBuilder();
 
         $this->tester->assertEquals($this->processor->getPage(), 3);
         $this->tester->assertEquals($this->processor->getPerPage(), 21);
+        $this->tester->assertEquals(3, $builder->getPage());
+        $this->tester->assertEquals(21, $builder->getPageSize());
+
+        $this->processor->reset();
+
+        $this->processor->process(new Request(['page' => 3]));
+        $builder = $this->processor->buildQueryBuilder();
+
+        $this->tester->assertEquals($this->processor->getPage(), 3);
+        $this->tester->assertNull($this->processor->getPerPage());
+        $this->tester->assertEquals(3, $builder->getPage());
+        $this->tester->assertEquals(QueryBuilder::ITEMS_PER_PAGE, $builder->getPageSize());
     }
 
     /** @test */

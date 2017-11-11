@@ -10,6 +10,9 @@ class UrlParamsProcessor {
     /** @var int */
     protected $page = 1;
 
+    /** @var int */
+    protected $perPage = null;
+
     /** @var array */
     protected $parsers = [];
 
@@ -53,9 +56,9 @@ class UrlParamsProcessor {
     /**
      * Returns page number
      *
-     * @return int
+     * @return int|null
      */
-    public function getPerPage(): int
+    public function getPerPage(): ?int
     {
         return $this->perPage;
     }
@@ -174,6 +177,26 @@ class UrlParamsProcessor {
     }
 
     /**
+     * Resets processor params to default values
+     *
+     * @return void
+     */
+    public function reset()
+    {
+        $this->page        = 1;
+        $this->perPage     = null;
+        $this->parsers     = [];
+        $this->sorts       = [];
+        $this->searchQuery = null;
+        $this->rules       = [
+            'page'     => 'numeric',
+            'per_page' => 'numeric',
+            'sort'     => 'string',
+            'q'        => 'string',
+        ];
+    }
+
+    /**
      * Validates
      *
      * @param array $data  Data to validate
@@ -221,5 +244,4 @@ class UrlParamsProcessor {
             $this->perPage = $request->get('per_page');
         }
     }
-
 }
