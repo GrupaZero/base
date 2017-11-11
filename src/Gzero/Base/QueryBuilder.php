@@ -128,7 +128,7 @@ class QueryBuilder {
      *
      * @param string $key       Column name
      * @param string $operation Operation
-     * @param string $value     Value
+     * @param mixed  $value     Value
      *
      * @return $this
      */

@@ -4,16 +4,15 @@ use Gzero\Base\Exception;
 use Gzero\Base\QueryBuilder;
 use Illuminate\Http\Request;
 
-/** @TODO Exact match and other stuff */
-class StringParser implements ConditionParser {
+class DataRangeParser implements ConditionParser {
 
     /** @var string */
     protected $name;
 
     /** @var string */
-    protected $operation = '=';
+    protected $operation = 'between';
 
-    /** @var mixed */
+    /** @var array */
     protected $value;
 
     /** @var bool */
@@ -35,7 +34,7 @@ class StringParser implements ConditionParser {
     public function __construct(string $name, $options = [])
     {
         if (empty($name)) {
-            throw new Exception('StringParser: Name must be defined');
+            throw new Exception('DataRangeParser: Name must be defined');
         }
         $this->name   = $name;
         $this->option = $options;
@@ -95,10 +94,10 @@ class StringParser implements ConditionParser {
             $value         = $request->get($this->name);
             $operation     = substr($value, 0, 1);
             if ($operation === '!') {
-                $this->operation = '!=';
-                $this->value     = substr($value, 1);
+                $this->operation = 'not between';
+                $this->value     = explode(',', substr($value, 1));
             } else {
-                $this->value = $value;
+                $this->value = explode(',', $value);
             }
         }
     }
