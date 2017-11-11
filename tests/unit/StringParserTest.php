@@ -2,7 +2,7 @@
 
 use Codeception\Test\Unit;
 use Gzero\Base\Exception;
-use Gzero\Base\StringParser;
+use Gzero\Base\Parsers\StringParser;
 use Illuminate\Http\Request;
 
 class StringParserTest extends Unit {

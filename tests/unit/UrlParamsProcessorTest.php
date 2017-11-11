@@ -4,7 +4,7 @@ use Codeception\Test\Unit;
 use Gzero\Base\Condition;
 use Gzero\Base\UrlParamsProcessor;
 use Gzero\Base\OrderBy;
-use Gzero\Base\StringParser;
+use Gzero\Base\Parsers\StringParser;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 

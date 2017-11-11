@@ -1,5 +1,6 @@
 <?php namespace Gzero\Base;
 
+use Gzero\Base\Parsers\ConditionParser;
 use Illuminate\Contracts\Validation\Factory;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;

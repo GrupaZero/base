@@ -1,5 +1,7 @@
-<?php namespace Gzero\Base;
+<?php namespace Gzero\Base\Parsers;
 
+use Gzero\Base\Exception;
+use Gzero\Base\QueryBuilder;
 use Illuminate\Http\Request;
 
 /** @TODO Exact match and other stuff */

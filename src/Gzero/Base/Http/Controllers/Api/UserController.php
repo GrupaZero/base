@@ -8,7 +8,7 @@ use Gzero\Base\Jobs\UpdateUser;
 use Gzero\Base\Models\User;
 use Gzero\Base\UrlParamsProcessor;
 use Gzero\Base\Repositories\UserReadRepository;
-use Gzero\Base\StringParser;
+use Gzero\Base\Parsers\StringParser;
 use Gzero\Base\Validators\UserValidator;
 use Illuminate\Http\Request;
 

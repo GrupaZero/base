@@ -127,7 +127,7 @@ class UserCest {
 
         $I->sendGET(apiUrl('users?sort=-email'));
 
-        $firstUserEmail = $I->grabDataFromResponseByJsonPath('data[0].email');
+        $firstUserEmail  = $I->grabDataFromResponseByJsonPath('data[0].email');
         $secondUserEmail = $I->grabDataFromResponseByJsonPath('data[1].email');
 
         $I->seeResponseCodeIs(200);
@@ -137,7 +137,7 @@ class UserCest {
 
         $I->sendGET(apiUrl('users?sort=email'));
 
-        $firstUserEmail = $I->grabDataFromResponseByJsonPath('data[0].email');
+        $firstUserEmail  = $I->grabDataFromResponseByJsonPath('data[0].email');
         $secondUserEmail = $I->grabDataFromResponseByJsonPath('data[1].email');
 
         $I->seeResponseCodeIs(200);
