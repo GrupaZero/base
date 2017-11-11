@@ -76,6 +76,17 @@ class UserController extends ApiController {
      *     required=false,
      *     type="string"
      *   ),
+     *   @SWG\Parameter(
+     *     name="created_at",
+     *     in="query",
+     *     description="Date range to filter by",
+     *     required=false,
+     *     type="array",
+     *     minItems=2,
+     *     maxItems=2,
+     *     default={"2017-10-01","2017-10-07"},
+     *     @SWG\Items(type="string")
+     *   ),
      *   @SWG\Response(
      *     response=200,
      *     description="Successful operation",
