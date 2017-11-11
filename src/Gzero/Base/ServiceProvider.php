@@ -127,16 +127,27 @@ class ServiceProvider extends AbstractServiceProvider {
      */
     protected function bindRepositories()
     {
-        $this->app->singleton(
-            LanguageService::class,
-            function () {
-                return new LanguageService(
-                    cache()->rememberForever('languages', function () {
-                        return Language::all();
-                    })
-                );
-            }
-        );
+        if ($this->app->runningInConsole() && $this->app->environment() !== 'testing') {
+            $this->app->singleton(
+                LanguageService::class,
+                function () {
+                    return new LanguageService(
+                        collect([new Language(['code' => app()->getLocale(), 'is_enabled' => true, 'is_default' => true])])
+                    );
+                }
+            );
+        } else {
+            $this->app->singleton(
+                LanguageService::class,
+                function () {
+                    return new LanguageService(
+                        cache()->rememberForever('languages', function () {
+                            return Language::all();
+                        })
+                    );
+                }
+            );
+        }
 
         //$this->app->singleton(
         //    'gzero.menu.account',
