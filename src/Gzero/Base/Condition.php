@@ -120,6 +120,12 @@ class Condition {
             case '!=':
                 $query->where($tableAlias . $this->name, $this->operation, $this->value);
                 break;
+            case 'between':
+                $query->whereBetween($tableAlias . $this->name, $this->value);
+                break;
+            case 'not between':
+                $query->whereNotBetween($tableAlias . $this->name, $this->value);
+                break;
             default:
                 throw new Exception('Unsupported operation');
         }
@@ -149,6 +155,6 @@ class Condition {
     protected function isCorrectRangeFormat(): bool
     {
         return ($this->operation === 'between' || $this->operation === 'not between')
-            && count($this->value) !== 2;
+            && count($this->value) === 2;
     }
 }

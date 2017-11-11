@@ -106,6 +106,39 @@ class UserCest {
         );
     }
 
+    public function adminShouldBeAbleToFilterListOfUsersByCreatedAt(FunctionalTester $I)
+    {
+        $I->loginAsAdmin();
+        $I->haveUser([
+            'email'      => 'john.doe@example.com',
+            'name'       => 'JohnDoe',
+            'first_name' => 'John',
+            'last_name'  => 'Doe',
+        ]);
+
+        $I->sendGET(apiUrl('users?created_at=2017-10-09,2017-10-10'));
+
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->assertEmpty($I->grabDataFromResponseByJsonPath('data[*]'));
+
+        $I->sendGET(apiUrl('users?created_at=!2017-10-09,2017-10-10'));
+
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseJsonMatchesJsonPath('data[*]');
+        $I->seeResponseContainsJson(
+            [
+                'data' => [
+                    'email'      => 'john.doe@example.com',
+                    'name'       => 'JohnDoe',
+                    'first_name' => 'John',
+                    'last_name'  => 'Doe'
+                ]
+            ]
+        );
+    }
+
     public function adminShouldBeAbleToSortListOfUsers(FunctionalTester $I)
     {
         $I->loginAsAdmin();

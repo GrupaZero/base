@@ -4,6 +4,12 @@ use Gzero\Base\Exception;
 use Gzero\Base\QueryBuilder;
 use Illuminate\Http\Request;
 
+/**
+ * @TODO write custom Laravel validator
+ * @TODO parse date format to DB format
+ * @TODO we should always have two dates
+ * @TODO human readable? e.g. -7days,+2days
+ */
 class DataRangeParser implements ConditionParser {
 
     /** @var string */
