@@ -13,7 +13,6 @@ addons:
   postgresql: '9.6'
 
 before_script:
-  - php -v
   - psql -c 'create database gzero_cms;' -U postgres
   - cp .env.example .env.testing
   - mkdir -p build/logs
