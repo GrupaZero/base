@@ -17,18 +17,14 @@ class LanguageServiceTest extends Unit {
         $this->service = resolve(LanguageService::class);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function canGetAllAvailableLanguages()
     {
         $languages = $this->service->getAll();
         $this->tester->assertGreaterThan(2, $languages->count());
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function shouldUseCacheToStoreLanguages()
     {
         $languagesCount = $this->service->getAll()->count();
@@ -42,9 +38,7 @@ class LanguageServiceTest extends Unit {
     }
 
 
-    /**
-     * @test
-     */
+    /** @test */
     public function canGetAllEnabledLanguages()
     {
         $enabledLanguagesCount = $this->service->getAllEnabled()->count();
@@ -60,9 +54,7 @@ class LanguageServiceTest extends Unit {
         $this->tester->assertEquals($enabledLanguagesCount + 2, $this->service->getAllEnabled()->count());
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function canGetAppCurrentLanguage()
     {
         $this->tester->getApplication()->setLocale('en');
