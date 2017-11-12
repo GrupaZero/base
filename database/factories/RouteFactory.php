@@ -22,7 +22,7 @@ $factory->define(Route::class, function (Faker $faker) {
     ];
 });
 
-$factory->state(Route::class, 'translationEn', function (Faker $faker) {
+$factory->state(Route::class, 'makeTranslationEn', function (Faker $faker) {
     return [
         'translations' => function () {
             return factory(RouteTranslation::class, 1)
@@ -31,7 +31,7 @@ $factory->state(Route::class, 'translationEn', function (Faker $faker) {
     ];
 });
 
-$factory->state(Route::class, 'inactiveTranslationEn', function (Faker $faker) {
+$factory->state(Route::class, 'makeInactiveTranslationEn', function (Faker $faker) {
     return [
         'translations' => function () {
             return factory(RouteTranslation::class, 1)
@@ -41,7 +41,7 @@ $factory->state(Route::class, 'inactiveTranslationEn', function (Faker $faker) {
     ];
 });
 
-$factory->state(Route::class, 'routableHelloWorld', function (Faker $faker) {
+$factory->state(Route::class, 'makeRoutableHelloWorld', function (Faker $faker) {
     return [
         'routable' => function () {
             return new App\HelloWorld();

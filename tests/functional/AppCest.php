@@ -201,7 +201,7 @@ class AppCest {
     public function dynamicRouterWorks(FunctionalTester $I)
     {
         $route = factory(Route::class)
-            ->states('translationEn', 'routableHelloWorld')
+            ->states('makeTranslationEn', 'makeRoutableHelloWorld')
             ->make();
 
         $I->haveInstance(RouteReadRepository::class, Mockery::mock(RouteReadRepository::class, [
@@ -233,7 +233,7 @@ class AppCest {
         $role         = factory(Role::class)->create(['name' => 'editor']);
         $viewInactive = factory(Permission::class)->states('viewInactive')->create();
         $route        = factory(Route::class)
-            ->states('inactiveTranslationEn', 'routableHelloWorld')
+            ->states('makeInactiveTranslationEn', 'makeRoutableHelloWorld')
             ->make();
 
         $user->roles()->attach($role);
@@ -267,7 +267,7 @@ class AppCest {
     public function dynamicRouterDeniesAccessToInactiveRoute(FunctionalTester $I)
     {
         $route = factory(Route::class)
-            ->states('inactiveTranslationEn', 'routableHelloWorld')
+            ->states('makeInactiveTranslationEn', 'makeRoutableHelloWorld')
             ->make();
 
         $I->haveInstance(RouteReadRepository::class, Mockery::mock(RouteReadRepository::class, [
