@@ -3,7 +3,7 @@
 // here you can define custom actions
 // all public methods declared in helper class will be available in $I
 
-use Gzero\Base\Model\User;
+use Gzero\Base\Models\User;
 use Illuminate\Routing\Router;
 
 class Functional extends \Codeception\Module {
@@ -18,6 +18,28 @@ class Functional extends \Codeception\Module {
     public function haveUser($attributes = [])
     {
         return factory(User::class)->create($attributes);
+    }
+
+    /**
+     * Create users and return collection
+     *
+     * @param array|integer $users
+     *
+     * @return array
+     */
+    public function haveUsers($users)
+    {
+        if (is_numeric($users)) {
+            return factory(User::class, $users)->create();
+        }
+
+        $result = [];
+
+        foreach ($users as $attributes) {
+            $result[] = $this->haveUser($attributes);
+        }
+
+        return $result;
     }
 
     /**

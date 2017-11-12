@@ -2,7 +2,7 @@
 
 use Closure;
 use Gzero\Base\Exception;
-use Gzero\Base\Service\LanguageService;
+use Gzero\Base\Services\LanguageService;
 use Gzero\Base\ServiceProvider;
 
 class MultiLanguage {

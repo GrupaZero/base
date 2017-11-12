@@ -1,6 +1,6 @@
 <?php namespace Gzero\Base\Http\Middleware;
 
-use Gzero\Base\Model\GuestUser;
+use Gzero\Base\Models\GuestUser;
 use Closure;
 
 class ViewShareUser {

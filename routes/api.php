@@ -2,38 +2,26 @@
 
 // Admin API
 use Barryvdh\Cors\HandleCors;
-use Gzero\Base\Http\Middleware\AdminApiAccess;
+use Gzero\Base\Http\Middleware\AdminAccess;
 
 Route::group(
     [
         'domain'     => 'api.' . config('gzero.domain'),
-        'prefix'     => 'v1/admin',
-        'namespace'  => 'Gzero\Base\Http\Controller\Api',
-        'middleware' => [HandleCors::class, 'auth:api', AdminApiAccess::class]
+        'prefix'     => 'v1',
+        'namespace'  => 'Gzero\Base\Http\Controllers\Api',
+        'middleware' => [HandleCors::class, 'auth:api', AdminAccess::class]
     ],
     function ($router) {
         /** @var \Illuminate\Routing\Router $router */
 
-        // ======== Languages ========
-        $router->resource(
-            'languages',
-            'AdminLanguageController',
-            ['only' => ['index', 'show']]
-        );
-
         // ======== Users ========
-        $router->resource(
-            'users',
-            'AdminUserController',
-            ['only' => ['index', 'show', 'destroy', 'update']]
-        );
+        $router->get('users', 'UserController@index');
+        $router->get('users/{id}', 'UserController@show');
+        $router->patch('users/{id}', 'UserController@update');
+        $router->delete('users/{id}', 'UserController@destroy');
 
         // ======== Options ========
-        $router->resource(
-            'options',
-            'AdminOptionController',
-            ['only' => ['index', 'show', 'update']]
-        );
+        $router->put('options/{category}', 'OptionController@update');
     }
 );
 
@@ -41,18 +29,25 @@ Route::group(
 Route::group(
     [
         'domain'     => 'api.' . config('gzero.domain'),
-        'prefix'     => 'v1/user',
-        'namespace'  => 'Gzero\Base\Http\Controller\Api',
-        'middleware' => [HandleCors::class, 'auth:api']
+        'prefix'     => 'v1',
+        'namespace'  => 'Gzero\Base\Http\Controllers\Api',
+        'middleware' => [HandleCors::class]
     ],
     function ($router) {
         /** @var \Illuminate\Routing\Router $router */
+        $router->group(['middleware' => ['auth:api']], function ($router) {
+            /** @var \Illuminate\Routing\Router $router */
 
-        // ======== Account ========
-        $router->put(
-            'account',
-            'PublicAccountController@update'
-        );
+            // ======== Users ========
+            $router->patch('users/me', 'UserController@updateMe');
+        });
 
+        // ======== Languages ========
+        $router->get('languages', 'LanguageController@index');
+        $router->get('languages/{code}', 'LanguageController@show')->where('code', '[a-z]{2}');
+
+        // ======== Options ========
+        $router->get('options', 'OptionController@index');
+        $router->get('options/{category}', 'OptionController@show');
     }
 );

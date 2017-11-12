@@ -9,7 +9,7 @@
 @component('gzero-base::sections.content', ['class' => 'col-sm-8'])
     <h1 class="page-header">@lang('gzero-base::user.my_account')</h1>
 
-    <h3>{{ $user->firstName }} {{ $user->lastName }}</h3>
+    <h3>{{ $user->first_name }} {{ $user->lastName }}</h3>
 
     @if(isset($user->hasSocialIntegrations) && strpos($user->email,'social_') !== false)
         <p>@lang('gzero-base::common.account_connected')</p>

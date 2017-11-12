@@ -1,6 +1,6 @@
 <?php
 
-use Gzero\Base\Model\User;
+use Gzero\Base\Models\User;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 

@@ -1,6 +1,6 @@
 <?php
 
-use Gzero\Base\Service\LanguageService;
+use Gzero\Base\Services\LanguageService;
 use Illuminate\Support\Facades\Route;
 
 if (!function_exists('setMultiLanguageRouting')) {

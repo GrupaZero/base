@@ -1,22 +1,18 @@
 <?php namespace Base;
 
 use Gzero\Base\Exception;
-use Gzero\Base\Model\Language;
-use Gzero\Base\Model\Option;
-use Gzero\Base\Model\OptionCategory;
-use Gzero\Base\Service\OptionService;
-use Gzero\Base\Service\RepositoryValidationException;
+use Gzero\Base\Models\Language;
+use Gzero\Base\Models\Option;
+use Gzero\Base\Models\OptionCategory;
+use Gzero\Base\Repositories\RepositoryValidationException;
+use Gzero\Base\Services\OptionService;
 
 class OptionServiceTest extends \Codeception\Test\Unit {
 
-    /**
-     * @var UnitTester
-     */
+    /** @var UnitTester */
     protected $tester;
 
-    /**
-     * @var OptionService
-     */
+    /** @var OptionService */
     protected $service;
 
     protected $expectedOptions;
@@ -27,9 +23,7 @@ class OptionServiceTest extends \Codeception\Test\Unit {
         $this->setExpectedOptions();
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function itChecksExistenceOfCategoryWhenGettingAnOption()
     {
         $categoryKey = 'nonexistent category';
@@ -47,9 +41,7 @@ class OptionServiceTest extends \Codeception\Test\Unit {
         $this->fail('Exception should be thrown');
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function ItChecksExistenceOfCategoryAndOptionWhenGettingAnNonExistingOption()
     {
         $optionKey   = 'nonexistent option';
@@ -69,9 +61,7 @@ class OptionServiceTest extends \Codeception\Test\Unit {
         $this->fail('Exception should be thrown');
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function ItChecksExistenceOfOptionWhenGettingAnOptionFromExistingCategory()
     {
         $optionKey   = 'nonexistent option';
@@ -91,9 +81,7 @@ class OptionServiceTest extends \Codeception\Test\Unit {
         $this->fail('Exception should be thrown');
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function ItChecksExistenceOfCategoryWhenDeletingAnOption()
     {
         $categoryKey = 'nonexistent category';
@@ -111,9 +99,7 @@ class OptionServiceTest extends \Codeception\Test\Unit {
         $this->fail('Exception should be thrown');
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function ItChecksExistenceOfCategoryAndOptionWhenDeletingAnNonExistingOption()
     {
         $optionKey   = 'nonexistent option';
@@ -133,9 +119,7 @@ class OptionServiceTest extends \Codeception\Test\Unit {
         $this->fail('Exception should be thrown');
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function ItChecksExistenceOfOptionWhenDeletingAnOption()
     {
         $optionKey   = 'nonexistent option';
@@ -155,9 +139,7 @@ class OptionServiceTest extends \Codeception\Test\Unit {
         $this->fail('Exception should be thrown');
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function ItGetsOptionFromGeneralCategory()
     {
         $optionKey   = 'site_name';
@@ -172,24 +154,20 @@ class OptionServiceTest extends \Codeception\Test\Unit {
         $this->assertNotNull(OptionCategory::getByKey($categoryKey));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function ItGetsAllOptionsFromGeneralCategory()
     {
         $categoryKey = 'general';
 
         $this->assertEquals(
-            $this->expectedOptions[$categoryKey],
+            collect($this->expectedOptions[$categoryKey]),
             $this->service->getOptions($categoryKey)
         );
 
         $this->assertNotNull(OptionCategory::getByKey($categoryKey));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function CanCreateCategory()
     {
         $categoryKey = 'New category';
@@ -199,9 +177,7 @@ class OptionServiceTest extends \Codeception\Test\Unit {
         $this->assertNotNull(OptionCategory::getByKey($categoryKey));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function CanCreateOption()
     {
         $categoryKey = 'general';
@@ -222,9 +198,7 @@ class OptionServiceTest extends \Codeception\Test\Unit {
     }
 
 
-    /**
-     * @test
-     */
+    /** @test */
     public function CanDeleteCategory()
     {
         $categoryKey = 'general';
@@ -233,9 +207,7 @@ class OptionServiceTest extends \Codeception\Test\Unit {
         $this->assertNull(OptionCategory::getByKey($categoryKey));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function canDeleteOption()
     {
         $categoryKey = 'general';

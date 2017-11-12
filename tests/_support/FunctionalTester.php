@@ -1,7 +1,7 @@
 <?php namespace Base;
 
 use Base\_generated\FunctionalTesterActions;
-use Gzero\Base\Model\User;
+use Gzero\Base\Models\User;
 
 /**
  * Inherited Methods
@@ -16,7 +16,6 @@ use Gzero\Base\Model\User;
  * @method void comment($description)
  * @method \Codeception\Lib\Friend haveFriend($name, $actorClass = null)
  *
- * @SuppressWarnings(PHPMD)
  */
 class FunctionalTester extends \Codeception\Actor {
 
@@ -26,6 +25,8 @@ class FunctionalTester extends \Codeception\Actor {
      * Login with token and set Authorization header
      *
      * @param $email
+     *
+     * @return User
      */
     public function loginWithToken($email)
     {
@@ -33,14 +34,27 @@ class FunctionalTester extends \Codeception\Actor {
         $user = User::where('email', $email)->first();
         $I->assertInstanceOf(User::class, $user);
         $I->amBearerAuthenticated($user->createToken('Test')->accessToken);
+        return $user;
     }
 
     /**
      * Login as admin in to app
+     *
+     * @return User
      */
     public function loginAsAdmin()
     {
-        $this->loginWithToken('admin@gzero.pl');
+        return $this->loginWithToken('admin@gzero.pl');
+    }
+
+    /**
+     * Login as normal user
+     *
+     * @return User
+     */
+    public function loginAsUser()
+    {
+        return $this->loginWithToken($this->haveUser()->email);
     }
 
     /**

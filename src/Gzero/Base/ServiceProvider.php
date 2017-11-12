@@ -4,16 +4,19 @@ use Carbon\Carbon;
 use Gzero\Base\Http\Middleware\Init;
 use Gzero\Base\Http\Middleware\MultiLanguage;
 use Gzero\Base\Http\Middleware\ViewShareUser;
-use Gzero\Base\Model\Option;
-use Gzero\Base\Model\User;
-use Gzero\Base\Service\LanguageService;
-use Gzero\Base\Service\OptionService;
+use Gzero\Base\Models\Language;
+use Gzero\Base\Models\Option;
+use Gzero\Base\Models\Route;
+use Gzero\Base\Models\User;
+use Gzero\Base\Services\LanguageService;
+use Gzero\Base\Services\OptionService;
 use Gzero\Base\Policies\OptionPolicy;
 use Gzero\Base\Policies\UserPolicy;
+use Gzero\Base\Policies\RoutePolicy;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Factory;
-use Illuminate\Foundation\Application;
+use Illuminate\Http\Resources\Json\Resource;
 use Illuminate\Routing\Router;
 use Laravel\Passport\Http\Middleware\CreateFreshApiToken;
 use Laravel\Passport\Passport;
@@ -45,6 +48,7 @@ class ServiceProvider extends AbstractServiceProvider {
      * @var array
      */
     protected $policies = [
+        Route::class  => RoutePolicy::class,
         User::class   => UserPolicy::class,
         Option::class => OptionPolicy::class
     ];
@@ -61,6 +65,13 @@ class ServiceProvider extends AbstractServiceProvider {
         $this->registerHelpers();
         $this->bindRepositories();
         $this->bindOtherStuff();
+        if ($this->app->environment() !== 'testing') { // We're manually registering it for test cases
+            $this->app->booted(function () {
+                addMultiLanguageRoutes(function ($router) {
+                    $router->get('{path?}', 'Gzero\Base\Http\Controllers\RouteController@dynamicRouter')->where('path', '.*');
+                });
+            });
+        }
     }
 
     /**
@@ -72,6 +83,7 @@ class ServiceProvider extends AbstractServiceProvider {
     {
         $this->setDefaultLocale();
 
+        $this->registerRoutePatterns();
         $this->registerRoutes();
 
         /** @TODO Probably we can move this to routes file */
@@ -80,6 +92,8 @@ class ServiceProvider extends AbstractServiceProvider {
         Passport::tokensExpireIn(Carbon::now()->addDays(15));
 
         Passport::refreshTokensExpireIn(Carbon::now()->addDays(30));
+
+        Resource::withoutWrapping();
 
         $this->registerPolicies();
         $this->registerMigrations();
@@ -113,12 +127,27 @@ class ServiceProvider extends AbstractServiceProvider {
      */
     protected function bindRepositories()
     {
-        $this->app->singleton(
-            LanguageService::class,
-            function (Application $app) {
-                return new LanguageService($app->make('cache'));
-            }
-        );
+        if ($this->app->runningInConsole() && $this->app->environment() !== 'testing') {
+            $this->app->singleton(
+                LanguageService::class,
+                function () {
+                    return new LanguageService(
+                        collect([new Language(['code' => app()->getLocale(), 'is_enabled' => true, 'is_default' => true])])
+                    );
+                }
+            );
+        } else {
+            $this->app->singleton(
+                LanguageService::class,
+                function () {
+                    return new LanguageService(
+                        cache()->rememberForever('languages', function () {
+                            return Language::all();
+                        })
+                    );
+                }
+            );
+        }
 
         //$this->app->singleton(
         //    'gzero.menu.account',
@@ -288,6 +317,17 @@ class ServiceProvider extends AbstractServiceProvider {
             ],
             'gzero-base views'
         );
+    }
+
+    /**
+     * It registers global route patterns
+     *
+     * @return void
+     */
+    protected function registerRoutePatterns()
+    {
+        $router = resolve(Router::class);
+        $router->pattern('id', '[0-9]+');
     }
 
 }

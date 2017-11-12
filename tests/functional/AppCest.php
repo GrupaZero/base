@@ -1,7 +1,15 @@
 <?php namespace Base;
 
-use Gzero\Base\Service\LanguageService;
+use Gzero\Base\Events\RouteMatched;
+use Gzero\Base\Models\Language;
+use Gzero\Base\Models\Permission;
+use Gzero\Base\Models\Role;
+use Gzero\Base\Models\Route;
+use Gzero\Base\Models\User;
+use Gzero\Base\Repositories\RouteReadRepository;
+use Gzero\Base\Services\LanguageService;
 use Illuminate\Routing\Router;
+use Mockery;
 
 class AppCest {
 
@@ -36,20 +44,12 @@ class AppCest {
     {
         $I->stopFollowingRedirects();
 
-        $I->haveInstance(LanguageService::class, new class {
-            function getAllEnabled()
-            {
-                return collect([
-                    (object) ['code' => 'en', 'is_default' => true],
-                    (object) ['code' => 'pl', 'is_default' => false]
-                ]);
-            }
-
-            function getDefault()
-            {
-                return (object) ['code' => 'en', 'is_default' => true];
-            }
-        });
+        $I->haveInstance(LanguageService::class, new LanguageService(
+            collect([
+                new Language(['code' => 'en', 'is_enabled' => true, 'is_default' => true]),
+                new Language(['code' => 'pl', 'is_enabled' => true, 'is_default' => false]),
+            ])
+        ));
 
         $I->haveMlRoutes(function ($router, $languages) {
             /** @var Router $router */
@@ -116,20 +116,12 @@ class AppCest {
 
     public function itWontSetLocaleWithoutMiddlewareGroup(FunctionalTester $I)
     {
-        $I->haveInstance(LanguageService::class, new class {
-            function getAllEnabled()
-            {
-                return collect([
-                    (object) ['code' => 'en', 'is_default' => false],
-                    (object) ['code' => 'pl', 'is_default' => true]
-                ]);
-            }
-
-            function getDefault()
-            {
-                return (object) ['code' => 'pl', 'is_default' => true];
-            }
-        });
+        $I->haveInstance(LanguageService::class, new LanguageService(
+            collect([
+                new Language(['code' => 'en', 'is_enabled' => true, 'is_default' => false]),
+                new Language(['code' => 'pl', 'is_enabled' => true, 'is_default' => true]),
+            ])
+        ));
 
         $I->haveMlRoutes(function ($router, $langauge) {
             /** @var Router $router */
@@ -162,20 +154,12 @@ class AppCest {
 
     public function canUseMultipleApplicationHandlersInSingleTest(FunctionalTester $I)
     {
-        $I->haveInstance(LanguageService::class, new class {
-            function getAllEnabled()
-            {
-                return collect([
-                    (object) ['code' => 'en', 'is_default' => false],
-                    (object) ['code' => 'pl', 'is_default' => true]
-                ]);
-            }
-
-            function getDefault()
-            {
-                return (object) ['code' => 'pl', 'is_default' => true];
-            }
-        });
+        $I->haveInstance(LanguageService::class, new LanguageService(
+            collect([
+                new Language(['code' => 'en', 'is_enabled' => true, 'is_default' => false]),
+                new Language(['code' => 'pl', 'is_enabled' => true, 'is_default' => true]),
+            ])
+        ));
 
         $I->haveMlRoutes(function ($router, $language) {
             /** @var Router $router */
@@ -212,5 +196,100 @@ class AppCest {
 
         $I->seeResponseCodeIs(200);
         $I->see('Contact');
+    }
+
+    public function dynamicRouterWorks(FunctionalTester $I)
+    {
+        $route = factory(Route::class)
+            ->states('makeTranslationEn', 'makeRoutableHelloWorld')
+            ->make();
+
+        $I->haveInstance(RouteReadRepository::class, Mockery::mock(RouteReadRepository::class, [
+            'getByPath' => $route,
+        ]));
+
+        $I->haveInstance(LanguageService::class, new LanguageService(
+            collect([
+                new Language(['code' => 'en', 'is_enabled' => true, 'is_default' => true]),
+                new Language(['code' => 'pl', 'is_enabled' => true, 'is_default' => false]),
+            ])
+        ));
+
+        $I->haveMlRoutes(function ($router, $languages) {
+            /** @var Router $router */
+            $router->get('{path?}', 'Gzero\Base\Http\Controllers\RouteController@dynamicRouter')->where('path', '.*');
+        });
+
+
+        $I->amOnPage('multi-language-content');
+        $I->seeResponseCodeIs(200);
+        $I->see('Hello World');
+        $I->canSeeEventTriggered(RouteMatched::class);
+    }
+
+    public function dynamicRouterAllowsUserWithPermissionToViewInactiveRoute(FunctionalTester $I)
+    {
+        $user         = factory(User::class)->create();
+        $role         = factory(Role::class)->create(['name' => 'editor']);
+        $viewInactive = factory(Permission::class)->states('viewInactive')->create();
+        $route        = factory(Route::class)
+            ->states('makeInactiveTranslationEn', 'makeRoutableHelloWorld')
+            ->make();
+
+        $user->roles()->attach($role);
+        $role->permissions()->attach($viewInactive->id);
+
+        $I->login($user->email, 'secret');
+
+        $I->haveInstance(RouteReadRepository::class, Mockery::mock(RouteReadRepository::class, [
+            'getByPath' => $route,
+        ]));
+
+        $I->haveInstance(LanguageService::class, new LanguageService(
+            collect([
+                new Language(['code' => 'en', 'is_enabled' => true, 'is_default' => true]),
+                new Language(['code' => 'pl', 'is_enabled' => true, 'is_default' => false]),
+            ])
+        ));
+
+        $I->haveMlRoutes(function ($router, $languages) {
+            /** @var Router $router */
+            $router->get('{path?}', 'Gzero\Base\Http\Controllers\RouteController@dynamicRouter')->where('path', '.*');
+        });
+
+
+        $I->amOnPage('multi-language-content');
+        $I->seeResponseCodeIs(200);
+        $I->see('Hello World');
+        $I->canSeeEventTriggered(RouteMatched::class);
+    }
+
+    public function dynamicRouterDeniesAccessToInactiveRoute(FunctionalTester $I)
+    {
+        $route = factory(Route::class)
+            ->states('makeInactiveTranslationEn', 'makeRoutableHelloWorld')
+            ->make();
+
+        $I->haveInstance(RouteReadRepository::class, Mockery::mock(RouteReadRepository::class, [
+            'getByPath' => $route,
+        ]));
+
+        $I->haveInstance(LanguageService::class, new LanguageService(
+            collect([
+                new Language(['code' => 'en', 'is_enabled' => true, 'is_default' => true]),
+                new Language(['code' => 'pl', 'is_enabled' => true, 'is_default' => false]),
+            ])
+        ));
+
+        $I->haveMlRoutes(function ($router, $languages) {
+            /** @var Router $router */
+            $router->get('{path?}', 'Gzero\Base\Http\Controllers\RouteController@dynamicRouter')->where('path', '.*');
+        });
+
+
+        $I->amOnPage('multi-language-content');
+        $I->seeResponseCodeIs(404);
+        $I->dontSee('Hello World');
+        $I->cantSeeEventTriggered(RouteMatched::class);
     }
 }

@@ -44,31 +44,31 @@
                 </div>
                 @if($isUserEmailSet)
                     <div class="form-group">
-                        <label class="control-label" for="firstName">@lang('gzero-base::common.first_name')</label>
-                        <input type="text" id="firstName" name="firstName" value="{{ $user->firstName }}"
-                               class="form-control{{ $errors->first('firstName') ? ' is-invalid' : '' }}"
+                        <label class="control-label" for="first_name">@lang('gzero-base::common.first_name')</label>
+                        <input type="text" id="first_name" name="first_name" value="{{ $user->first_name }}"
+                               class="form-control{{ $errors->first('first_name') ? ' is-invalid' : '' }}"
                                placeholder="@lang('gzero-base::common.first_name')">
-                        @if($errors->first('firstName'))
-                            <div class="invalid-feedback">{{ $errors->first('firstName') }}</div>
+                        @if($errors->first('first_name'))
+                            <div class="invalid-feedback">{{ $errors->first('first_name') }}</div>
                         @endif
                     </div>
                     <div class="form-group">
-                        <label class="control-label" for="lastName">@lang('gzero-base::common.last_name')</label>
-                        <input type="text" id="lastName" name="lastName" value="{{ $user->lastName }}"
-                               class="form-control{{ $errors->first('lastName') ? ' is-invalid' : '' }}"
+                        <label class="control-label" for="last_name">@lang('gzero-base::common.last_name')</label>
+                        <input type="text" id="last_name" name="last_name" value="{{ $user->last_name }}"
+                               class="form-control{{ $errors->first('last_name') ? ' is-invalid' : '' }}"
                                placeholder="@lang('gzero-base::common.last_name')">
-                        @if($errors->first('lastName'))
-                            <div class="invalid-feedback">{{ $errors->first('lastName') }}</div>
+                        @if($errors->first('last_name'))
+                            <div class="invalid-feedback">{{ $errors->first('last_name') }}</div>
                         @endif
                     </div>
                 @else
                     <div class="form-group">
                         <label class="control-label">@lang('gzero-base::common.first_name')</label>
-                        <p class="form-control-static">{{ $user->firstName }}</p>
+                        <p class="form-control-static">{{ $user->first_name }}</p>
                     </div>
                     <div class="form-group">
                         <label class="control-label">@lang('gzero-base::common.last_name')</label>
-                        <p class="form-control-static">{{ $user->lastName }}</p>
+                        <p class="form-control-static">{{ $user->last_name }}</p>
                     </div>
                 @endif
                 @if($isUserEmailSet)

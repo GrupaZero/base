@@ -1,7 +1,7 @@
 <?php
 
 use Faker\Generator as Faker;
-use Gzero\Base\Model\User;
+use Gzero\Base\Models\User;
 
 /*
 |--------------------------------------------------------------------------

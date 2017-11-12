@@ -1,6 +1,6 @@
 <?php namespace Gzero\Base\Jobs;
 
-use Gzero\Base\Model\User;
+use Gzero\Base\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Queue\SerializesModels;
@@ -10,6 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 class SendWelcomeEmail implements ShouldQueue {
     use InteractsWithQueue, Queueable, SerializesModels;
 
+    /** @var User */
     protected $user;
 
     /**

@@ -1,40 +1,30 @@
 <?php namespace Base;
 
 use Codeception\Test\Unit;
-use Gzero\Base\Model\Language;
-use Gzero\Base\Service\LanguageService;
+use Gzero\Base\Models\Language;
+use Gzero\Base\Services\LanguageService;
 
 class LanguageServiceTest extends Unit {
 
-    /**
-     * @var \Base\UnitTester
-     */
+    /** @var \Base\UnitTester */
     protected $tester;
 
-    /**
-     * @var LanguageService
-     */
+    /** @var LanguageService */
     protected $service;
 
     protected function _before()
     {
-        $this->service = new LanguageService(
-            new \Illuminate\Cache\CacheManager($this->tester->getApplication())
-        );
+        $this->service = resolve(LanguageService::class);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function canGetAllAvailableLanguages()
     {
         $languages = $this->service->getAll();
         $this->tester->assertGreaterThan(2, $languages->count());
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function shouldUseCacheToStoreLanguages()
     {
         $languagesCount = $this->service->getAll()->count();
@@ -48,9 +38,7 @@ class LanguageServiceTest extends Unit {
     }
 
 
-    /**
-     * @test
-     */
+    /** @test */
     public function canGetAllEnabledLanguages()
     {
         $enabledLanguagesCount = $this->service->getAllEnabled()->count();
@@ -66,9 +54,7 @@ class LanguageServiceTest extends Unit {
         $this->tester->assertEquals($enabledLanguagesCount + 2, $this->service->getAllEnabled()->count());
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function canGetAppCurrentLanguage()
     {
         $this->tester->getApplication()->setLocale('en');

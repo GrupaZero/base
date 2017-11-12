@@ -1,32 +1,48 @@
 <?php namespace Gzero\Base;
 
+use Gzero\Base\Parsers\ConditionParser;
+use Gzero\Base\Query\QueryBuilder;
+use Illuminate\Contracts\Validation\Factory;
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+
 class UrlParamsProcessor {
 
-    /**
-     * @var int
-     */
-    private $page = 1;
+    /** @var int */
+    protected $page = 1;
+
+    /** @var int */
+    protected $perPage = null;
+
+    /** @var array */
+    protected $parsers = [];
+
+    /** @var array */
+    protected $sorts = [];
+
+    /** @var null */
+    protected $searchQuery = null;
+
+    /** @var Factory */
+    protected $validator;
+
+    /** @var array */
+    protected $rules = [
+        'page'     => 'numeric',
+        'per_page' => 'numeric',
+        'sort'     => 'string',
+        'q'        => 'string',
+    ];
 
     /**
-     * @var int
+     * UrlParamsProcessor constructor.
+     *
+     * @param Factory $validator Validator factory
      */
-    private $perPage = QueryBuilder::ITEMS_PER_PAGE;
-
-    /**
-     * @var array
-     */
-    private $filter = [];
-
-    /**
-     * @var array
-     */
-    private $orderBy = [];
-
-    /**
-     * @var null
-     */
-    private $searchQuery = null;
-
+    public function __construct(Factory $validator)
+    {
+        $this->validator = $validator;
+    }
 
     /**
      * Returns page number
@@ -41,35 +57,35 @@ class UrlParamsProcessor {
     /**
      * Returns page number
      *
-     * @return int
+     * @return int|null
      */
-    public function getPerPage(): int
+    public function getPerPage(): ?int
     {
         return $this->perPage;
     }
 
     /**
-     * Returns orderBy array
+     * Returns sorts array
      *
      * @return array
      */
-    public function getOrderByParams(): array
+    public function getSorts(): array
     {
-        return $this->orderBy;
+        return $this->sorts;
     }
 
     /**
-     *  Returns filter array
+     *  Returns parsers array
      *
      * @return array
      */
-    public function getFilterParams(): array
+    public function getParsers(): array
     {
-        return $this->filter;
+        return $this->parsers;
     }
 
     /**
-     *  Returns filter array
+     *  Returns search query string
      *
      * @return string
      */
@@ -79,43 +95,118 @@ class UrlParamsProcessor {
     }
 
     /**
-     * Returns array with all processed fields
+     * @param ConditionParser $parser          Parser
+     * @param string|null     $validationRules additional validation rules
      *
-     * @return array
+     * @return $this
      */
-    public function getProcessedFields()
+    public function addFilter(ConditionParser $parser, string $validationRules = null)
     {
-        return [
-            'page'    => $this->getPage(),
-            'perPage' => $this->getPerPage(),
-            'filter'  => $this->filter,
-            'orderBy' => $this->orderBy,
-            'query'   => $this->searchQuery
-        ];
+        $this->parsers[] = $parser;
+        if ($validationRules !== null) {
+            $rules                           = (is_object($parser->getValidationRule())) ?
+                [$validationRules, $parser->getValidationRule()] : $validationRules . '|' . $parser->getValidationRule();
+            $this->rules[$parser->getName()] = $rules;
+        } else {
+            if (!empty($parser->getValidationRule())) {
+                $this->rules[$parser->getName()] = [$parser->getValidationRule()];
+            }
+        }
+        return $this;
     }
 
     /**
      * Process params
      *
-     * @param array $input Array with parameters to process
+     * @param Request $request Request object
      *
      * @return $this
      */
-    public function process(array $input)
+    public function process(Request $request)
     {
-        if (!empty($input['q'])) {
-            $this->searchQuery = $input['q'];
+        $this->validate($request->all(), $this->rules);
+
+        if ($request->has('q')) {
+            $this->searchQuery = $request->get('q');
         }
-        if (!empty($input['sort'])) {
-            foreach (explode(',', $input['sort']) as $sort) {
+        if ($request->has('sort')) {
+            foreach (explode(',', $request->get('sort')) as $sort) {
                 $this->processOrderByParams($sort);
             }
         }
-        $input = $this->processPageParams($input);
-        foreach ($input as $key => $param) {
-            if (!in_array($key, ['sort', 'page', 'per_page', 'q'], true)) {
-                $this->processFilterParams($key, $param);
+        $this->processPageParams($request);
+
+        foreach ($this->parsers as $parser) {
+            $parser->parse($request);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Builds QueryBuilder instance based on parsed filters & sorts
+     *
+     * @return QueryBuilder
+     */
+    public function buildQueryBuilder()
+    {
+        $builder = new QueryBuilder();
+
+        foreach ($this->parsers as $parser) {
+            if ($parser->wasApplied()) {
+                $parser->apply($builder);
             }
+        }
+
+        foreach ($this->sorts as $sort) {
+            $builder->orderBy($sort[0], $sort[1]);
+        }
+
+        if (!empty($this->perPage)) {
+            $builder->setPageSize($this->perPage);
+        }
+
+        if (!empty($this->page)) {
+            $builder->setPage($this->page);
+        }
+
+        return $builder;
+    }
+
+    /**
+     * Resets processor params to default values
+     *
+     * @return void
+     */
+    public function reset()
+    {
+        $this->page        = 1;
+        $this->perPage     = null;
+        $this->parsers     = [];
+        $this->sorts       = [];
+        $this->searchQuery = null;
+        $this->rules       = [
+            'page'     => 'numeric',
+            'per_page' => 'numeric',
+            'sort'     => 'string',
+            'q'        => 'string',
+        ];
+    }
+
+    /**
+     * Validates
+     *
+     * @param array $data  Data to validate
+     * @param array $rules Validation rules
+     *
+     * @throws ValidationException
+     * @return $this
+     */
+    protected function validate(array $data, array $rules)
+    {
+        $validator = $this->validator->make($data, $rules);
+        if ($validator->fails()) {
+            throw new ValidationException($validator);
         }
         return $this;
     }
@@ -127,48 +218,27 @@ class UrlParamsProcessor {
      *
      * @return void
      */
-    private function processOrderByParams($sort)
+    protected function processOrderByParams($sort)
     {
-        $direction       = (substr($sort, 0, 1) == '-') ? 'DESC' : 'ASC';
-        $field           = (substr($sort, 0, 1) == '-') ? substr($sort, 1) : $sort;
-        $this->orderBy[] = [
-            snake_case($field),
-            $direction
-        ];
+        $direction     = (substr($sort, 0, 1) == '-') ? 'DESC' : 'ASC';
+        $field         = (substr($sort, 0, 1) == '-') ? substr($sort, 1) : $sort;
+        $this->sorts[] = [$field, $direction];
     }
 
     /**
      * Process page params
      *
-     * @param array $input Array of parameters
-     *
-     * @return mixed
-     */
-    private function processPageParams(array $input)
-    {
-        if (!empty($input['page']) && is_numeric($input['page'])) {
-            $this->page = $input['page'];
-        }
-        if (!empty($input['per_page']) && is_numeric($input['per_page'])) {
-            $this->perPage = $input['per_page'];
-        }
-        return $input;
-    }
-
-    /**
-     * Process filter params
-     *
-     * @param string $key   Param name
-     * @param string $param Param value
+     * @param Request $request Request object
      *
      * @return void
      */
-    private function processFilterParams($key, $param)
+    protected function processPageParams(Request $request)
     {
-        $this->filter[] = [
-            $key,
-            '=',
-            (is_numeric($param)) ? (float) $param : $param
-        ];
+        if ($request->has('page') && is_numeric($request->get('page'))) {
+            $this->page = $request->get('page');
+        }
+        if ($request->has('per_page') && is_numeric($request->get('per_page'))) {
+            $this->perPage = $request->get('per_page');
+        }
     }
 }
