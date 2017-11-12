@@ -86,11 +86,11 @@ class RouteReadRepositoryTest extends Unit {
     public function canPaginateResults()
     {
         factory(Route::class, 10)->create()
-            ->each(function ($route) {
+            ->each(function ($route, $key) {
                 $route->translations()
                     ->save(
                         factory(RouteTranslation::class)
-                            ->make(['language_code' => 'en'])
+                            ->make(['language_code' => 'en', 'path' => $key . '-example-slug'])
                     );
             });
 
@@ -98,7 +98,7 @@ class RouteReadRepositoryTest extends Unit {
             (new QueryBuilder)
                 ->where('translations.is_active', '=', true)
                 ->where('translations.language_code', '=', 'en')
-                ->orderBy('id', 'asc')
+                ->orderBy('translations.path', 'desc')
                 ->setPageSize(5)
                 ->setPage(2)
         );
@@ -106,6 +106,11 @@ class RouteReadRepositoryTest extends Unit {
         $this->assertEquals(5, $result->count());
         $this->assertEquals(5, $result->perPage());
         $this->assertEquals(2, $result->currentPage());
+        $this->assertEquals('4-example-slug', $result[0]->translations[0]->path);
+        $this->assertEquals('3-example-slug', $result[1]->translations[0]->path);
+        $this->assertEquals('2-example-slug', $result[2]->translations[0]->path);
+        $this->assertEquals('1-example-slug', $result[3]->translations[0]->path);
+        $this->assertEquals('0-example-slug', $result[4]->translations[0]->path);
     }
 }
 
