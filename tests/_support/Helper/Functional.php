@@ -29,7 +29,6 @@ class Functional extends \Codeception\Module {
      */
     public function haveUsers($users)
     {
-
         if (is_numeric($users)) {
             return factory(User::class, $users)->create();
         }

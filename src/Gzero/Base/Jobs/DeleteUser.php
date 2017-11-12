@@ -4,9 +4,7 @@ use Gzero\Base\Models\User;
 
 class DeleteUser {
 
-    /**
-     * @var User
-     */
+    /** @var User */
     protected $user;
 
     /**

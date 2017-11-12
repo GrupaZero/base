@@ -6,14 +6,10 @@ use Illuminate\Support\Facades\Hash;
 
 class UpdateUser {
 
-    /**
-     * @var User
-     */
+    /** @var User */
     protected $user;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $attributes;
 
     /**

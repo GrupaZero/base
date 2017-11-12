@@ -13,14 +13,10 @@ use Illuminate\Validation\ValidationException;
 
 class OptionController extends ApiController {
 
-    /**
-     * @var OptionService
-     */
+    /** @var OptionService */
     protected $optionService;
 
-    /**
-     * @var OptionValidator
-     */
+    /** @var OptionValidator */
     protected $validator;
 
     /**

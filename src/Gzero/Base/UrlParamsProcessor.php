@@ -126,10 +126,6 @@ class UrlParamsProcessor {
     {
         $this->validate($request->all(), $this->rules);
 
-        // Handle all custom filters on validated data
-
-        // Return processed data with filter instances
-
         if ($request->has('q')) {
             $this->searchQuery = $request->get('q');
         }

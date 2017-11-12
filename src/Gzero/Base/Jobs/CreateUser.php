@@ -5,29 +5,19 @@ use Illuminate\Support\Facades\DB;
 
 class CreateUser {
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $email;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $password;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $name;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $firstName;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $lastName;
 
     /**

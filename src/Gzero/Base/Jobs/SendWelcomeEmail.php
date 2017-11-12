@@ -10,6 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 class SendWelcomeEmail implements ShouldQueue {
     use InteractsWithQueue, Queueable, SerializesModels;
 
+    /** @var User */
     protected $user;
 
     /**

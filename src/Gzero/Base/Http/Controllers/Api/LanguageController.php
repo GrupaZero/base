@@ -7,9 +7,7 @@ use Gzero\Base\Services\LanguageService;
 
 class LanguageController extends ApiController {
 
-    /**
-     * @var LanguageService
-     */
+    /** @var LanguageService */
     protected $langService;
 
     /**
