@@ -4,8 +4,8 @@ use Gzero\Base\Exception;
 use Gzero\Base\Models\Language;
 use Gzero\Base\Models\Option;
 use Gzero\Base\Models\OptionCategory;
+use Gzero\Base\Repositories\RepositoryValidationException;
 use Gzero\Base\Services\OptionService;
-use Gzero\Base\Services\RepositoryValidationException;
 
 class OptionServiceTest extends \Codeception\Test\Unit {
 

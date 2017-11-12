@@ -2,6 +2,8 @@
 
 use Gzero\Base\Models\Option;
 use Gzero\Base\Models\OptionCategory;
+use Gzero\Base\Repositories\RepositoryException;
+use Gzero\Base\Repositories\RepositoryValidationException;
 use Illuminate\Cache\CacheManager;
 use Illuminate\Cache\Repository;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;

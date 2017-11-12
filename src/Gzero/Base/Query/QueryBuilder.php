@@ -1,4 +1,4 @@
-<?php namespace Gzero\Base;
+<?php namespace Gzero\Base\Query;
 
 use Illuminate\Database\Eloquent\Builder;
 

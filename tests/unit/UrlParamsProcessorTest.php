@@ -1,10 +1,10 @@
 <?php namespace Base;
 
 use Codeception\Test\Unit;
-use Gzero\Base\Condition;
-use Gzero\Base\QueryBuilder;
+use Gzero\Base\Query\Condition;
+use Gzero\Base\Query\QueryBuilder;
 use Gzero\Base\UrlParamsProcessor;
-use Gzero\Base\OrderBy;
+use Gzero\Base\Query\OrderBy;
 use Gzero\Base\Parsers\StringParser;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;

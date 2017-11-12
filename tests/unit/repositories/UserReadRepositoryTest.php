@@ -2,7 +2,7 @@
 
 use Codeception\Test\Unit;
 use Gzero\Base\Jobs\CreateUser;
-use Gzero\Base\QueryBuilder;
+use Gzero\Base\Query\QueryBuilder;
 use Gzero\Base\Repositories\UserReadRepository;
 
 class UserReadRepositoryTest extends Unit {

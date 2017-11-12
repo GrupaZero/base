@@ -3,9 +3,9 @@
 use Codeception\Test\Unit;
 use Gzero\Base\Models\Route;
 use Gzero\Base\Models\RouteTranslation;
-use Gzero\Base\QueryBuilder;
+use Gzero\Base\Query\QueryBuilder;
 use Gzero\Base\Repositories\RouteReadRepository;
-use Gzero\Base\Services\RepositoryException;
+use Gzero\Base\Repositories\RepositoryException;
 
 class RouteReadRepositoryTest extends Unit {
 

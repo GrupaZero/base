@@ -1,7 +1,7 @@
 <?php namespace Gzero\Base\Parsers;
 
 use Gzero\Base\Exception;
-use Gzero\Base\QueryBuilder;
+use Gzero\Base\Query\QueryBuilder;
 use Illuminate\Http\Request;
 
 /**

@@ -1,10 +1,10 @@
 <?php namespace Gzero\Base\Repositories;
 
 use Gzero\Base\Models\Route;
-use Gzero\Base\QueryBuilder;
 use Gzero\Base\Services\RepositoryException;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Gzero\Base\Query\QueryBuilder;
 
 class RouteReadRepository implements ReadRepository {
 
@@ -52,7 +52,7 @@ class RouteReadRepository implements ReadRepository {
 
         if ($builder->hasRelation('translations')) {
             if (!$builder->getRelationFilter('translations', 'language_code')) {
-                throw new RepositoryException('Language code is required');
+                throw new RepositoryValidationException('Language code is required');
             }
             $query->join('route_translations as t', 'routes.id', '=', 't.route_id');
             $builder->applyRelationFilters('translations', 't', $query);
@@ -75,4 +75,26 @@ class RouteReadRepository implements ReadRepository {
             $builder->getPage()
         );
     }
+
+
+    // @TODO Add this when and where needed
+    ///**
+    // * Function returns an unique url address from given url in specific language
+    // *
+    // * @param string $url      string url address to search for
+    // * @param string $langCode translation language
+    // *
+    // * @return string $url an unique url address
+    // */
+    //protected function buildUniqueUrl($url, $langCode)
+    //{
+    //    // search for duplicated url
+    //    $count = $this->newQuery()
+    //        ->table('route_translations')
+    //        ->where('language_code', $langCode)
+    //        ->whereRaw("path ~ '^$url($|-[0-9]+$)'")
+    //        ->count();
+    //    return ($count) ? $url . '-' . $count : $url;
+    //}
+
 }

@@ -1,6 +1,7 @@
 <?php namespace Gzero\Base\Services;
 
 use Gzero\Base\Models\Language;
+use Gzero\Base\Repositories\RepositoryException;
 use Illuminate\Support\Collection;
 
 class LanguageService {

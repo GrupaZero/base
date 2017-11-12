@@ -1,6 +1,6 @@
 <?php namespace Gzero\Base\Parsers;
 
-use Gzero\Base\QueryBuilder;
+use Gzero\Base\Query\QueryBuilder;
 use Illuminate\Http\Request;
 
 interface ConditionParser {

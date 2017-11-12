@@ -1,6 +1,6 @@
 <?php namespace Gzero\Base\Repositories;
 
-use Gzero\Base\QueryBuilder;
+use Gzero\Base\Query\QueryBuilder;
 
 interface ReadRepository {
 

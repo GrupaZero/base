@@ -1,7 +1,7 @@
 <?php namespace Gzero\Base\Repositories;
 
 use Gzero\Base\Models\User;
-use Gzero\Base\QueryBuilder;
+use Gzero\Base\Query\QueryBuilder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
