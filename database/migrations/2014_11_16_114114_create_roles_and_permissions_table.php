@@ -30,6 +30,7 @@ class CreateRolesAndPermissionsTable extends Migration {
                 $table->increments('id');
                 $table->string('name')->unique();
                 $table->string('category');
+                $table->boolean('is_core');
                 $table->timestamps();
             }
         );
@@ -80,34 +81,26 @@ class CreateRolesAndPermissionsTable extends Migration {
     {
         $permissions = [];
 
-        // Core permissions
         $permissions[] = [
-            'id'       => 1,
             'name'     => 'admin-access',
             'category' => 'general'
         ];
 
-        // Resources permissions - we use first 200 for core permissions
-        $id       = 200;
         $entities = ['content', 'block', 'user', 'file', 'role'];
         foreach ($entities as $entity) {
             $permissions[] = [
-                'id'       => $id++,
                 'name'     => $entity . '-create',
                 'category' => $entity
             ];
             $permissions[] = [
-                'id'       => $id++,
                 'name'     => $entity . '-read',
                 'category' => $entity
             ];
             $permissions[] = [
-                'id'       => $id++,
                 'name'     => $entity . '-update',
                 'category' => $entity
             ];
             $permissions[] = [
-                'id'       => $id++,
                 'name'     => $entity . '-delete',
                 'category' => $entity
             ];
@@ -115,17 +108,14 @@ class CreateRolesAndPermissionsTable extends Migration {
 
         // Options are different
         $permissions[] = [
-            'id'       => $id++,
             'name'     => 'options-read',
             'category' => 'options'
         ];
         $permissions[] = [
-            'id'       => $id++,
             'name'     => 'options-update-general',
             'category' => 'options'
         ];
         $permissions[] = [
-            'id'       => $id++,
             'name'     => 'options-update-seo',
             'category' => 'options'
         ];
