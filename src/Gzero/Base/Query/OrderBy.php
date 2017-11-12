@@ -1,5 +1,6 @@
 <?php namespace Gzero\Base\Query;
 
+use Gzero\Base\Exception;
 use Illuminate\Database\Eloquent\Builder;
 
 class OrderBy {
@@ -76,12 +77,9 @@ class OrderBy {
      */
     protected function validate()
     {
-        //if (!in_array($this->operation, self::$allowedOperations, true)) {
-        //    throw new Exception('Unsupported condition operation');
-        //}
-        //if (is_array($this->value) && !$this->isCorrectRangeFormat()) {
-        //    throw new Exception('Wrong number of values for range');
-        //}
+        if (!in_array($this->direction, self::$allowedOperations, true)) {
+            throw new Exception('Unsupported orderBy operation');
+        }
     }
 
 }
