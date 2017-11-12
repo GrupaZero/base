@@ -3,6 +3,8 @@
 use Gzero\Base\Models\Route;
 use Gzero\Base\QueryBuilder;
 use Gzero\Base\Services\RepositoryException;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class RouteReadRepository implements ReadRepository {
 
@@ -42,7 +44,7 @@ class RouteReadRepository implements ReadRepository {
      *
      * @throws RepositoryException
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return LengthAwarePaginator|Collection
      */
     public function getMany(QueryBuilder $builder)
     {
@@ -60,10 +62,17 @@ class RouteReadRepository implements ReadRepository {
         $builder->applyFilters($query);
         $builder->applySorts($query);
 
-        /** @TODO Pagination */
+        $count = clone $query->getQuery();
 
-        return $query->offset($builder->getPageSize() * ($builder->getPage() - 1))
-            ->limit($builder->getPageSize())
+        $results = $query->limit($builder->getPageSize())
+            ->offset($builder->getPageSize() * ($builder->getPage() - 1))
             ->get(['routes.*']);
+
+        return new LengthAwarePaginator(
+            $results,
+            $count->select('routes.id')->count(),
+            $builder->getPageSize(),
+            $builder->getPage()
+        );
     }
 }

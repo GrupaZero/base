@@ -81,5 +81,31 @@ class RouteReadRepositoryTest extends Unit {
 
         $this->fail('Exception should be thrown');
     }
+
+    /** @test */
+    public function canPaginateResults()
+    {
+        factory(Route::class, 10)->create()
+            ->each(function ($route) {
+                $route->translations()
+                    ->save(
+                        factory(RouteTranslation::class)
+                            ->make(['language_code' => 'en'])
+                    );
+            });
+
+        $result = $this->repository->getMany(
+            (new QueryBuilder)
+                ->where('translations.is_active', '=', true)
+                ->where('translations.language_code', '=', 'en')
+                ->orderBy('id', 'asc')
+                ->setPageSize(5)
+                ->setPage(2)
+        );
+
+        $this->assertEquals(5, $result->count());
+        $this->assertEquals(5, $result->perPage());
+        $this->assertEquals(2, $result->currentPage());
+    }
 }
 
