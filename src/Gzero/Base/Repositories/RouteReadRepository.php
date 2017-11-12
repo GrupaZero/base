@@ -42,9 +42,9 @@ class RouteReadRepository implements ReadRepository {
     /**
      * @param QueryBuilder $builder Query builder
      *
-     * @throws RepositoryException
+     * @throws RepositoryValidationException
      *
-     * @return LengthAwarePaginator|Collection
+     * @return Collection|LengthAwarePaginator
      */
     public function getMany(QueryBuilder $builder)
     {
