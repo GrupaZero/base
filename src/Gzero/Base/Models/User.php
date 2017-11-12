@@ -14,7 +14,6 @@ class User extends Base implements AuthenticatableContract, AuthorizableContract
 
     use Authenticatable, Authorizable, CanResetPassword, HasApiTokens;
 
-    /**@TODO proper method for adding new fillable fields from package with migrations */
     /**
      * @var array
      */
